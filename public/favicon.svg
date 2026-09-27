@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <!-- Premium copper/bronze/gold gradient reflecting PrintOkiyo's aesthetics -->
+    <linearGradient id="printokiyoLogoGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a46452" />
+      <stop offset="50%" stop-color="#b47965" />
+      <stop offset="100%" stop-color="#D4AF37" />
+    </linearGradient>
+  </defs>
+  <!-- Outer Arch -->
+  <path d="M20 70V45C20 31.1929 31.1929 20 45 20C58.8071 20 70 31.1929 70 45V70" stroke="url(#mojoLogoGrad)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Inner Arch -->
+  <path d="M40 70V50C40 38.9543 48.9543 30 60 30C71.0457 30 80 38.9543 80 50V70" stroke="url(#mojoLogoGrad)" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
