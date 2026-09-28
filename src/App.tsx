@@ -1059,14 +1059,14 @@ function formatDateSafe(dateStr: any): string {
             <img src={logoPng} alt="PrintOkiyo" className="h-11.5 sm:h-14 w-auto object-contain" />
           </div>
 
-          {/* Right Header Actions - Search, Wishlist, Cart & Profile (Shown on Desktop only, hidden on Mobile since Mobile has floating bottom bar) */}
-          <div className="hidden md:flex items-center gap-1 sm:gap-2">
+          {/* Right Header Actions - Cart & Profile shown on ALL devices (Mobile + Desktop); Search & Wishlist shown on Desktop only */}
+          <div className="flex items-center gap-1 sm:gap-2">
             <button 
               onClick={() => { 
                 setActiveTab('search'); 
                 setSelectedProduct(null); 
               }}
-              className="p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
+              className="hidden md:flex p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
               aria-label="Search"
             >
               <Search size={20} />
@@ -1077,7 +1077,7 @@ function formatDateSafe(dateStr: any): string {
                 setActiveTab('wishlist'); 
                 setSelectedProduct(null); 
               }}
-              className="relative p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
+              className="hidden md:flex relative p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
               aria-label="Wishlist"
             >
               <Heart size={20} className={wishlist.length > 0 ? "text-red-500 fill-red-500" : ""} />
