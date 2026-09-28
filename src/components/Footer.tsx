@@ -1,15 +1,18 @@
-import React from 'react';
-import { Mail, Facebook, Instagram } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Facebook, Instagram, ChevronDown } from 'lucide-react';
 
 export const Footer: React.FC = () => {
+  const [usefulLinksOpen, setUsefulLinksOpen] = useState(false);
+  const [mainMenuOpen, setMainMenuOpen] = useState(false);
+
   return (
     <footer className="w-full bg-[#111111] text-white text-xs select-none border-t border-zinc-900">
       {/* Main Footer Body */}
-      <div className="max-w-7xl mx-auto px-6 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12">
+      <div className="max-w-7xl mx-auto px-6 py-10 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12">
           
           {/* Column 1: DISCLAIMER & EMAIL & SOCIAL */}
-          <div className="md:col-span-6 lg:col-span-6 flex flex-col gap-4 text-left">
+          <div className="md:col-span-6 lg:col-span-6 flex flex-col gap-4 text-left border-b border-zinc-800/80 pb-6 md:border-none md:pb-0">
             <h3 className="text-[#e2b04c] text-sm md:text-base font-black uppercase tracking-wider">
               DISCLAIMER
             </h3>
@@ -28,7 +31,7 @@ export const Footer: React.FC = () => {
             </div>
 
             {/* FOLLOW US ON */}
-            <div className="mt-4 flex flex-col gap-3">
+            <div className="mt-2 flex flex-col gap-3">
               <h4 className="text-[#e2b04c] text-xs font-black uppercase tracking-wider">
                 FOLLOW US ON
               </h4>
@@ -51,12 +54,22 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* Column 2: USEFUL LINKS */}
-          <div className="md:col-span-3 lg:col-span-3 flex flex-col gap-3 text-left">
-            <h3 className="text-[#e2b04c] text-sm md:text-base font-black uppercase tracking-wider">
-              USEFUL LINKS
-            </h3>
-            <ul className="flex flex-col gap-2.5 text-xs sm:text-sm font-medium text-gray-300">
+          {/* Column 2: USEFUL LINKS (Collapsible Accordion on Mobile) */}
+          <div className="md:col-span-3 lg:col-span-3 flex flex-col gap-3 text-left border-b border-zinc-800/80 pb-4 md:border-none md:pb-0">
+            <button 
+              type="button"
+              onClick={() => setUsefulLinksOpen(!usefulLinksOpen)}
+              className="flex items-center justify-between w-full text-left md:pointer-events-none cursor-pointer md:cursor-default"
+            >
+              <h3 className="text-[#e2b04c] text-sm md:text-base font-black uppercase tracking-wider">
+                USEFUL LINKS
+              </h3>
+              <ChevronDown 
+                size={18} 
+                className={`text-[#e2b04c] transition-transform duration-300 md:hidden ${usefulLinksOpen ? 'rotate-180' : ''}`} 
+              />
+            </button>
+            <ul className={`flex-col gap-2.5 text-xs sm:text-sm font-medium text-gray-300 transition-all ${usefulLinksOpen ? 'flex pt-1' : 'hidden md:flex'}`}>
               <li><a href="#" className="hover:text-[#e2b04c] transition-colors">About Us</a></li>
               <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Terms Of Service</a></li>
               <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Shipping Policy</a></li>
@@ -67,12 +80,22 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Column 3: MAIN MENU */}
-          <div className="md:col-span-3 lg:col-span-3 flex flex-col gap-3 text-left">
-            <h3 className="text-[#e2b04c] text-sm md:text-base font-black uppercase tracking-wider">
-              MAIN MENU
-            </h3>
-            <ul className="flex flex-col gap-2.5 text-xs sm:text-sm font-medium text-gray-300">
+          {/* Column 3: MAIN MENU (Collapsible Accordion on Mobile) */}
+          <div className="md:col-span-3 lg:col-span-3 flex flex-col gap-3 text-left border-b border-zinc-800/80 pb-4 md:border-none md:pb-0">
+            <button 
+              type="button"
+              onClick={() => setMainMenuOpen(!mainMenuOpen)}
+              className="flex items-center justify-between w-full text-left md:pointer-events-none cursor-pointer md:cursor-default"
+            >
+              <h3 className="text-[#e2b04c] text-sm md:text-base font-black uppercase tracking-wider">
+                MAIN MENU
+              </h3>
+              <ChevronDown 
+                size={18} 
+                className={`text-[#e2b04c] transition-transform duration-300 md:hidden ${mainMenuOpen ? 'rotate-180' : ''}`} 
+              />
+            </button>
+            <ul className={`flex-col gap-2.5 text-xs sm:text-sm font-medium text-gray-300 transition-all ${mainMenuOpen ? 'flex pt-1' : 'hidden md:flex'}`}>
               <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Split Poster</a></li>
               <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Posters</a></li>
               <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Wall Sets</a></li>
@@ -93,7 +116,7 @@ export const Footer: React.FC = () => {
         </span>
 
         {/* Payment Methods */}
-        <div className="flex items-center gap-2.5 flex-wrap">
+        <div className="flex items-center gap-2.5 flex-wrap justify-center">
           {/* VISA */}
           <div className="bg-[#142680] text-white px-2.5 py-1 rounded text-[10px] font-black italic tracking-widest uppercase shadow-xs">
             VISA
