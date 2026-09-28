@@ -35,9 +35,9 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
   const availableSizes = (product.has_custom_options && product.allow_size_variants && product.size_variants && product.size_variants.length > 0)
     ? product.size_variants
     : [
-        { name: 'A5', price: basePrice },
-        { name: 'A4', price: Math.round(basePrice * 1.6) },
-        { name: 'A3', price: Math.round(basePrice * 2.8) }
+        { name: 'A5', price: product.price_a5 ?? basePrice },
+        { name: 'A4', price: product.price_a4 ?? Math.round(basePrice * 1.6) },
+        { name: 'A3', price: product.price_a3 ?? Math.round(basePrice * 2.8) }
       ];
 
   const [selectedSize, setSelectedSize] = useState<{ name: string; price: number }>(availableSizes[0]);
@@ -57,9 +57,9 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
     const sizes = (product.has_custom_options && product.allow_size_variants && product.size_variants && product.size_variants.length > 0)
       ? product.size_variants
       : [
-          { name: 'A5', price: product.discount_price ?? product.price ?? 89 },
-          { name: 'A4', price: Math.round((product.discount_price ?? product.price ?? 89) * 1.6) },
-          { name: 'A3', price: Math.round((product.discount_price ?? product.price ?? 89) * 2.8) }
+          { name: 'A5', price: product.price_a5 ?? (product.discount_price ?? product.price ?? 89) },
+          { name: 'A4', price: product.price_a4 ?? Math.round((product.discount_price ?? product.price ?? 89) * 1.6) },
+          { name: 'A3', price: product.price_a3 ?? Math.round((product.discount_price ?? product.price ?? 89) * 2.8) }
         ];
     setSelectedSize(sizes[0]);
   }, [product]);
@@ -99,7 +99,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
   const getCustomizedProduct = (): Product => {
     return {
       ...product,
-      price: totalPrice,
+      price: selectedSize.price,
       discount_price: null,
       selected_size: selectedSize.name,
       custom_photo: customPhoto || undefined
@@ -112,8 +112,19 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
       return;
     }
     setPhotoError(null);
-    action(getCustomizedProduct());
+    const itemToAdd = getCustomizedProduct();
+    for (let i = 0; i < quantity; i++) {
+      action(itemToAdd);
+    }
   };
+
+  // Pack quantities & text
+  const pack1Buy = product.best_value_pack_1_buy ?? 1;
+  const pack1Get = product.best_value_pack_1_get ?? 2;
+  const pack2Buy = product.best_value_pack_2_buy ?? 2;
+  const pack2Get = product.best_value_pack_2_get ?? 4;
+  const pack3Buy = product.best_value_pack_3_buy ?? 3;
+  const pack3Get = product.best_value_pack_3_get ?? 9;
 
   // Sample up to 10 random products across all categories for Related Products
   const relatedProducts = React.useMemo(() => {
@@ -136,9 +147,9 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
       title: 'How To Apply Offers',
       content: (
         <div className="space-y-2 text-xs text-gray-650 leading-relaxed font-medium">
-          <p><strong className="text-gray-900">🔥 Pack 1: Buy 1 → Get 2 FREE</strong> — Add 3 posters to cart (3 Posters Total)</p>
-          <p><strong className="text-gray-900">🔥 Pack 2: Buy 2 → Get 4 FREE</strong> — Add 8 posters to cart (6 Posters Total)</p>
-          <p><strong className="text-gray-900">⭐ Pack 3: Buy 3 → Get 9 FREE (BEST VALUE)</strong> — Add 15 posters to cart (12 Posters Total)</p>
+          <p><strong className="text-gray-900">🔥 Pack 1: Buy {pack1Buy} → Get {pack1Get} FREE</strong> — Add {pack1Buy + pack1Get} posters to cart</p>
+          <p><strong className="text-gray-900">🔥 Pack 2: Buy {pack2Buy} → Get {pack2Get} FREE</strong> — Add {pack2Buy + pack2Get} posters to cart</p>
+          <p><strong className="text-gray-900">⭐ Pack 3: Buy {pack3Buy} → Get {pack3Get} FREE (BEST VALUE)</strong> — Add {pack3Buy + pack3Get} posters to cart</p>
           <p className="text-[#041E42] font-bold pt-1">🛒 Just add the required number of posters to cart — discount applies automatically.</p>
         </div>
       )
@@ -258,6 +269,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                       }`}
                     >
                       <span>{s.name}</span>
+                      <span className="opacity-80 text-[11px]">₹{s.price}</span>
                     </button>
                   );
                 })}
@@ -299,12 +311,12 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                     <div className="flex flex-col">
                       <span className="text-[8.5px] sm:text-[9.5px] font-bold text-gray-400 uppercase">Pack 1</span>
                       <span className="text-[10px] sm:text-xs font-black text-gray-900 leading-tight">
-                        {product.best_value_pack_1_title || "Buy 1 → Get 2 FREE"}
+                        {product.best_value_pack_1_title || `Buy ${pack1Buy} → Get ${pack1Get} FREE`}
                       </span>
                     </div>
                     <div className="border-t border-gray-100 pt-1 flex flex-col">
                       <span className="text-[8.5px] sm:text-[9.5px] font-bold text-amber-700">
-                        {product.best_value_pack_1_subtitle || "🛒 Add 3 posters"}
+                        {product.best_value_pack_1_subtitle || `🛒 Add ${pack1Buy + pack1Get} posters`}
                       </span>
                     </div>
                   </div>
@@ -314,12 +326,12 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                     <div className="flex flex-col">
                       <span className="text-[8.5px] sm:text-[9.5px] font-bold text-gray-400 uppercase">Pack 2</span>
                       <span className="text-[10px] sm:text-xs font-black text-gray-900 leading-tight">
-                        {product.best_value_pack_2_title || "Buy 2 → Get 4 FREE"}
+                        {product.best_value_pack_2_title || `Buy ${pack2Buy} → Get ${pack2Get} FREE`}
                       </span>
                     </div>
                     <div className="border-t border-gray-100 pt-1 flex flex-col">
                       <span className="text-[8.5px] sm:text-[9.5px] font-bold text-amber-700">
-                        {product.best_value_pack_2_subtitle || "🛒 Add 8 posters"}
+                        {product.best_value_pack_2_subtitle || `🛒 Add ${pack2Buy + pack2Get} posters`}
                       </span>
                     </div>
                   </div>
@@ -331,12 +343,12 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                     </span>
                     <div className="flex flex-col">
                       <span className="text-[10px] sm:text-xs font-black text-white leading-tight">
-                        {product.best_value_pack_3_title || "Buy 3 → Get 9 FREE"}
+                        {product.best_value_pack_3_title || `Buy ${pack3Buy} → Get ${pack3Get} FREE`}
                       </span>
                     </div>
                     <div className="border-t border-white/20 pt-1 flex flex-col">
                       <span className="text-[8.5px] sm:text-[9.5px] font-bold text-yellow-200">
-                        {product.best_value_pack_3_subtitle || "🛒 Add 15 posters"}
+                        {product.best_value_pack_3_subtitle || `🛒 Add ${pack3Buy + pack3Get} posters`}
                       </span>
                     </div>
                   </div>

@@ -4,6 +4,7 @@ import type { Product, StoreSettings } from '../types';
 import { createRazorpayPaymentLink } from '../api/payment';
 import { getImageUrl } from '../utils/image';
 import { getEffectivePrice } from '../utils/price';
+import { calculateCartItems } from '../utils/cartOffers';
 import { BrandBuffer } from './BrandBuffer';
 
 declare global {
@@ -70,7 +71,8 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
     }
   }, [isCodAvailable, paymentMethod]);
 
-  const subtotal = cart.reduce((sum, item) => sum + getEffectivePrice(item), 0);
+  const calculatedCart = calculateCartItems(cart);
+  const subtotal = calculatedCart.reduce((sum, item) => sum + item.final_price, 0);
   const shippingCost = subtotal > threshold ? 0 : charge;
   const codFeeCost = (paymentMethod === 'cod' && isCodAvailable) ? codFee : 0;
   const grandTotal = subtotal + shippingCost + codFeeCost;
@@ -560,7 +562,7 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
 
           {/* Cart Items list */}
           <div className="flex flex-col gap-3.5 max-h-56 overflow-y-auto pr-1">
-            {cart.map((item, idx) => (
+            {calculatedCart.map((item, idx) => (
               <div key={idx} className="flex items-center gap-2.5">
                 <div className="relative w-9 h-9 shrink-0">
                   <img src={getImageUrl(item.custom_photo || item.thumbnail)} alt={item.title} className="w-9 h-9 object-cover bg-gray-50 p-0.5 rounded-lg border border-gray-200" />
@@ -574,9 +576,13 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
                     <span className="text-[8.5px] font-bold text-blue-700 block">📐 {item.selected_size}</span>
                   )}
                   <div className="flex items-center gap-1 mt-0.5">
-                    <span className="text-[9px] text-black font-black">₹{getEffectivePrice(item).toLocaleString('en-IN')}</span>
-                    {item.discount_price !== undefined && item.discount_price !== null && item.discount_price > 0 && item.discount_price < item.price && (
-                      <span className="text-[8px] text-gray-400 line-through">₹{item.price.toLocaleString('en-IN')}</span>
+                    {item.is_free ? (
+                      <>
+                        <span className="text-[8.5px] text-gray-400 line-through">₹{item.original_unit_price.toLocaleString('en-IN')}</span>
+                        <span className="text-[8px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-full">FREE</span>
+                      </>
+                    ) : (
+                      <span className="text-[9px] text-black font-black">₹{item.final_price.toLocaleString('en-IN')}</span>
                     )}
                   </div>
                 </div>

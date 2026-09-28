@@ -6,6 +6,7 @@ import { fetchProducts, fetchProductBySlug } from './api/products';
 import { fetchStoreSettings } from './api/settings';
 import { getImageUrl } from './utils/image';
 import { getEffectivePrice } from './utils/price';
+import { calculateCartItems } from './utils/cartOffers';
 import type { Product, StoreSettings } from './types';
 import { ProductCard } from './components/ProductCard';
 import { ProductDetails } from './components/ProductDetails';
@@ -1579,74 +1580,85 @@ function formatDateSafe(dateStr: any): string {
         )}
 
         {/* Shopping Cart View */}
-        {activeTab === 'cart' && (
-          <div className="animate-in fade-in duration-200">
-            <h2 className="text-xl font-display font-black mb-4 text-left">Shopping Cart</h2>
-            
-            {cart.length === 0 ? (
-              <div className="text-center py-16 bg-white rounded-3xl border border-gray-150">
-                <ShoppingBag size={32} className="mx-auto text-gray-300 mb-2" />
-                <p className="text-xs text-gray-500 font-semibold">Your shopping cart is empty.</p>
-              </div>
-            ) : (
-              <div className="flex flex-col lg:flex-row gap-6 items-start">
-                {/* Cart Items List */}
-                <div className="flex-1 w-full flex flex-col gap-3">
-                  {cart.map((product, idx) => (
-                    <div key={idx} className="flex items-center gap-4 bg-white border border-gray-150 p-4 rounded-2xl shadow-2xs hover:border-gray-250 transition-all">
-                      <img src={getImageUrl(product.thumbnail)} alt={product.title} className="w-16 h-16 object-contain bg-gray-50 p-1.5 rounded-xl shrink-0" />
-                      <div className="flex-grow min-w-0 text-left">
-                        <h4 className="text-xs sm:text-sm font-bold text-gray-900 truncate">{product.title}</h4>
-                        {product.selected_size && (
-                          <span className="text-[10px] font-semibold text-gray-500 block mt-0.5">Size: {product.selected_size}</span>
-                        )}
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs text-brand-600 font-bold">₹{getEffectivePrice(product).toLocaleString('en-IN')}</span>
-                          {product.discount_price !== undefined && product.discount_price !== null && product.discount_price > 0 && product.discount_price < product.price && (
-                            <span className="text-[10px] text-gray-400 line-through">₹{product.price.toLocaleString('en-IN')}</span>
-                          )}
-                        </div>
-                      </div>
-                      <button 
-                        onClick={() => {
-                          const newCart = cart.filter((_, i) => i !== idx);
-                          syncCartChanges(newCart);
-                        }}
-                        className="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 shrink-0"
-                        title="Remove item"
-                      >
-                        <X size={16} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
+        {activeTab === 'cart' && (() => {
+          const calculatedCart = calculateCartItems(cart);
+          const cartSubtotal = calculatedCart.reduce((sum, item) => sum + item.final_price, 0);
 
-                {/* Summary Sidebar */}
-                <div className="w-full lg:w-80 shrink-0 bg-gray-50 border border-gray-200 p-5 rounded-2xl flex flex-col gap-3 text-left">
-                  <h3 className="text-xs font-black uppercase tracking-wider text-gray-900 border-b border-gray-200 pb-2">Order Summary</h3>
-                  <div className="flex justify-between items-center text-xs font-semibold">
-                    <span className="text-gray-500">Subtotal ({cart.length} items)</span>
-                    <span className="text-gray-955 font-bold">₹{cart.reduce((sum, item) => sum + getEffectivePrice(item), 0).toLocaleString('en-IN')}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-xs font-semibold">
-                    <span className="text-gray-500">Shipping</span>
-                    <span className="text-emerald-700 font-bold">Calculated at checkout</span>
-                  </div>
-                  <div className="border-t border-gray-200 pt-3 flex justify-between items-center text-sm font-black">
-                    <span className="text-gray-900">Total</span>
-                    <span className="text-brand-600">₹{cart.reduce((sum, item) => sum + getEffectivePrice(item), 0).toLocaleString('en-IN')}</span>
-                  </div>
-                  <button 
-                    onClick={handleCheckout}
-                    className="w-full py-3 bg-[#041E42] text-white rounded-xl text-xs font-black tracking-wider uppercase mt-2 hover:bg-[#082a56] transition-all shadow-md cursor-pointer"
-                  >
-                    Proceed to Checkout
-                  </button>
+          return (
+            <div className="animate-in fade-in duration-200">
+              <h2 className="text-xl font-display font-black mb-4 text-left">Shopping Cart</h2>
+              
+              {cart.length === 0 ? (
+                <div className="text-center py-16 bg-white rounded-3xl border border-gray-150">
+                  <ShoppingBag size={32} className="mx-auto text-gray-300 mb-2" />
+                  <p className="text-xs text-gray-500 font-semibold">Your shopping cart is empty.</p>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
+              ) : (
+                <div className="flex flex-col lg:flex-row gap-6 items-start">
+                  {/* Cart Items List */}
+                  <div className="flex-1 w-full flex flex-col gap-3">
+                    {calculatedCart.map((item, idx) => (
+                      <div key={idx} className="flex items-center gap-4 bg-white border border-gray-150 p-4 rounded-2xl shadow-2xs hover:border-gray-250 transition-all">
+                        <img src={getImageUrl(item.thumbnail)} alt={item.title} className="w-16 h-16 object-contain bg-gray-50 p-1.5 rounded-xl shrink-0" />
+                        <div className="flex-grow min-w-0 text-left">
+                          <h4 className="text-xs sm:text-sm font-bold text-gray-900 truncate">{item.title}</h4>
+                          {item.selected_size && (
+                            <span className="text-[10px] font-semibold text-gray-500 block mt-0.5">Size: {item.selected_size}</span>
+                          )}
+                          <div className="flex items-center gap-2 mt-1">
+                            {item.is_free ? (
+                              <>
+                                <span className="text-xs text-gray-400 line-through">₹{item.original_unit_price.toLocaleString('en-IN')}</span>
+                                <span className="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                                  FREE ({item.offer_applied || 'Offer Applied'})
+                                </span>
+                              </>
+                            ) : (
+                              <span className="text-xs text-brand-600 font-bold">₹{item.final_price.toLocaleString('en-IN')}</span>
+                            )}
+                          </div>
+                        </div>
+                        <button 
+                          onClick={() => {
+                            const newCart = cart.filter((_, i) => i !== idx);
+                            syncCartChanges(newCart);
+                          }}
+                          className="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 shrink-0"
+                          title="Remove item"
+                        >
+                          <X size={16} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Summary Sidebar */}
+                  <div className="w-full lg:w-80 shrink-0 bg-gray-50 border border-gray-200 p-5 rounded-2xl flex flex-col gap-3 text-left">
+                    <h3 className="text-xs font-black uppercase tracking-wider text-gray-900 border-b border-gray-200 pb-2">Order Summary</h3>
+                    <div className="flex justify-between items-center text-xs font-semibold">
+                      <span className="text-gray-500">Subtotal ({cart.length} items)</span>
+                      <span className="text-gray-955 font-bold">₹{cartSubtotal.toLocaleString('en-IN')}</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs font-semibold">
+                      <span className="text-gray-500">Shipping</span>
+                      <span className="text-emerald-700 font-bold">Calculated at checkout</span>
+                    </div>
+                    <div className="border-t border-gray-200 pt-3 flex justify-between items-center text-sm font-black">
+                      <span className="text-gray-900">Total</span>
+                      <span className="text-brand-600">₹{cartSubtotal.toLocaleString('en-IN')}</span>
+                    </div>
+                    <button 
+                      onClick={handleCheckout}
+                      className="w-full py-3 bg-[#041E42] text-white rounded-xl text-xs font-black tracking-wider uppercase mt-2 hover:bg-[#082a56] transition-all shadow-md cursor-pointer"
+                    >
+                      Proceed to Checkout
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })()}
 
         {/* Profile / Account Details Dashboard */}
         {activeTab === 'profile' && isLoggedIn && userProfile && (
