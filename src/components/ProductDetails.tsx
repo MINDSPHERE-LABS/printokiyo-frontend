@@ -298,11 +298,14 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                   <div className="p-2 sm:p-2.5 bg-white border border-amber-200/90 rounded-lg flex flex-col justify-between gap-1 shadow-2xs text-left">
                     <div className="flex flex-col">
                       <span className="text-[8.5px] sm:text-[9.5px] font-bold text-gray-400 uppercase">Pack 1</span>
-                      <span className="text-[10px] sm:text-xs font-black text-gray-900 leading-tight">Buy 1 → Get 2 FREE</span>
+                      <span className="text-[10px] sm:text-xs font-black text-gray-900 leading-tight">
+                        {product.best_value_pack_1_title || "Buy 1 → Get 2 FREE"}
+                      </span>
                     </div>
                     <div className="border-t border-gray-100 pt-1 flex flex-col">
-                      <span className="text-[8.5px] sm:text-[9.5px] font-bold text-amber-700">🛒 Add 3 posters</span>
-                      <span className="text-[8px] sm:text-[9px] text-gray-500 font-medium">3 Posters</span>
+                      <span className="text-[8.5px] sm:text-[9.5px] font-bold text-amber-700">
+                        {product.best_value_pack_1_subtitle || "🛒 Add 3 posters"}
+                      </span>
                     </div>
                   </div>
 
@@ -310,11 +313,14 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                   <div className="p-2 sm:p-2.5 bg-white border border-amber-200/90 rounded-lg flex flex-col justify-between gap-1 shadow-2xs text-left">
                     <div className="flex flex-col">
                       <span className="text-[8.5px] sm:text-[9.5px] font-bold text-gray-400 uppercase">Pack 2</span>
-                      <span className="text-[10px] sm:text-xs font-black text-gray-900 leading-tight">Buy 2 → Get 4 FREE</span>
+                      <span className="text-[10px] sm:text-xs font-black text-gray-900 leading-tight">
+                        {product.best_value_pack_2_title || "Buy 2 → Get 4 FREE"}
+                      </span>
                     </div>
                     <div className="border-t border-gray-100 pt-1 flex flex-col">
-                      <span className="text-[8.5px] sm:text-[9.5px] font-bold text-amber-700">🛒 Add 8 posters</span>
-                      <span className="text-[8px] sm:text-[9px] text-gray-500 font-medium">6 Posters</span>
+                      <span className="text-[8.5px] sm:text-[9.5px] font-bold text-amber-700">
+                        {product.best_value_pack_2_subtitle || "🛒 Add 8 posters"}
+                      </span>
                     </div>
                   </div>
 
@@ -324,11 +330,14 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                       ⭐ BEST VALUE
                     </span>
                     <div className="flex flex-col">
-                      <span className="text-[10px] sm:text-xs font-black text-white leading-tight">Buy 3 → Get 9 FREE</span>
+                      <span className="text-[10px] sm:text-xs font-black text-white leading-tight">
+                        {product.best_value_pack_3_title || "Buy 3 → Get 9 FREE"}
+                      </span>
                     </div>
                     <div className="border-t border-white/20 pt-1 flex flex-col">
-                      <span className="text-[8.5px] sm:text-[9.5px] font-bold text-yellow-200">🛒 Add 15 posters</span>
-                      <span className="text-[8px] sm:text-[9px] text-amber-100 font-medium">12 Posters</span>
+                      <span className="text-[8.5px] sm:text-[9.5px] font-bold text-yellow-200">
+                        {product.best_value_pack_3_subtitle || "🛒 Add 15 posters"}
+                      </span>
                     </div>
                   </div>
                 </div>

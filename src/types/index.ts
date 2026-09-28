@@ -39,6 +39,12 @@ export interface Product {
   allow_quantity?: boolean;
   disable_cod?: boolean;
   show_best_value_packs?: boolean;
+  best_value_pack_1_title?: string;
+  best_value_pack_1_subtitle?: string;
+  best_value_pack_2_title?: string;
+  best_value_pack_2_subtitle?: string;
+  best_value_pack_3_title?: string;
+  best_value_pack_3_subtitle?: string;
   custom_photo?: string;
   selected_size?: string;
   created_at: string;
