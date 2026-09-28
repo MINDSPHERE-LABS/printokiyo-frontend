@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import logoPng from './assets/logo.png';
 import collageStripWebp from './assets/collage-strip.webp';
 import { getApiBaseSync } from './api/config';
@@ -593,6 +593,82 @@ function formatDateSafe(dateStr: any): string {
     }
   }, [productsList]);
 
+  // Dynamically compute homepage category cards (Default 8 split poster categories + any new custom categories created in Admin)
+  const homepageCategoryCards = useMemo(() => {
+    const baseCards = [
+      { name: "Anime Split Posters", category: "Anime & Gaming", image: "/cat-anime-opt.mp4", poster: "/cat-anime-poster.webp" },
+      { name: "Superhero Split Posters", category: "Superhero", image: "/cat-superhero-opt.mp4", poster: "/cat-superhero-poster.webp" },
+      { name: "Super Cars Split Posters", category: "Supercars", image: "/cat-supercars-opt.mp4", poster: "/cat-supercars-poster.webp" },
+      { name: "Superbike Split Posters", category: "Superbike", image: "/cat-superbike-opt.mp4", poster: "/cat-superbike-poster.webp" },
+      { name: "Cricket Split Posters", category: "Cricket", image: "/cat-cricket-opt.mp4", poster: "/cat-cricket-poster.webp" },
+      { name: "Devotional Split Posters", category: "Devotional", image: "/cat-devotional-opt.mp4", poster: "/cat-devotional-poster.webp" },
+      { name: "Gym & Fitness Split Posters", category: "Gym & Fitness", image: "/cat-gym-opt.mp4", poster: "/cat-gym-poster.webp" },
+      { name: "Music & Bands Split Posters", category: "Music", image: "/cat-music-opt.mp4", poster: "/cat-music-poster.webp" },
+    ];
+
+    if (!productsList || productsList.length === 0) return baseCards;
+
+    const baseKeys = baseCards.map(c => c.category.toLowerCase().trim());
+
+    const extraCategories = new Set<string>();
+    productsList.forEach(p => {
+      if (p.category && p.category.trim()) {
+        const catTrim = p.category.trim();
+        const catLower = catTrim.toLowerCase();
+        const matchesBase = baseKeys.some(bk => bk === catLower || catLower.includes(bk) || bk.includes(catLower));
+        if (!matchesBase) {
+          extraCategories.add(catTrim);
+        }
+      }
+    });
+
+    const extraCards = Array.from(extraCategories).map(catName => {
+      const repProd = productsList.find(p => p.category?.trim().toLowerCase() === catName.toLowerCase());
+      return {
+        name: `${catName} Posters`,
+        category: catName,
+        image: "",
+        poster: repProd?.thumbnail || "/cat-anime-poster.webp"
+      };
+    });
+
+    return [...baseCards, ...extraCards];
+  }, [productsList]);
+
+  // Dynamically compute SINGLE POSTERS sub-tabs (Default 8 tabs + any custom categories created in Admin)
+  const singlePosterSubTabs = useMemo(() => {
+    const baseTabs = [
+      { label: 'Car Posters', key: 'Supercars' },
+      { label: 'Anime Posters', key: 'Anime & Gaming' },
+      { label: 'Cricket Posters', key: 'Cricket' },
+      { label: 'Superhero Posters', key: 'Superhero' },
+      { label: 'Superbike Posters', key: 'Superbike' },
+      { label: 'Devotional Posters', key: 'Devotional' },
+      { label: 'Gym Posters', key: 'Gym & Fitness' },
+      { label: 'Music Posters', key: 'Music' }
+    ];
+
+    if (!productsList || productsList.length === 0) return baseTabs;
+
+    const baseKeys = baseTabs.map(t => t.key.toLowerCase().trim());
+
+    productsList.forEach(p => {
+      if (p.category && p.category.trim()) {
+        const catTrim = p.category.trim();
+        const catLower = catTrim.toLowerCase();
+        const matchesBase = baseKeys.some(bk => bk === catLower || catLower.includes(bk) || bk.includes(catLower));
+        if (!matchesBase && !baseTabs.some(t => t.key.toLowerCase() === catLower)) {
+          baseTabs.push({
+            label: `${catTrim} Posters`,
+            key: catTrim
+          });
+        }
+      }
+    });
+
+    return baseTabs;
+  }, [productsList]);
+
   // Support direct product links & handle Browser/Mobile Back Button (popstate)
   useEffect(() => {
     const handleUrlChange = async () => {
@@ -1169,16 +1245,7 @@ function formatDateSafe(dateStr: any): string {
                 Split Poster Categories
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4">
-                {[
-                  { name: "Anime Split Posters", category: "Anime & Gaming", image: "/cat-anime-opt.mp4", poster: "/cat-anime-poster.webp" },
-                  { name: "Superhero Split Posters", category: "Superhero", image: "/cat-superhero-opt.mp4", poster: "/cat-superhero-poster.webp" },
-                  { name: "Super Cars Split Posters", category: "Supercars", image: "/cat-supercars-opt.mp4", poster: "/cat-supercars-poster.webp" },
-                  { name: "Superbike Split Posters", category: "Superbike", image: "/cat-superbike-opt.mp4", poster: "/cat-superbike-poster.webp" },
-                  { name: "Cricket Split Posters", category: "Cricket", image: "/cat-cricket-opt.mp4", poster: "/cat-cricket-poster.webp" },
-                  { name: "Devotional Split Posters", category: "Devotional", image: "/cat-devotional-opt.mp4", poster: "/cat-devotional-poster.webp" },
-                  { name: "Gym & Fitness Split Posters", category: "Gym & Fitness", image: "/cat-gym-opt.mp4", poster: "/cat-gym-poster.webp" },
-                  { name: "Music & Bands Split Posters", category: "Music", image: "/cat-music-opt.mp4", poster: "/cat-music-poster.webp" },
-                ].map((cat) => (
+                {homepageCategoryCards.map((cat) => (
                   <div
                     key={cat.name}
                     onClick={() => handleCategorySelect(cat.category)}
@@ -1194,7 +1261,7 @@ function formatDateSafe(dateStr: any): string {
                     />
 
                     {/* Smooth Crossfade Compressed Video Loop */}
-                    {cat.image && (
+                    {cat.image ? (
                       <video 
                         src={cat.image} 
                         autoPlay 
@@ -1214,6 +1281,12 @@ function formatDateSafe(dateStr: any): string {
                         }}
                         className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-all duration-700 opacity-0" 
                       />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent flex items-end justify-center p-3">
+                        <span className="text-white font-display font-black text-xs sm:text-sm uppercase tracking-wider text-center drop-shadow-lg">
+                          {cat.name}
+                        </span>
+                      </div>
                     )}
                   </div>
                 ))}
@@ -1261,16 +1334,7 @@ function formatDateSafe(dateStr: any): string {
 
               {/* Category Sub-Tabs in RED */}
               <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-6 no-scrollbar text-xs sm:text-sm whitespace-nowrap">
-                {[
-                  { label: 'Car Posters', key: 'Supercars' },
-                  { label: 'Anime Posters', key: 'Anime & Gaming' },
-                  { label: 'Cricket Posters', key: 'Cricket' },
-                  { label: 'Superhero Posters', key: 'Superhero' },
-                  { label: 'Superbike Posters', key: 'Superbike' },
-                  { label: 'Devotional Posters', key: 'Devotional' },
-                  { label: 'Gym Posters', key: 'Gym & Fitness' },
-                  { label: 'Music Posters', key: 'Music' }
-                ].map((cat, idx) => {
+                {singlePosterSubTabs.map((cat, idx) => {
                   const isActive = activeSingleCategory === cat.key;
                   return (
                     <span key={cat.key} className="inline-flex items-center gap-2">
