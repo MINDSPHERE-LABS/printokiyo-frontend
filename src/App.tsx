@@ -16,6 +16,7 @@ import { OrderSuccessModal } from './components/OrderSuccessModal';
 import { Footer } from './components/Footer';
 import { BrandBuffer } from './components/BrandBuffer';
 import { SidebarDrawer } from './components/SidebarDrawer';
+import { AnimeClickSlash } from './components/AnimeClickSlash';
 import { 
   fetchUserCart, syncUserCart, mergeGuestCart,
   fetchUserWishlist, addToUserWishlist, removeFromUserWishlist,
@@ -951,6 +952,9 @@ function formatDateSafe(dateStr: any): string {
 
   return (
     <div className="min-h-screen bg-white text-gray-950 pb-28 flex flex-col font-sans">
+      {/* Global Anime Dual Cross-Slash Click Effect */}
+      <AnimeClickSlash />
+
       {/* Brand Initial Splash Buffer */}
       {isInitialLoading && <BrandBuffer fullScreen message="Buffering PrintOkiyo Store..." />}
 
