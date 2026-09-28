@@ -77,11 +77,11 @@ function App() {
     }
   };
 
-  // Initial site splash buffer timer
+  // Initial site splash buffer timer - instant 50ms transition
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsInitialLoading(false);
-    }, 600);
+    }, 50);
     return () => clearTimeout(timer);
   }, []);
 
@@ -1148,7 +1148,7 @@ function formatDateSafe(dateStr: any): string {
                         loop 
                         muted 
                         playsInline 
-                        preload="auto"
+                        preload="metadata"
                         ref={(el) => {
                           if (el) {
                             el.muted = true;

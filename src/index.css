@@ -100,6 +100,9 @@ body {
   width: max-content !important;
   animation: circular-marquee-strip 38s linear infinite !important;
   will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 
