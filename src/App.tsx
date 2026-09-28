@@ -1083,15 +1083,15 @@ function formatDateSafe(dateStr: any): string {
               </div>
             </div>
 
-            {/* Edge-to-Edge Infinite Smooth Circular Collage Banner Strip - WebP Format (High-Res 4000x240, Bundled Asset) */}
-            <div className="overflow-hidden w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] select-none pointer-events-none my-1 bg-white py-0 flex items-center border-none outline-none">
+            {/* Edge-to-Edge Infinite Smooth Circular Collage Banner Strip - WebP Format (Sleek Desktop Accent) */}
+            <div className="overflow-hidden w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] select-none pointer-events-none my-3 md:my-5 bg-white py-0 flex items-center border-none outline-none">
               <div className="collage-marquee-track border-none outline-none">
                 <img 
                   src={collageStripWebp} 
                   alt="PrintOkiyo Collage Strip" 
                   loading="eager"
                   decoding="async"
-                  className="h-36 sm:h-52 md:h-64 lg:h-72 w-auto flex-none shrink-0 max-w-none border-none outline-none" 
+                  className="h-24 sm:h-32 md:h-36 lg:h-40 w-auto flex-none shrink-0 max-w-none border-none outline-none" 
                 />
                 <img 
                   src={collageStripWebp} 
@@ -1099,7 +1099,7 @@ function formatDateSafe(dateStr: any): string {
                   loading="eager"
                   decoding="async"
                   aria-hidden="true" 
-                  className="h-36 sm:h-52 md:h-64 lg:h-72 w-auto flex-none shrink-0 max-w-none border-none outline-none" 
+                  className="h-24 sm:h-32 md:h-36 lg:h-40 w-auto flex-none shrink-0 max-w-none border-none outline-none" 
                 />
                 <img 
                   src={collageStripWebp} 
@@ -1107,7 +1107,7 @@ function formatDateSafe(dateStr: any): string {
                   loading="eager"
                   decoding="async"
                   aria-hidden="true" 
-                  className="h-36 sm:h-52 md:h-64 lg:h-72 w-auto flex-none shrink-0 max-w-none border-none outline-none" 
+                  className="h-24 sm:h-32 md:h-36 lg:h-40 w-auto flex-none shrink-0 max-w-none border-none outline-none" 
                 />
                 <img 
                   src={collageStripWebp} 
@@ -1115,7 +1115,7 @@ function formatDateSafe(dateStr: any): string {
                   loading="eager"
                   decoding="async"
                   aria-hidden="true" 
-                  className="h-36 sm:h-52 md:h-64 lg:h-72 w-auto flex-none shrink-0 max-w-none border-none outline-none" 
+                  className="h-24 sm:h-32 md:h-36 lg:h-40 w-auto flex-none shrink-0 max-w-none border-none outline-none" 
                 />
               </div>
             </div>
@@ -1873,8 +1873,8 @@ function formatDateSafe(dateStr: any): string {
         )}
       </main>
 
-      {/* 5. Floating Capsule Navigation Bar */}
-      <div className="fixed bottom-6 left-0 right-0 z-40 px-4 flex justify-center pointer-events-none select-none">
+      {/* 5. Floating Capsule Navigation Bar (Mobile Only - Hidden on Desktop) */}
+      <div className="fixed bottom-6 left-0 right-0 z-40 px-4 flex justify-center pointer-events-none select-none md:hidden">
         <nav className="pointer-events-auto w-full max-w-sm bg-gray-950/95 backdrop-blur-xl border border-gray-800/80 px-6 py-2.5 rounded-full flex items-center justify-between shadow-[0_12px_40px_rgba(0,0,0,0.35)] transition-all">
           
           <button 
