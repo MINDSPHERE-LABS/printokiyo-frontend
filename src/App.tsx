@@ -983,18 +983,61 @@ function formatDateSafe(dateStr: any): string {
             <img src={logoPng} alt="PrintOkiyo" className="h-11.5 sm:h-14 w-auto object-contain" />
           </div>
 
-          {/* Right action - Profile Icon (hidden when on profile page) */}
-          {activeTab !== 'profile' ? (
+          {/* Right Header Actions - Search, Wishlist, Cart & Profile */}
+          <div className="flex items-center gap-1 sm:gap-2">
             <button 
-              onClick={handleProfileClick}
-              className="w-9.5 h-9.5 flex items-center justify-center rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all"
-              aria-label="Profile"
+              onClick={() => { 
+                setActiveTab('search'); 
+                setSelectedProduct(null); 
+              }}
+              className="p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
+              aria-label="Search"
             >
-              <User size={20} />
+              <Search size={20} />
             </button>
-          ) : (
-            <div className="w-9 h-9" />
-          )}
+
+            <button 
+              onClick={() => { 
+                setActiveTab('wishlist'); 
+                setSelectedProduct(null); 
+              }}
+              className="relative p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
+              aria-label="Wishlist"
+            >
+              <Heart size={20} className={wishlist.length > 0 ? "text-red-500 fill-red-500" : ""} />
+              {wishlist.length > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-red-600 text-white rounded-full text-[9px] font-black flex items-center justify-center shadow-xs">
+                  {wishlist.length}
+                </span>
+              )}
+            </button>
+
+            <button 
+              onClick={() => { 
+                setActiveTab('cart'); 
+                setSelectedProduct(null); 
+              }}
+              className="relative p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
+              aria-label="Cart"
+            >
+              <ShoppingBag size={20} />
+              {cart.length > 0 && (
+                <span className="absolute top-1 right-1 w-4.5 h-4.5 bg-black text-white rounded-full text-[9px] font-black flex items-center justify-center shadow-xs">
+                  {cart.length}
+                </span>
+              )}
+            </button>
+
+            {activeTab !== 'profile' && (
+              <button 
+                onClick={handleProfileClick}
+                className="p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
+                aria-label="Profile"
+              >
+                <User size={20} />
+              </button>
+            )}
+          </div>
         </div>
       </header>
 
@@ -1083,8 +1126,8 @@ function formatDateSafe(dateStr: any): string {
               </div>
             </div>
 
-            {/* Edge-to-Edge Infinite Smooth Circular Collage Banner Strip - WebP Format (Sleek Desktop Accent) */}
-            <div className="overflow-hidden w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] select-none pointer-events-none my-3 md:my-5 bg-white py-0 flex items-center border-none outline-none">
+            {/* Infinite Smooth Circular Collage Banner Strip - WebP Format (Aligned with Site Body & Hero Banner Width) */}
+            <div className="overflow-hidden relative -mx-4 sm:-mx-6 lg:-mx-8 my-3 md:my-5 bg-white py-0 flex items-center border-none outline-none select-none pointer-events-none">
               <div className="collage-marquee-track border-none outline-none">
                 <img 
                   src={collageStripWebp} 
