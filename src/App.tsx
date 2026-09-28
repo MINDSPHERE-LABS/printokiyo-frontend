@@ -1170,21 +1170,31 @@ function formatDateSafe(dateStr: any): string {
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4">
                 {[
-                  { name: "Anime Split Posters", category: "Anime & Gaming", image: "/cat-anime.mp4" },
-                  { name: "Superhero Split Posters", category: "Superhero", image: "/cat-superhero.mp4" },
-                  { name: "Super Cars Split Posters", category: "Supercars", image: "/cat-supercars.mp4" },
-                  { name: "Superbike Split Posters", category: "Superbike", image: "/cat-superbike.mp4" },
-                  { name: "Cricket Split Posters", category: "Cricket", image: "/cat-cricket.mp4" },
-                  { name: "Devotional Split Posters", category: "Devotional", image: "/cat-devotional.mp4" },
-                  { name: "Gym & Fitness Split Posters", category: "Gym & Fitness", image: "/cat-gym.mp4" },
-                  { name: "Music & Bands Split Posters", category: "Music", image: "/cat-music.mp4" },
+                  { name: "Anime Split Posters", category: "Anime & Gaming", image: "/cat-anime-opt.mp4", poster: "/cat-anime-poster.webp" },
+                  { name: "Superhero Split Posters", category: "Superhero", image: "/cat-superhero-opt.mp4", poster: "/cat-superhero-poster.webp" },
+                  { name: "Super Cars Split Posters", category: "Supercars", image: "/cat-supercars-opt.mp4", poster: "/cat-supercars-poster.webp" },
+                  { name: "Superbike Split Posters", category: "Superbike", image: "/cat-superbike-opt.mp4", poster: "/cat-superbike-poster.webp" },
+                  { name: "Cricket Split Posters", category: "Cricket", image: "/cat-cricket-opt.mp4", poster: "/cat-cricket-poster.webp" },
+                  { name: "Devotional Split Posters", category: "Devotional", image: "/cat-devotional-opt.mp4", poster: "/cat-devotional-poster.webp" },
+                  { name: "Gym & Fitness Split Posters", category: "Gym & Fitness", image: "/cat-gym-opt.mp4", poster: "/cat-gym-poster.webp" },
+                  { name: "Music & Bands Split Posters", category: "Music", image: "/cat-music-opt.mp4", poster: "/cat-music-poster.webp" },
                 ].map((cat) => (
                   <div
                     key={cat.name}
                     onClick={() => handleCategorySelect(cat.category)}
-                    className="group relative overflow-hidden rounded-none border-none bg-black cursor-pointer shadow-none transition-all duration-300 aspect-[16/9] flex items-center justify-center"
+                    className="group relative overflow-hidden rounded-none border-none bg-zinc-900 cursor-pointer shadow-none transition-all duration-300 aspect-[16/9] flex items-center justify-center"
                   >
-                    {cat.image.endsWith('.mp4') || cat.image.endsWith('.webm') ? (
+                    {/* Instant 0ms Poster Image (No Black Screen Ever) */}
+                    <img 
+                      src={cat.poster} 
+                      alt={cat.name} 
+                      loading="eager"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" 
+                    />
+
+                    {/* Smooth Crossfade Compressed Video Loop */}
+                    {cat.image && (
                       <video 
                         src={cat.image} 
                         autoPlay 
@@ -1192,19 +1202,17 @@ function formatDateSafe(dateStr: any): string {
                         muted 
                         playsInline 
                         preload="metadata"
+                        onCanPlay={(e) => {
+                          e.currentTarget.classList.remove('opacity-0');
+                          e.currentTarget.classList.add('opacity-100');
+                        }}
                         ref={(el) => {
                           if (el) {
                             el.muted = true;
                             el.play().catch(() => {});
                           }
                         }}
-                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" 
-                      />
-                    ) : (
-                      <img 
-                        src={cat.image} 
-                        alt={cat.name} 
-                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" 
+                        className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-all duration-700 opacity-0" 
                       />
                     )}
                   </div>
