@@ -1059,8 +1059,8 @@ function formatDateSafe(dateStr: any): string {
             <img src={logoPng} alt="PrintOkiyo" className="h-11.5 sm:h-14 w-auto object-contain" />
           </div>
 
-          {/* Right Header Actions - Search, Wishlist, Cart & Profile */}
-          <div className="flex items-center gap-1 sm:gap-2">
+          {/* Right Header Actions - Search, Wishlist, Cart & Profile (Shown on Desktop only, hidden on Mobile since Mobile has floating bottom bar) */}
+          <div className="hidden md:flex items-center gap-1 sm:gap-2">
             <button 
               onClick={() => { 
                 setActiveTab('search'); 
