@@ -38,6 +38,7 @@ export interface Product {
   size_variants?: { name: string; price: number }[];
   allow_quantity?: boolean;
   disable_cod?: boolean;
+  show_best_value_packs?: boolean;
   custom_photo?: string;
   selected_size?: string;
   created_at: string;

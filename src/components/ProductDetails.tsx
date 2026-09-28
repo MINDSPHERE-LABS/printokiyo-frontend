@@ -277,66 +277,68 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
             </div>
 
             {/* 🔥 BEST VALUE PACKS OFFER SECTION - Sleek & Compact Mobile Grid */}
-            <div className="mb-4 p-2.5 sm:p-3.5 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-amber-500/10 border border-amber-200/90 rounded-xl flex flex-col gap-2 shadow-2xs select-none">
-              {/* Header */}
-              <div className="flex items-center justify-between border-b border-amber-200/60 pb-1.5">
-                <div className="flex items-center gap-1">
-                  <span className="text-xs sm:text-sm">🔥</span>
-                  <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-gray-950">
-                    BEST VALUE PACKS
+            {product.show_best_value_packs !== false && (
+              <div className="mb-4 p-2.5 sm:p-3.5 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-amber-500/10 border border-amber-200/90 rounded-xl flex flex-col gap-2 shadow-2xs select-none">
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-amber-200/60 pb-1.5">
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs sm:text-sm">🔥</span>
+                    <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-gray-950">
+                      BEST VALUE PACKS
+                    </span>
+                  </div>
+                  <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider bg-amber-600 text-white px-2 py-0.5 rounded-full">
+                    AUTO DISCOUNT
                   </span>
                 </div>
-                <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider bg-amber-600 text-white px-2 py-0.5 rounded-full">
-                  AUTO DISCOUNT
-                </span>
-              </div>
 
-              {/* 3 Pack Cards in 1 Single Compact Row */}
-              <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5">
-                {/* Pack 1 */}
-                <div className="p-2 sm:p-2.5 bg-white border border-amber-200/90 rounded-lg flex flex-col justify-between gap-1 shadow-2xs text-left">
-                  <div className="flex flex-col">
-                    <span className="text-[8.5px] sm:text-[9.5px] font-bold text-gray-400 uppercase">Pack 1</span>
-                    <span className="text-[10px] sm:text-xs font-black text-gray-900 leading-tight">Buy 1 → Get 2 FREE</span>
+                {/* 3 Pack Cards in 1 Single Compact Row */}
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5">
+                  {/* Pack 1 */}
+                  <div className="p-2 sm:p-2.5 bg-white border border-amber-200/90 rounded-lg flex flex-col justify-between gap-1 shadow-2xs text-left">
+                    <div className="flex flex-col">
+                      <span className="text-[8.5px] sm:text-[9.5px] font-bold text-gray-400 uppercase">Pack 1</span>
+                      <span className="text-[10px] sm:text-xs font-black text-gray-900 leading-tight">Buy 1 → Get 2 FREE</span>
+                    </div>
+                    <div className="border-t border-gray-100 pt-1 flex flex-col">
+                      <span className="text-[8.5px] sm:text-[9.5px] font-bold text-amber-700">🛒 Add 3 posters</span>
+                      <span className="text-[8px] sm:text-[9px] text-gray-500 font-medium">3 Posters</span>
+                    </div>
                   </div>
-                  <div className="border-t border-gray-100 pt-1 flex flex-col">
-                    <span className="text-[8.5px] sm:text-[9.5px] font-bold text-amber-700">🛒 Add 3 posters</span>
-                    <span className="text-[8px] sm:text-[9px] text-gray-500 font-medium">3 Posters</span>
+
+                  {/* Pack 2 */}
+                  <div className="p-2 sm:p-2.5 bg-white border border-amber-200/90 rounded-lg flex flex-col justify-between gap-1 shadow-2xs text-left">
+                    <div className="flex flex-col">
+                      <span className="text-[8.5px] sm:text-[9.5px] font-bold text-gray-400 uppercase">Pack 2</span>
+                      <span className="text-[10px] sm:text-xs font-black text-gray-900 leading-tight">Buy 2 → Get 4 FREE</span>
+                    </div>
+                    <div className="border-t border-gray-100 pt-1 flex flex-col">
+                      <span className="text-[8.5px] sm:text-[9.5px] font-bold text-amber-700">🛒 Add 8 posters</span>
+                      <span className="text-[8px] sm:text-[9px] text-gray-500 font-medium">6 Posters</span>
+                    </div>
+                  </div>
+
+                  {/* Pack 3 - BEST VALUE */}
+                  <div className="p-2 sm:p-2.5 bg-gradient-to-br from-amber-600 to-orange-600 text-white border border-amber-500 rounded-lg flex flex-col justify-between gap-1 shadow-xs relative overflow-hidden text-left">
+                    <span className="text-[7.5px] sm:text-[8.5px] font-black uppercase tracking-wider bg-yellow-300 text-gray-950 px-1.5 py-0.2 rounded-full self-start">
+                      ⭐ BEST VALUE
+                    </span>
+                    <div className="flex flex-col">
+                      <span className="text-[10px] sm:text-xs font-black text-white leading-tight">Buy 3 → Get 9 FREE</span>
+                    </div>
+                    <div className="border-t border-white/20 pt-1 flex flex-col">
+                      <span className="text-[8.5px] sm:text-[9.5px] font-bold text-yellow-200">🛒 Add 15 posters</span>
+                      <span className="text-[8px] sm:text-[9px] text-amber-100 font-medium">12 Posters</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Pack 2 */}
-                <div className="p-2 sm:p-2.5 bg-white border border-amber-200/90 rounded-lg flex flex-col justify-between gap-1 shadow-2xs text-left">
-                  <div className="flex flex-col">
-                    <span className="text-[8.5px] sm:text-[9.5px] font-bold text-gray-400 uppercase">Pack 2</span>
-                    <span className="text-[10px] sm:text-xs font-black text-gray-900 leading-tight">Buy 2 → Get 4 FREE</span>
-                  </div>
-                  <div className="border-t border-gray-100 pt-1 flex flex-col">
-                    <span className="text-[8.5px] sm:text-[9.5px] font-bold text-amber-700">🛒 Add 8 posters</span>
-                    <span className="text-[8px] sm:text-[9px] text-gray-500 font-medium">6 Posters</span>
-                  </div>
-                </div>
-
-                {/* Pack 3 - BEST VALUE */}
-                <div className="p-2 sm:p-2.5 bg-gradient-to-br from-amber-600 to-orange-600 text-white border border-amber-500 rounded-lg flex flex-col justify-between gap-1 shadow-xs relative overflow-hidden text-left">
-                  <span className="text-[7.5px] sm:text-[8.5px] font-black uppercase tracking-wider bg-yellow-300 text-gray-950 px-1.5 py-0.2 rounded-full self-start">
-                    ⭐ BEST VALUE
-                  </span>
-                  <div className="flex flex-col">
-                    <span className="text-[10px] sm:text-xs font-black text-white leading-tight">Buy 3 → Get 9 FREE</span>
-                  </div>
-                  <div className="border-t border-white/20 pt-1 flex flex-col">
-                    <span className="text-[8.5px] sm:text-[9.5px] font-bold text-yellow-200">🛒 Add 15 posters</span>
-                    <span className="text-[8px] sm:text-[9px] text-amber-100 font-medium">12 Posters</span>
-                  </div>
+                {/* Footer Note */}
+                <div className="text-[8.5px] sm:text-[9.5px] font-semibold text-gray-700 bg-amber-100/50 px-2 py-0.5 rounded-md text-center">
+                  🛒 Add required posters to cart — discount applies automatically.
                 </div>
               </div>
-
-              {/* Footer Note */}
-              <div className="text-[8.5px] sm:text-[9.5px] font-semibold text-gray-700 bg-amber-100/50 px-2 py-0.5 rounded-md text-center">
-                🛒 Add required posters to cart — discount applies automatically.
-              </div>
-            </div>
+            )}
 
             {/* Custom Photo Upload Section (if enabled) */}
             {Boolean(product.has_custom_options && product.allow_photo_upload) && (
