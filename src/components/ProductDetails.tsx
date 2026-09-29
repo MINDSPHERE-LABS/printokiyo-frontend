@@ -10,10 +10,11 @@ import { ProductCard } from './ProductCard';
 interface ProductDetailsProps {
   product: Product;
   allProducts?: Product[];
-  onAddToCart: (product: Product) => void;
+  onAddToCart: (product: Product, quantity?: number) => void;
   onAddToWishlist: (product: Product) => void;
-  onBuyNow: (product: Product) => void;
+  onBuyNow: (product: Product, quantity?: number) => void;
   onViewDetails?: (product: Product) => void;
+  onQuickAdd?: (product: Product) => void;
   isWishlisted?: boolean;
 }
 
@@ -23,50 +24,122 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
   onAddToCart,
   onAddToWishlist,
   onBuyNow,
-  onViewDetails
+  onViewDetails,
+  onQuickAdd
 }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [openAccordion, setOpenAccordion] = useState<number | null>(null);
-
-  // Compute available sizes: A5, A4, A3
-  const basePrice = product.discount_price ?? product.price ?? 89;
+  const basePrice = product.price_a5 ?? (product.discount_price ?? product.price ?? 89);
   
-  const availableSizes = (product.has_custom_options && product.allow_size_variants && product.size_variants && product.size_variants.length > 0)
-    ? product.size_variants
-    : [
-        { name: 'A5', price: product.price_a5 ?? basePrice },
-        { name: 'A4', price: product.price_a4 ?? Math.round(basePrice * 1.6) },
-        { name: 'A3', price: product.price_a3 ?? Math.round(basePrice * 2.8) }
-      ];
+  const availableSizes: { name: string; price: number }[] = React.useMemo(() => {
+    const list: { name: string; price: number }[] = [];
 
-  const [selectedSize, setSelectedSize] = useState<{ name: string; price: number }>(availableSizes[0]);
+    // 1. Custom Sizes (Gated by product.allow_size_variants)
+    const isCustomSizeEnabled = product.allow_size_variants !== false;
+    if (isCustomSizeEnabled) {
+      if (product.custom_size_1 && typeof product.custom_size_1 === 'string' && product.custom_size_1.trim()) {
+        const p = product.custom_price_1 ?? (product.price_a5 ?? basePrice);
+        list.push({ name: product.custom_size_1.trim(), price: p });
+      }
+      if (product.custom_size_2 && typeof product.custom_size_2 === 'string' && product.custom_size_2.trim()) {
+        const p = product.custom_price_2 ?? (product.price_a4 ?? Math.round(basePrice * 1.6));
+        list.push({ name: product.custom_size_2.trim(), price: p });
+      }
+      if (product.custom_size_3 && typeof product.custom_size_3 === 'string' && product.custom_size_3.trim()) {
+        const p = product.custom_price_3 ?? (product.price_a3 ?? Math.round(basePrice * 2.8));
+        list.push({ name: product.custom_size_3.trim(), price: p });
+      }
 
-  const [customPhoto, setCustomPhoto] = useState<string | null>(null);
+      if (list.length === 0 && product.size_variants && Array.isArray(product.size_variants) && product.size_variants.length > 0) {
+        list.push(...product.size_variants);
+      }
+    }
+
+    // 2. Standard Sizes (A5, A4, A3 - Independent of allow_size_variants)
+    const isA5Enabled = product.enable_a5 === true || (product.enable_a5 !== false && product.enable_a5 != null && (product as any).enable_a5 !== 'false');
+    const isA4Enabled = product.enable_a4 === true || (product.enable_a4 !== false && product.enable_a4 != null && (product as any).enable_a4 !== 'false');
+    const isA3Enabled = product.enable_a3 === true || (product.enable_a3 !== false && product.enable_a3 != null && (product as any).enable_a3 !== 'false');
+
+    if (isA5Enabled) {
+      list.push({ name: 'A5', price: product.price_a5 ?? basePrice });
+    }
+    if (isA4Enabled) {
+      list.push({ name: 'A4', price: product.price_a4 ?? Math.round(basePrice * 1.6) });
+    }
+    if (isA3Enabled) {
+      list.push({ name: 'A3', price: product.price_a3 ?? Math.round(basePrice * 2.8) });
+    }
+
+    return list;
+  }, [product, basePrice]);
+
+  const [selectedSize, setSelectedSize] = useState<{ name: string; price: number } | null>(
+    availableSizes.length > 0 ? availableSizes[0] : null
+  );
+
+  const REQUIRED_PHOTOS = 5;
+  const [customPhotos, setCustomPhotos] = useState<(string | null)[]>(Array(REQUIRED_PHOTOS).fill(null));
   const [photoError, setPhotoError] = useState<string | null>(null);
+  const [openAccordion, setOpenAccordion] = useState<number | null>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
 
   // Reset state when active product changes
   useEffect(() => {
     setActiveImageIndex(0);
     setQuantity(1);
-    setCustomPhoto(null);
+    setCustomPhotos(Array(REQUIRED_PHOTOS).fill(null));
     setPhotoError(null);
     setOpenAccordion(null);
 
-    const sizes = (product.has_custom_options && product.allow_size_variants && product.size_variants && product.size_variants.length > 0)
-      ? product.size_variants
-      : [
-          { name: 'A5', price: product.price_a5 ?? (product.discount_price ?? product.price ?? 89) },
-          { name: 'A4', price: product.price_a4 ?? Math.round((product.discount_price ?? product.price ?? 89) * 1.6) },
-          { name: 'A3', price: product.price_a3 ?? Math.round((product.discount_price ?? product.price ?? 89) * 2.8) }
-        ];
-    setSelectedSize(sizes[0]);
-  }, [product]);
+    if (availableSizes.length > 0) {
+      setSelectedSize(availableSizes[0]);
+    } else {
+      setSelectedSize(null);
+    }
+  }, [product, availableSizes]);
 
-  const unitPrice = selectedSize.price;
+  const unitPrice = selectedSize ? selectedSize.price : basePrice;
   const totalPrice = unitPrice * quantity;
   const hasDiscount = product.discount_price !== null && product.discount_price !== undefined;
+
+  // ── Offer-aware button price ──────────────────────────────────────────────
+  // Apply the same Buy-X-Get-Y-Free formula as the cart, directly on quantity
+  // so the "Add to Cart" button always shows the correct amount the user pays.
+  const offerAdjustedPrice = React.useMemo(() => {
+    if (!product.show_best_value_packs) return totalPrice;
+
+    const p1Buy = product.best_value_pack_1_buy ?? 1;
+    const p1Get = product.best_value_pack_1_get ?? 2;
+    const p2Buy = product.best_value_pack_2_buy ?? 2;
+    const p2Get = product.best_value_pack_2_get ?? 4;
+    const p3Buy = product.best_value_pack_3_buy ?? 3;
+    const p3Get = product.best_value_pack_3_get ?? 9;
+
+    // Sort packs largest-first (same order as calculateCartItems)
+    const packs = [
+      { buy: p1Buy, get: p1Get, total: p1Buy + p1Get },
+      { buy: p2Buy, get: p2Get, total: p2Buy + p2Get },
+      { buy: p3Buy, get: p3Get, total: p3Buy + p3Get },
+    ]
+      .filter(p => p.buy > 0 && p.get > 0)
+      .sort((a, b) => b.total - a.total);
+
+    let remaining = quantity;
+    let paidCount = 0;
+
+    // 1. Full packs
+    for (const pack of packs) {
+      while (remaining >= pack.total) {
+        paidCount  += pack.buy;    // pay for "buy" items
+        remaining  -= pack.total;  // consumed a full pack group
+      }
+    }
+
+    // 2. Leftover items (didn't fill a complete pack group) are always paid at regular price
+    paidCount += remaining;
+
+    return paidCount * unitPrice;
+  }, [quantity, unitPrice, product, totalPrice]);
 
   // Gallery array
   const gallery = product.gallery && product.gallery.length > 0 ? product.gallery : [product.thumbnail];
@@ -81,41 +154,54 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
     setActiveImageIndex((prev) => (prev === gallery.length - 1 ? 0 : prev + 1));
   };
 
-  const handlePhotoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoFileChange = (index: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setPhotoError(null);
-
     const reader = new FileReader();
     reader.onload = () => {
-      setCustomPhoto(reader.result as string);
+      setCustomPhotos(prev => {
+        const next = [...prev];
+        next[index] = reader.result as string;
+        return next;
+      });
     };
     reader.onerror = () => {
-      setPhotoError('Failed to read image file. Please try another photo.');
+      setPhotoError('Failed to read image. Please try another photo.');
     };
     reader.readAsDataURL(file);
   };
 
+  const handleRemovePhoto = (index: number) => {
+    setCustomPhotos(prev => {
+      const next = [...prev];
+      next[index] = null;
+      return next;
+    });
+  };
+
+  const uploadedCount = customPhotos.filter(Boolean).length;
+
   const getCustomizedProduct = (): Product => {
+    // Serialize all uploaded photos as JSON array string
+    const photosJson = JSON.stringify(customPhotos.filter(Boolean));
     return {
       ...product,
-      price: selectedSize.price,
+      price: unitPrice,
       discount_price: null,
-      selected_size: selectedSize.name,
-      custom_photo: customPhoto || undefined
+      selected_size: selectedSize ? selectedSize.name : undefined,
+      custom_photo: photosJson || undefined
     };
   };
 
-  const validateAndExecute = (action: (p: Product) => void) => {
-    if (product.has_custom_options && product.allow_photo_upload && !customPhoto) {
-      setPhotoError('⚠️ Please upload your photo before proceeding.');
+  const validateAndExecute = (action: (p: Product, qty?: number) => void) => {
+    if (product.has_custom_options && product.allow_photo_upload && uploadedCount < REQUIRED_PHOTOS) {
+      setPhotoError(`⚠️ Please upload all ${REQUIRED_PHOTOS} photos before proceeding. (${uploadedCount}/${REQUIRED_PHOTOS} added)`);
       return;
     }
     setPhotoError(null);
     const itemToAdd = getCustomizedProduct();
-    for (let i = 0; i < quantity; i++) {
-      action(itemToAdd);
-    }
+    action(itemToAdd, quantity);
   };
 
   // Pack quantities & text
@@ -249,32 +335,33 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
               {product.title}
             </h1>
 
-            {/* Sizes Selection: A5, A4, A3 */}
-            <div className="mb-4">
-              <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block mb-2">
-                Select Size *
-              </label>
-              <div className="flex items-center gap-2.5 flex-wrap">
-                {availableSizes.map((s, idx) => {
-                  const isSelected = selectedSize.name === s.name;
-                  return (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setSelectedSize(s)}
-                      className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
-                        isSelected
-                          ? 'bg-[#041E42] text-white border-[#041E42] shadow-sm scale-[1.02]'
-                          : 'bg-white text-gray-800 border-gray-250 hover:border-gray-400 hover:bg-gray-50'
-                      }`}
-                    >
-                      <span>{s.name}</span>
-                      <span className="opacity-80 text-[11px]">₹{s.price}</span>
-                    </button>
-                  );
-                })}
+            {/* Sizes Selection: Render whenever availableSizes has items */}
+            {availableSizes.length > 0 && (
+              <div className="mb-4">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block mb-2">
+                  Select Size *
+                </label>
+                <div className="flex items-center gap-2.5 flex-wrap">
+                  {availableSizes.map((s, idx) => {
+                    const isSelected = selectedSize?.name === s.name;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setSelectedSize(s)}
+                        className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 ${
+                          isSelected
+                            ? 'bg-[#041E42] text-white border-[#041E42] shadow-sm scale-[1.02]'
+                            : 'bg-white text-gray-800 border-gray-250 hover:border-gray-400 hover:bg-gray-50'
+                        }`}
+                      >
+                        <span>{s.name}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Pricing Section (Below Sizes) */}
             <div className="mb-4 flex items-baseline gap-2 select-none">
@@ -307,9 +394,22 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                 {/* 3 Pack Cards in 1 Single Compact Row */}
                 <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5">
                   {/* Pack 1 */}
-                  <div className="p-2 sm:p-2.5 bg-white border border-amber-200/90 rounded-lg flex flex-col justify-between gap-1 shadow-2xs text-left">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity(pack1Buy + pack1Get)}
+                    className={`p-2 sm:p-2.5 rounded-lg flex flex-col justify-between gap-1 shadow-2xs text-left cursor-pointer transition-all hover:scale-[1.02] active:scale-95 ${
+                      quantity === pack1Buy + pack1Get
+                        ? 'bg-amber-50 border-2 border-amber-600 ring-2 ring-amber-300'
+                        : 'bg-white border border-amber-200/90 hover:border-amber-400'
+                    }`}
+                  >
                     <div className="flex flex-col">
-                      <span className="text-[8.5px] sm:text-[9.5px] font-bold text-gray-400 uppercase">Pack 1</span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[8.5px] sm:text-[9.5px] font-bold text-gray-400 uppercase">Pack 1</span>
+                        {quantity === pack1Buy + pack1Get && (
+                          <span className="text-[7.5px] font-black uppercase text-amber-700 bg-amber-200/80 px-1 py-0.2 rounded">SELECTED</span>
+                        )}
+                      </div>
                       <span className="text-[10px] sm:text-xs font-black text-gray-900 leading-tight">
                         {product.best_value_pack_1_title || `Buy ${pack1Buy} → Get ${pack1Get} FREE`}
                       </span>
@@ -319,12 +419,25 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                         {product.best_value_pack_1_subtitle || `🛒 Add ${pack1Buy + pack1Get} posters`}
                       </span>
                     </div>
-                  </div>
+                  </button>
 
                   {/* Pack 2 */}
-                  <div className="p-2 sm:p-2.5 bg-white border border-amber-200/90 rounded-lg flex flex-col justify-between gap-1 shadow-2xs text-left">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity(pack2Buy + pack2Get)}
+                    className={`p-2 sm:p-2.5 rounded-lg flex flex-col justify-between gap-1 shadow-2xs text-left cursor-pointer transition-all hover:scale-[1.02] active:scale-95 ${
+                      quantity === pack2Buy + pack2Get
+                        ? 'bg-amber-50 border-2 border-amber-600 ring-2 ring-amber-300'
+                        : 'bg-white border border-amber-200/90 hover:border-amber-400'
+                    }`}
+                  >
                     <div className="flex flex-col">
-                      <span className="text-[8.5px] sm:text-[9.5px] font-bold text-gray-400 uppercase">Pack 2</span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[8.5px] sm:text-[9.5px] font-bold text-gray-400 uppercase">Pack 2</span>
+                        {quantity === pack2Buy + pack2Get && (
+                          <span className="text-[7.5px] font-black uppercase text-amber-700 bg-amber-200/80 px-1 py-0.2 rounded">SELECTED</span>
+                        )}
+                      </div>
                       <span className="text-[10px] sm:text-xs font-black text-gray-900 leading-tight">
                         {product.best_value_pack_2_title || `Buy ${pack2Buy} → Get ${pack2Get} FREE`}
                       </span>
@@ -334,13 +447,26 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                         {product.best_value_pack_2_subtitle || `🛒 Add ${pack2Buy + pack2Get} posters`}
                       </span>
                     </div>
-                  </div>
+                  </button>
 
                   {/* Pack 3 - BEST VALUE */}
-                  <div className="p-2 sm:p-2.5 bg-gradient-to-br from-amber-600 to-orange-600 text-white border border-amber-500 rounded-lg flex flex-col justify-between gap-1 shadow-xs relative overflow-hidden text-left">
-                    <span className="text-[7.5px] sm:text-[8.5px] font-black uppercase tracking-wider bg-yellow-300 text-gray-950 px-1.5 py-0.2 rounded-full self-start">
-                      ⭐ BEST VALUE
-                    </span>
+                  <button
+                    type="button"
+                    onClick={() => setQuantity(pack3Buy + pack3Get)}
+                    className={`p-2 sm:p-2.5 rounded-lg flex flex-col justify-between gap-1 shadow-xs relative overflow-hidden text-left cursor-pointer transition-all hover:scale-[1.02] active:scale-95 ${
+                      quantity === pack3Buy + pack3Get
+                        ? 'bg-gradient-to-br from-amber-600 to-orange-600 text-white border-2 border-yellow-300 ring-2 ring-orange-300'
+                        : 'bg-gradient-to-br from-amber-600 to-orange-600 text-white border border-amber-500 hover:brightness-105'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[7.5px] sm:text-[8.5px] font-black uppercase tracking-wider bg-yellow-300 text-gray-950 px-1.5 py-0.2 rounded-full self-start">
+                        ⭐ BEST VALUE
+                      </span>
+                      {quantity === pack3Buy + pack3Get && (
+                        <span className="text-[7.5px] font-black uppercase text-gray-900 bg-yellow-300 px-1 py-0.2 rounded">SELECTED</span>
+                      )}
+                    </div>
                     <div className="flex flex-col">
                       <span className="text-[10px] sm:text-xs font-black text-white leading-tight">
                         {product.best_value_pack_3_title || `Buy ${pack3Buy} → Get ${pack3Get} FREE`}
@@ -351,7 +477,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                         {product.best_value_pack_3_subtitle || `🛒 Add ${pack3Buy + pack3Get} posters`}
                       </span>
                     </div>
-                  </div>
+                  </button>
                 </div>
 
                 {/* Footer Note */}
@@ -361,32 +487,105 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
               </div>
             )}
 
-            {/* Custom Photo Upload Section (if enabled) */}
+            {/* Custom Photo Upload Section — 5 Photos Required */}
             {Boolean(product.has_custom_options && product.allow_photo_upload) && (
-              <div className="mb-5 p-4 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col gap-3">
-                <label className="text-[10px] font-bold uppercase text-slate-700 flex items-center justify-between">
-                  <span>Upload Custom Image *</span>
-                  <span className="text-[9px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">REQUIRED</span>
-                </label>
-                {customPhoto ? (
-                  <div className="relative w-full aspect-video max-h-36 bg-slate-900 rounded-xl overflow-hidden border border-slate-300 flex items-center justify-center">
-                    <img src={customPhoto} alt="Preview" className="max-h-full object-contain" />
-                    <button
-                      type="button"
-                      onClick={() => setCustomPhoto(null)}
-                      className="absolute top-2 right-2 p-1.5 rounded-full bg-red-600 text-white text-[10px] font-bold shadow-md hover:bg-red-700"
-                    >
-                      Remove
-                    </button>
+              <div className="mb-5 rounded-2xl overflow-hidden border border-blue-100 bg-gradient-to-b from-blue-50/60 to-white">
+                {/* Header */}
+                <div className="flex items-center justify-between px-4 pt-4 pb-3 border-b border-blue-100">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[11px] font-black uppercase tracking-wide text-slate-800 flex items-center gap-1.5">
+                      📸 Upload Your 5 Photos
+                    </span>
+                    <span className="text-[9.5px] text-slate-500 font-medium">All 5 photos are required to place your order</span>
                   </div>
-                ) : (
-                  <label className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-slate-300 hover:border-slate-400 bg-white rounded-xl cursor-pointer text-center">
-                    <span className="text-lg mb-1">📸</span>
-                    <span className="text-xs font-bold text-slate-800">Click to Select Photo</span>
-                    <input type="file" accept="image/*" onChange={handlePhotoFileChange} className="hidden" />
-                  </label>
-                )}
-                {photoError && <span className="text-[10px] font-bold text-red-600">{photoError}</span>}
+                  <div className="flex items-center gap-2">
+                    {/* Progress pill */}
+                    <span className={`text-[9px] font-black px-2.5 py-1 rounded-full border ${
+                      uploadedCount === REQUIRED_PHOTOS
+                        ? 'bg-green-100 text-green-700 border-green-200'
+                        : 'bg-blue-100 text-blue-700 border-blue-200'
+                    }`}>
+                      {uploadedCount === REQUIRED_PHOTOS ? '✅ All set!' : `${uploadedCount} / ${REQUIRED_PHOTOS}`}
+                    </span>
+                  </div>
+                </div>
+
+                {/* 5-Square Grid */}
+                <div className="grid grid-cols-5 gap-2 p-3">
+                  {customPhotos.map((photo, idx) => (
+                    <div key={idx} className="relative flex flex-col items-center gap-1">
+                      {photo ? (
+                        /* Filled slot — preview */
+                        <div className="relative w-full aspect-square rounded-xl overflow-hidden border-2 border-green-400 shadow-sm group">
+                          <img
+                            src={photo}
+                            alt={`Photo ${idx + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                          {/* Overlay on hover */}
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 flex-col">
+                            {/* Re-upload */}
+                            <label className="cursor-pointer bg-white/90 text-slate-800 text-[8px] font-bold px-2 py-0.5 rounded-full hover:bg-white transition">
+                              Change
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handlePhotoFileChange(idx)}
+                                className="hidden"
+                              />
+                            </label>
+                            {/* Remove */}
+                            <button
+                              type="button"
+                              onClick={() => handleRemovePhoto(idx)}
+                              className="bg-red-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-full hover:bg-red-600 transition"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                          {/* Green check badge */}
+                          <div className="absolute top-1 right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center shadow">
+                            <span className="text-white text-[8px] font-black">✓</span>
+                          </div>
+                        </div>
+                      ) : (
+                        /* Empty slot */
+                        <label className={`w-full aspect-square flex flex-col items-center justify-center border-2 border-dashed rounded-xl cursor-pointer transition-all select-none
+                          ${photoError ? 'border-red-400 bg-red-50 hover:border-red-500' : 'border-slate-300 bg-white hover:border-blue-400 hover:bg-blue-50/50'}
+                        `}>
+                          <span className="text-xl leading-none mb-1">+</span>
+                          <span className="text-[8px] font-bold text-slate-500 leading-none">Photo {idx + 1}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handlePhotoFileChange(idx)}
+                            className="hidden"
+                          />
+                        </label>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Progress bar */}
+                <div className="px-3 pb-3">
+                  <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${uploadedCount === REQUIRED_PHOTOS ? 'bg-green-500' : 'bg-blue-500'}`}
+                      style={{ width: `${(uploadedCount / REQUIRED_PHOTOS) * 100}%` }}
+                    />
+                  </div>
+                  {photoError && (
+                    <p className="mt-2 text-[9.5px] font-bold text-red-600 flex items-center gap-1">
+                      {photoError}
+                    </p>
+                  )}
+                  {uploadedCount === REQUIRED_PHOTOS && (
+                    <p className="mt-1.5 text-[9.5px] font-bold text-green-700 flex items-center gap-1">
+                      ✅ All 5 photos uploaded — you're good to go!
+                    </p>
+                  )}
+                </div>
               </div>
             )}
 
@@ -433,7 +632,16 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                   <ShoppingBag size={16} />
                   <span>Add To Cart</span>
                 </div>
-                <span className="font-extrabold">₹{totalPrice.toLocaleString('en-IN')}</span>
+                <div className="flex flex-col items-end leading-tight">
+                  {offerAdjustedPrice < totalPrice && (
+                    <span className="text-[9px] font-semibold text-slate-400 line-through">
+                      ₹{totalPrice.toLocaleString('en-IN')}
+                    </span>
+                  )}
+                  <span className={`font-extrabold ${offerAdjustedPrice < totalPrice ? 'text-green-600' : ''}`}>
+                    ₹{offerAdjustedPrice.toLocaleString('en-IN')}
+                  </span>
+                </div>
               </button>
 
               {/* BUY NOW Button */}
@@ -519,6 +727,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                   onBuyNow={onBuyNow}
                   onAddToWishlist={onAddToWishlist}
                   onViewDetails={onViewDetails}
+                  onQuickAdd={onQuickAdd}
                   isWishlisted={false}
                 />
               </div>

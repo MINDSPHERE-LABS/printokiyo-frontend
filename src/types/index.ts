@@ -35,6 +35,15 @@ export interface Product {
   has_custom_options?: boolean;
   allow_photo_upload?: boolean;
   allow_size_variants?: boolean;
+  enable_a5?: boolean;
+  enable_a4?: boolean;
+  enable_a3?: boolean;
+  custom_size_1?: string | null;
+  custom_price_1?: number | null;
+  custom_size_2?: string | null;
+  custom_price_2?: number | null;
+  custom_size_3?: string | null;
+  custom_price_3?: number | null;
   size_variants?: { name: string; price: number }[];
   allow_quantity?: boolean;
   disable_cod?: boolean;

@@ -24,10 +24,52 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
 }) => {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
+  const basePrice = product.price_a5 ?? (product.discount_price ?? product.price ?? 89);
+
+  const availableSizes: { name: string; price: number }[] = React.useMemo(() => {
+    const list: { name: string; price: number }[] = [];
+
+    // 1. Custom Sizes (Gated by product.allow_size_variants)
+    const isCustomSizeEnabled = product.allow_size_variants !== false;
+    if (isCustomSizeEnabled) {
+      if (product.custom_size_1 && typeof product.custom_size_1 === 'string' && product.custom_size_1.trim()) {
+        const p = product.custom_price_1 ?? (product.price_a5 ?? basePrice);
+        list.push({ name: product.custom_size_1.trim(), price: p });
+      }
+      if (product.custom_size_2 && typeof product.custom_size_2 === 'string' && product.custom_size_2.trim()) {
+        const p = product.custom_price_2 ?? (product.price_a4 ?? Math.round(basePrice * 1.6));
+        list.push({ name: product.custom_size_2.trim(), price: p });
+      }
+      if (product.custom_size_3 && typeof product.custom_size_3 === 'string' && product.custom_size_3.trim()) {
+        const p = product.custom_price_3 ?? (product.price_a3 ?? Math.round(basePrice * 2.8));
+        list.push({ name: product.custom_size_3.trim(), price: p });
+      }
+
+      if (list.length === 0 && product.size_variants && Array.isArray(product.size_variants) && product.size_variants.length > 0) {
+        list.push(...product.size_variants);
+      }
+    }
+
+    // 2. Standard Sizes (A5, A4, A3 - Independent of allow_size_variants)
+    const isA5Enabled = product.enable_a5 === true || (product.enable_a5 !== false && product.enable_a5 != null && (product as any).enable_a5 !== 'false');
+    const isA4Enabled = product.enable_a4 === true || (product.enable_a4 !== false && product.enable_a4 != null && (product as any).enable_a4 !== 'false');
+    const isA3Enabled = product.enable_a3 === true || (product.enable_a3 !== false && product.enable_a3 != null && (product as any).enable_a3 !== 'false');
+
+    if (isA5Enabled) {
+      list.push({ name: 'A5', price: product.price_a5 ?? basePrice });
+    }
+    if (isA4Enabled) {
+      list.push({ name: 'A4', price: product.price_a4 ?? Math.round(basePrice * 1.6) });
+    }
+    if (isA3Enabled) {
+      list.push({ name: 'A3', price: product.price_a3 ?? Math.round(basePrice * 2.8) });
+    }
+
+    return list;
+  }, [product, basePrice]);
+
   const [selectedSize, setSelectedSize] = useState<{ name: string; price: number } | null>(
-    product.has_custom_options && product.allow_size_variants && product.size_variants && product.size_variants.length > 0
-      ? product.size_variants[0]
-      : null
+    availableSizes.length > 0 ? availableSizes[0] : null
   );
   const [customPhoto, setCustomPhoto] = useState<string | null>(null);
   const [photoError, setPhotoError] = useState<string | null>(null);
@@ -38,16 +80,16 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
     setActiveImageIndex(0);
     setCustomPhoto(null);
     setPhotoError(null);
-    if (product.has_custom_options && product.allow_size_variants && product.size_variants && product.size_variants.length > 0) {
-      setSelectedSize(product.size_variants[0]);
+    if (availableSizes.length > 0) {
+      setSelectedSize(availableSizes[0]);
     } else {
       setSelectedSize(null);
     }
-  }, [product]);
+  }, [product, availableSizes]);
 
   if (!isOpen) return null;
 
-  const effectivePrice = selectedSize ? selectedSize.price : (product.discount_price ?? product.price);
+  const effectivePrice = selectedSize ? selectedSize.price : basePrice;
   const hasDiscount = product.discount_price !== null && product.discount_price !== undefined;
   
   // Ensure gallery has at least the thumbnail
@@ -220,6 +262,88 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
               )}
             </div>
 
+            {/* Sizes Selection: Render whenever availableSizes has items */}
+            {availableSizes.length > 0 && (
+              <div className="mb-4">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-zinc-400 block mb-2">
+                  Select Size *
+                </label>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {availableSizes.map((s, idx) => {
+                    const isSelected = selectedSize?.name === s.name;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setSelectedSize(s)}
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#041E42] text-white border-[#041E42] shadow-sm scale-[1.02]'
+                            : 'bg-white dark:bg-zinc-800 text-gray-800 dark:text-zinc-200 border-gray-250 dark:border-zinc-700 hover:border-gray-400'
+                        }`}
+                      >
+                        {s.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* 🔥 BEST VALUE PACKS OFFER SECTION */}
+            {product.show_best_value_packs !== false && (
+              <div className="mb-4 p-2.5 sm:p-3 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-amber-500/10 border border-amber-200/90 rounded-xl flex flex-col gap-2 shadow-2xs select-none">
+                <div className="flex items-center justify-between border-b border-amber-200/60 pb-1.5">
+                  <div className="flex items-center gap-1">
+                    <span className="text-xs">🔥</span>
+                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-gray-950">
+                      BEST VALUE PACKS
+                    </span>
+                  </div>
+                  <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider bg-amber-600 text-white px-2 py-0.5 rounded-full">
+                    AUTO DISCOUNT
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-1.5">
+                  {/* Pack 1 */}
+                  <div className="p-1.5 sm:p-2 bg-white border border-amber-200/90 rounded-lg flex flex-col justify-between gap-0.5 text-left">
+                    <span className="text-[8px] font-bold text-gray-400 uppercase">Pack 1</span>
+                    <span className="text-[9.5px] sm:text-[11px] font-black text-gray-900 leading-tight">
+                      {product.best_value_pack_1_title || `Buy ${product.best_value_pack_1_buy ?? 1} → Get ${product.best_value_pack_1_get ?? 2} FREE`}
+                    </span>
+                    <span className="text-[8px] font-bold text-amber-700">
+                      {product.best_value_pack_1_subtitle || `🛒 Add ${(product.best_value_pack_1_buy ?? 1) + (product.best_value_pack_1_get ?? 2)} posters`}
+                    </span>
+                  </div>
+
+                  {/* Pack 2 */}
+                  <div className="p-1.5 sm:p-2 bg-white border border-amber-200/90 rounded-lg flex flex-col justify-between gap-0.5 text-left">
+                    <span className="text-[8px] font-bold text-gray-400 uppercase">Pack 2</span>
+                    <span className="text-[9.5px] sm:text-[11px] font-black text-gray-900 leading-tight">
+                      {product.best_value_pack_2_title || `Buy ${product.best_value_pack_2_buy ?? 2} → Get ${product.best_value_pack_2_get ?? 4} FREE`}
+                    </span>
+                    <span className="text-[8px] font-bold text-amber-700">
+                      {product.best_value_pack_2_subtitle || `🛒 Add ${(product.best_value_pack_2_buy ?? 2) + (product.best_value_pack_2_get ?? 4)} posters`}
+                    </span>
+                  </div>
+
+                  {/* Pack 3 */}
+                  <div className="p-1.5 sm:p-2 bg-gradient-to-br from-amber-600 to-orange-600 text-white border border-amber-500 rounded-lg flex flex-col justify-between gap-0.5 text-left">
+                    <span className="text-[7px] sm:text-[8px] font-black uppercase tracking-wider bg-yellow-300 text-gray-950 px-1 py-0.2 rounded-full self-start">
+                      ⭐ BEST VALUE
+                    </span>
+                    <span className="text-[9.5px] sm:text-[11px] font-black text-white leading-tight">
+                      {product.best_value_pack_3_title || `Buy ${product.best_value_pack_3_buy ?? 3} → Get ${product.best_value_pack_3_get ?? 9} FREE`}
+                    </span>
+                    <span className="text-[8px] font-bold text-yellow-200">
+                      {product.best_value_pack_3_subtitle || `🛒 Add ${(product.best_value_pack_3_buy ?? 3) + (product.best_value_pack_3_get ?? 9)} posters`}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* --- CUSTOMIZABLE OPTIONS SECTION (Only rendered if product.has_custom_options is true) --- */}
             {Boolean(product.has_custom_options) && (
               <div className="mb-5 p-4 bg-slate-50 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700 rounded-2xl flex flex-col gap-4">
@@ -227,14 +351,14 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                   <span>🎨 Customize Your Product</span>
                 </h4>
 
-                {/* 1. Size / Frame Selection */}
-                {Boolean(product.allow_size_variants && product.size_variants && product.size_variants.length > 0) && (
+                {/* 1. Size Selection */}
+                {availableSizes.length > 0 && (
                   <div className="flex flex-col gap-2">
                     <label className="text-[10px] font-bold uppercase text-slate-600 dark:text-slate-400">
-                      Select Size / Frame Variant *
+                      Select Size *
                     </label>
                     <div className="flex flex-wrap gap-2">
-                      {product.size_variants!.map((v, idx) => {
+                      {availableSizes.map((v, idx) => {
                         const isSelected = selectedSize?.name === v.name;
                         return (
                           <button
@@ -248,9 +372,6 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
                             }`}
                           >
                             <span>{v.name}</span>
-                            <span className={isSelected ? 'text-blue-200 font-normal' : 'text-slate-500 font-normal'}>
-                              (₹{v.price.toLocaleString('en-IN')})
-                            </span>
                           </button>
                         );
                       })}

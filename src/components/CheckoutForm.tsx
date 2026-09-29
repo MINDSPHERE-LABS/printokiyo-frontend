@@ -4,7 +4,7 @@ import type { Product, StoreSettings } from '../types';
 import { createRazorpayPaymentLink } from '../api/payment';
 import { getImageUrl } from '../utils/image';
 import { getEffectivePrice } from '../utils/price';
-import { calculateCartItems } from '../utils/cartOffers';
+import { calculateCartItems, groupCalculatedCartItems } from '../utils/cartOffers';
 import { BrandBuffer } from './BrandBuffer';
 
 declare global {
@@ -21,6 +21,7 @@ interface CheckoutFormProps {
   initialPhone: string;
   onBack: () => void;
   onRemoveItem: (index: number) => void;
+  onSyncCart?: (newCart: Product[]) => void;
   onSubmit: (details: {
     name: string;
     email: string;
@@ -40,6 +41,7 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
   initialPhone,
   onBack,
   onRemoveItem,
+  onSyncCart,
   onSubmit,
   storeSettings
 }) => {
@@ -72,6 +74,7 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
   }, [isCodAvailable, paymentMethod]);
 
   const calculatedCart = calculateCartItems(cart);
+  const groupedCart = groupCalculatedCartItems(calculatedCart);
   const subtotal = calculatedCart.reduce((sum, item) => sum + item.final_price, 0);
   const shippingCost = subtotal > threshold ? 0 : charge;
   const codFeeCost = (paymentMethod === 'cod' && isCodAvailable) ? codFee : 0;
@@ -562,34 +565,75 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
 
           {/* Cart Items list */}
           <div className="flex flex-col gap-3.5 max-h-56 overflow-y-auto pr-1">
-            {calculatedCart.map((item, idx) => (
-              <div key={idx} className="flex items-center gap-2.5">
+            {groupedCart.map((group) => (
+              <div key={group.group_id} className="flex items-center gap-2.5">
                 <div className="relative w-9 h-9 shrink-0">
-                  <img src={getImageUrl(item.custom_photo || item.thumbnail)} alt={item.title} className="w-9 h-9 object-cover bg-gray-50 p-0.5 rounded-lg border border-gray-200" />
-                  {item.custom_photo && (
+                  <img src={getImageUrl(group.custom_photo || group.thumbnail)} alt={group.title} className="w-9 h-9 object-cover bg-gray-50 p-0.5 rounded-lg border border-gray-200" />
+                  {group.custom_photo && (
                     <span className="absolute -top-1 -right-1 text-[8px] bg-blue-600 text-white rounded-full px-1 font-bold">📸</span>
                   )}
                 </div>
                 <div className="flex-grow min-w-0 text-left">
-                  <h4 className="text-[10px] font-extrabold text-black truncate leading-normal">{item.title}</h4>
-                  {item.selected_size && (
-                    <span className="text-[8.5px] font-bold text-blue-700 block">📐 {item.selected_size}</span>
+                  <h4 className="text-[10px] font-extrabold text-black truncate leading-normal">{group.title}</h4>
+                  {group.selected_size && (
+                    <span className="text-[8.5px] font-bold text-blue-700 block">📐 {group.selected_size}</span>
                   )}
                   <div className="flex items-center gap-1 mt-0.5">
-                    {item.is_free ? (
+                    {group.is_free ? (
                       <>
-                        <span className="text-[8.5px] text-gray-400 line-through">₹{item.original_unit_price.toLocaleString('en-IN')}</span>
+                        <span className="text-[8.5px] text-gray-400 line-through">₹{group.original_unit_price.toLocaleString('en-IN')}</span>
                         <span className="text-[8px] font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded-full">FREE</span>
                       </>
                     ) : (
-                      <span className="text-[9px] text-black font-black">₹{item.final_price.toLocaleString('en-IN')}</span>
+                      <span className="text-[9px] text-black font-black">₹{group.total_final_price.toLocaleString('en-IN')}</span>
                     )}
                   </div>
                 </div>
+
+                {/* Quantity Controls (- QTY +) */}
+                <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-gray-50 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (group.cart_indices.length > 0) {
+                        onRemoveItem(group.cart_indices[group.cart_indices.length - 1]);
+                      }
+                    }}
+                    className="px-1.5 py-0.5 text-gray-600 hover:bg-gray-200 hover:text-black transition-colors font-bold text-[10px] cursor-pointer"
+                    title="Decrease quantity"
+                  >
+                    -
+                  </button>
+                  <span className="px-1.5 py-0.5 text-[9px] font-black text-gray-900 select-none min-w-[14px] text-center">
+                    {group.quantity}
+                  </span>
+                  {onSyncCart && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const itemToAdd: Product = { ...group.sample_item };
+                        delete (itemToAdd as any).cart_index;
+                        delete (itemToAdd as any).original_unit_price;
+                        delete (itemToAdd as any).final_price;
+                        delete (itemToAdd as any).is_free;
+                        delete (itemToAdd as any).offer_applied;
+                        onSyncCart([...cart, itemToAdd]);
+                      }}
+                      className="px-1.5 py-0.5 text-gray-600 hover:bg-gray-200 hover:text-black transition-colors font-bold text-[10px] cursor-pointer"
+                      title="Increase quantity"
+                    >
+                      +
+                    </button>
+                  )}
+                </div>
+
                 <button
                   type="button"
-                  onClick={() => onRemoveItem(idx)}
-                  className="p-1 text-gray-600 hover:text-red-650 transition-colors shrink-0"
+                  onClick={() => {
+                    group.cart_indices.forEach((idx) => onRemoveItem(idx));
+                  }}
+                  className="p-1 text-gray-600 hover:text-red-650 transition-colors shrink-0 cursor-pointer"
+                  title="Remove group"
                 >
                   <X size={12} />
                 </button>

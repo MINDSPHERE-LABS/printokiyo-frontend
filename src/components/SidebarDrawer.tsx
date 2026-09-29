@@ -13,6 +13,7 @@ interface SidebarDrawerProps {
   onOpenAuth: () => void;
   onLogout: () => void;
   categoriesList?: string[];
+  onSelectPolaroid?: () => void;
 }
 
 type MenuLevel = 'main' | 'split_poster' | 'posters' | 'collage_kits';
@@ -25,7 +26,8 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
   isLoggedIn,
   userProfile,
   onOpenAuth,
-  onLogout
+  onLogout,
+  onSelectPolaroid
 }) => {
   const [currentLevel, setCurrentLevel] = useState<MenuLevel>('main');
 
@@ -120,6 +122,26 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
               >
                 <span>Collage/Block Kits</span>
                 <ChevronRight size={16} className="text-gray-400" />
+              </button>
+
+              <button
+                onClick={() => {
+                  if (onSelectPolaroid) {
+                    onSelectPolaroid();
+                  } else {
+                    handleCategoryClick('Custom Poloride Photo');
+                  }
+                  onClose();
+                }}
+                className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-bold text-gray-950 bg-gradient-to-r from-amber-50 to-orange-50/60 hover:from-amber-100 hover:to-orange-100 transition-colors cursor-pointer border-l-4 border-amber-500"
+              >
+                <div className="flex items-center gap-2.5">
+                  <span className="text-base">📸</span>
+                  <span>Custom Polaroid Photos</span>
+                </div>
+                <span className="text-[8.5px] font-black uppercase tracking-wider bg-amber-500 text-white px-2 py-0.5 rounded-full shadow-2xs">
+                  NEW
+                </span>
               </button>
 
               <button

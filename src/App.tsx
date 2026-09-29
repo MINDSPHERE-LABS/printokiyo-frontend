@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import logoPng from './assets/logo.png';
 import collageStripWebp from './assets/collage-strip.webp';
+import polaroidCategoryBannerWebp from './assets/polaroid-category-banner.webp';
 import { getApiBaseSync } from './api/config';
 import { fetchProducts, fetchProductBySlug } from './api/products';
 import { fetchStoreSettings } from './api/settings';
 import { getImageUrl } from './utils/image';
 import { getEffectivePrice } from './utils/price';
-import { calculateCartItems } from './utils/cartOffers';
+import { calculateCartItems, groupCalculatedCartItems } from './utils/cartOffers';
+import type { GroupedCartItem } from './utils/cartOffers';
 import type { Product, StoreSettings } from './types';
 import { ProductCard } from './components/ProductCard';
 import { ProductDetails } from './components/ProductDetails';
@@ -17,6 +19,7 @@ import { OrderSuccessModal } from './components/OrderSuccessModal';
 import { Footer } from './components/Footer';
 import { BrandBuffer } from './components/BrandBuffer';
 import { SidebarDrawer } from './components/SidebarDrawer';
+import { QuickAddModal } from './components/QuickAddModal';
 import { 
   fetchUserCart, syncUserCart, mergeGuestCart,
   fetchUserWishlist, addToUserWishlist, removeFromUserWishlist,
@@ -130,7 +133,7 @@ function App() {
   // Cart & Wishlist state
   const [cart, setCart] = useState<Product[]>([]);
   const [wishlist, setWishlist] = useState<Product[]>([]);
-  const [buyNowItem, setBuyNowItem] = useState<Product | null>(null);
+  const [buyNowItems, setBuyNowItems] = useState<Product[] | null>(null);
   const [storeSettings, setStoreSettings] = useState<StoreSettings | null>(null);
   const [completedOrder, setCompletedOrder] = useState<any>(null);
   
@@ -142,6 +145,7 @@ function App() {
     }
     return null;
   });
+  const [quickAddProduct, setQuickAddProduct] = useState<Product | null>(null);
   
   // Toast notifications state
   const [toasts, setToasts] = useState<Toast[]>([]);
@@ -555,7 +559,7 @@ function formatDateSafe(dateStr: any): string {
 
             // Clear cart & reset
             await syncCartChanges([]);
-            setBuyNowItem(null);
+            setBuyNowItems(null);
             setActiveTab('home');
             showToast("🎉 Payment verified & order placed!");
           }
@@ -616,6 +620,7 @@ function formatDateSafe(dateStr: any): string {
       if (p.category && p.category.trim()) {
         const catTrim = p.category.trim();
         const catLower = catTrim.toLowerCase();
+        if (catLower.includes('poloride') || catLower.includes('polaroid')) return;
         const matchesBase = baseKeys.some(bk => bk === catLower || catLower.includes(bk) || bk.includes(catLower));
         if (!matchesBase) {
           extraCategories.add(catTrim);
@@ -657,6 +662,7 @@ function formatDateSafe(dateStr: any): string {
       if (p.category && p.category.trim()) {
         const catTrim = p.category.trim();
         const catLower = catTrim.toLowerCase();
+        if (catLower.includes('poloride') || catLower.includes('polaroid')) return;
         const matchesBase = baseKeys.some(bk => bk === catLower || catLower.includes(bk) || bk.includes(catLower));
         if (!matchesBase && !baseTabs.some(t => t.key.toLowerCase() === catLower)) {
           baseTabs.push({
@@ -794,21 +800,50 @@ function formatDateSafe(dateStr: any): string {
   }, [searchQuery, selectedCategory]);
 
   // Add/Remove Interactions
-  const handleAddToCart = (product: Product) => {
+  const handleAddToCart = (product: Product, quantity: number = 1) => {
     if (product.has_custom_options && product.allow_photo_upload && !product.custom_photo) {
       setSelectedProduct(product);
       setActiveTab('details');
       showToast(`📸 Please upload your photo to customize "${product.title}" before adding to cart.`, 'info');
       return;
     }
+    const count = Math.max(1, quantity);
+    const itemsToAdd: Product[] = Array.from({ length: count }, () => ({ ...product }));
     if (!isLoggedIn) {
-      setIntendedAction({ type: 'ADD_TO_CART', payload: product });
+      setIntendedAction({ type: 'ADD_TO_CART', payload: itemsToAdd });
       setAuthModalOpen(true);
       return;
     }
-    const newCart = [...cart, product];
+    const newCart = [...cart, ...itemsToAdd];
     syncCartChanges(newCart);
-    showToast(`🛒 Added "${product.title}" to Cart!`);
+    showToast(`🛒 Added ${count > 1 ? `${count}x ` : ''}"${product.title}" to Cart!`);
+  };
+
+  // Quick Add multiple variants batch handler
+  const handleQuickAddBatch = (items: { product: Product; sizeName: string; sizePrice: number; qty: number }[]) => {
+    const itemsToAdd: Product[] = [];
+    items.forEach(it => {
+      for (let i = 0; i < it.qty; i++) {
+        itemsToAdd.push({
+          ...it.product,
+          price: it.sizePrice,
+          discount_price: null,
+          selected_size: it.sizeName
+        });
+      }
+    });
+
+    if (itemsToAdd.length === 0) return;
+
+    if (!isLoggedIn) {
+      setIntendedAction({ type: 'ADD_TO_CART', payload: itemsToAdd });
+      setAuthModalOpen(true);
+      return;
+    }
+
+    const newCart = [...cart, ...itemsToAdd];
+    syncCartChanges(newCart);
+    showToast(`🛒 Added ${itemsToAdd.length} items to Cart!`);
   };
 
   // Protected Action: Wishlist Add/Remove
@@ -839,14 +874,16 @@ function formatDateSafe(dateStr: any): string {
   };
 
   // Direct buy triggers single-item checkout without modifying shopping cart
-  const handleBuyNow = (product: Product) => {
+  const handleBuyNow = (product: Product, quantity: number = 1) => {
     if (product.has_custom_options && product.allow_photo_upload && !product.custom_photo) {
       setSelectedProduct(product);
       setActiveTab('details');
       showToast(`📸 Please upload your photo to customize "${product.title}" before buying.`, 'info');
       return;
     }
-    setBuyNowItem(product);
+    const count = Math.max(1, quantity);
+    const items: Product[] = Array.from({ length: count }, () => ({ ...product }));
+    setBuyNowItems(items);
     setSelectedProduct(null);
     fetchStoreSettings()
       .then((data) => setStoreSettings(data))
@@ -869,7 +906,7 @@ function formatDateSafe(dateStr: any): string {
       showToast(`📸 Please upload your photo for "${missingPhotoItem.title}" before proceeding to checkout.`, 'info');
       return;
     }
-    setBuyNowItem(null);
+    setBuyNowItems(null);
     if (!isLoggedIn) {
       setIntendedAction({ type: 'CHECKOUT' });
       setAuthModalOpen(true);
@@ -882,8 +919,8 @@ function formatDateSafe(dateStr: any): string {
   };
 
   const handleRemoveFromCheckout = (idx: number) => {
-    if (buyNowItem) {
-      setBuyNowItem(null);
+    if (buyNowItems) {
+      setBuyNowItems(null);
       setActiveTab('home');
     } else {
       const newCart = cart.filter((_, i) => i !== idx);
@@ -892,6 +929,32 @@ function formatDateSafe(dateStr: any): string {
         setActiveTab('home');
       }
     }
+  };
+
+  const handleIncreaseGroupQuantity = (group: GroupedCartItem) => {
+    const templateItem = group.sample_item;
+    const itemToAdd: Product = { ...templateItem };
+    delete (itemToAdd as any).cart_index;
+    delete (itemToAdd as any).original_unit_price;
+    delete (itemToAdd as any).final_price;
+    delete (itemToAdd as any).is_free;
+    delete (itemToAdd as any).offer_applied;
+
+    const newCart = [...cart, itemToAdd];
+    syncCartChanges(newCart);
+  };
+
+  const handleDecreaseGroupQuantity = (group: GroupedCartItem) => {
+    if (group.cart_indices.length === 0) return;
+    const removeIdx = group.cart_indices[group.cart_indices.length - 1];
+    const newCart = cart.filter((_, i) => i !== removeIdx);
+    syncCartChanges(newCart);
+  };
+
+  const handleRemoveGroup = (group: GroupedCartItem) => {
+    const removeSet = new Set(group.cart_indices);
+    const newCart = cart.filter((_, i) => !removeSet.has(i));
+    syncCartChanges(newCart);
   };
 
   // Auth Handler Success Integration
@@ -955,21 +1018,21 @@ function formatDateSafe(dateStr: any): string {
           }
         }
       } else if (action.type === 'ADD_TO_CART') {
-        const product = action.payload;
-        clientCart = [...clientCart, product];
+        const addedItems: Product[] = Array.isArray(action.payload) ? action.payload : [action.payload];
+        clientCart = [...clientCart, ...addedItems];
         const serverItems = toServerCartList(clientCart);
         await syncUserCart(authToken, serverItems);
-        showToast(`🛒 Added "${product.title}" to Cart!`);
+        showToast(`🛒 Added ${addedItems.length} items to Cart!`);
       } else if (action.type === 'BUY_NOW') {
         const product = action.payload;
-        setBuyNowItem(product);
+        setBuyNowItems([product]);
         setSelectedProduct(null);
         fetchStoreSettings()
           .then((data) => setStoreSettings(data))
           .catch((err) => console.error("Failed to load settings:", err));
         setActiveTab('checkout');
       } else if (action.type === 'CHECKOUT') {
-        setBuyNowItem(null);
+        setBuyNowItems(null);
         fetchStoreSettings()
           .then((data) => setStoreSettings(data))
           .catch((err) => console.error("Failed to load settings:", err));
@@ -990,6 +1053,65 @@ function formatDateSafe(dateStr: any): string {
     localStorage.removeItem('mwm_guest_cart');
     showToast("👋 Signed out successfully.", "info");
     setActiveTab('home');
+  };
+
+  // Helper to identify custom polaroid photo products
+  const isPolaroidProduct = (p: Product) => {
+    const cat = (p.category || '').toLowerCase();
+    const title = (p.title || '').toLowerCase();
+    const slug = (p.slug || '').toLowerCase();
+    return cat.includes('poloride') || cat.includes('polaroid') ||
+           title.includes('poloride') || title.includes('polaroid') ||
+           slug.includes('poloride') || slug.includes('polaroid');
+  };
+
+  // Helper to match products accurately to single poster category tabs
+  const isCategoryMatch = (p: Product, activeKey: string): boolean => {
+    if (!p || !p.category) return false;
+    const pCat = p.category.toLowerCase().trim();
+    const targetKey = activeKey.toLowerCase().trim();
+
+    // 1. Direct or substring category match
+    if (pCat === targetKey || pCat.includes(targetKey) || targetKey.includes(pCat)) {
+      return true;
+    }
+
+    // 2. Specific sub-tab keyword matching
+    if (targetKey === 'supercars') {
+      return pCat.includes('car') || pCat.includes('racing') || pCat.includes('f1') || pCat.includes('vehicle');
+    }
+    if (targetKey === 'anime & gaming') {
+      return pCat.includes('anime') || pCat.includes('gaming') || pCat.includes('manga');
+    }
+    if (targetKey === 'superbike') {
+      return pCat.includes('bike') || pCat.includes('motorcycle');
+    }
+    if (targetKey === 'cricket') {
+      return pCat.includes('cricket');
+    }
+    if (targetKey === 'superhero') {
+      return pCat.includes('superhero') || pCat.includes('marvel') || pCat.includes('dc');
+    }
+    if (targetKey === 'devotional') {
+      return pCat.includes('devotional') || pCat.includes('spiritual');
+    }
+    if (targetKey === 'gym & fitness') {
+      return pCat.includes('gym') || pCat.includes('fitness');
+    }
+    if (targetKey === 'music') {
+      return pCat.includes('music');
+    }
+
+    return false;
+  };
+
+  const handleOpenPolaroid = () => {
+    const polaroidProd = productsList.find(isPolaroidProduct);
+    if (polaroidProd) {
+      openProductDetails(polaroidProd);
+    } else {
+      handleCategorySelect('Custom Poloride Photo');
+    }
   };
 
   // Open details view in-line instead of a overlapping popup
@@ -1136,6 +1258,7 @@ function formatDateSafe(dateStr: any): string {
         onOpenAuth={() => setAuthModalOpen(true)}
         onLogout={handleLogout}
         categoriesList={categoriesList}
+        onSelectPolaroid={handleOpenPolaroid}
       />
 
       {/* 4. Content main container */}
@@ -1150,6 +1273,7 @@ function formatDateSafe(dateStr: any): string {
             onAddToWishlist={handleAddToWishlist}
             onBuyNow={handleBuyNow}
             onViewDetails={openProductDetails}
+            onQuickAdd={setQuickAddProduct}
             isWishlisted={wishlist.some((p) => (p.id || p._id) === (selectedProduct.id || selectedProduct._id))}
           />
         )}
@@ -1294,6 +1418,24 @@ function formatDateSafe(dateStr: any): string {
               </div>
             </div>
 
+            {/* Custom Polaroid Category Banner Button (No heading, sharp 90-degree edges, borderless) */}
+            <div className="mb-10 select-none">
+              <button
+                type="button"
+                onClick={handleOpenPolaroid}
+                className="w-full block overflow-hidden rounded-none border-none shadow-none hover:opacity-95 transition-opacity cursor-pointer focus:outline-none"
+                aria-label="Custom Polaroid Photos"
+              >
+                <img 
+                  src={polaroidCategoryBannerWebp} 
+                  alt="Custom Polaroid Photos" 
+                  loading="eager"
+                  decoding="async"
+                  className="w-full h-auto object-cover block rounded-none border-none" 
+                />
+              </button>
+            </div>
+
             {/* SINGLE POSTERS Section matching reference image media_1790514554594.png */}
             <div className="mb-12 text-left select-none">
               {/* Header: Title in #0e0d0d + Scroll Arrows + EXPLORE link */}
@@ -1360,22 +1502,36 @@ function formatDateSafe(dateStr: any): string {
                 ref={singlePostersSliderRef}
                 className="flex items-stretch gap-4 sm:gap-6 overflow-x-auto pb-4 no-scrollbar scroll-smooth"
               >
-                {(productsList.filter(p => p.category === activeSingleCategory || p.category?.toLowerCase().includes(activeSingleCategory.toLowerCase())).length > 0 
-                  ? productsList.filter(p => p.category === activeSingleCategory || p.category?.toLowerCase().includes(activeSingleCategory.toLowerCase()))
-                  : productsList
-                ).map((product) => (
-                  <div key={product.id || product._id || product.slug} className="w-56 sm:w-72 shrink-0">
-                    <ProductCard
-                      product={product}
-                      onAddToCart={handleAddToCart}
-                      onBuyNow={handleBuyNow}
-                      onAddToWishlist={handleAddToWishlist}
-                      onViewDetails={openProductDetails}
-                      isWishlisted={wishlist.some((p) => (p.id || p._id) === (product.id || product._id))}
-                      showQuickAdd={true}
-                    />
-                  </div>
-                ))}
+                {(() => {
+                  const nonPolaroid = productsList.filter(p => !isPolaroidProduct(p));
+                  const filtered = nonPolaroid.filter(p => isCategoryMatch(p, activeSingleCategory));
+
+                  if (filtered.length === 0) {
+                    const currentTabLabel = singlePosterSubTabs.find(t => t.key === activeSingleCategory)?.label || 'posters';
+                    return (
+                      <div className="w-full py-10 px-4 text-center bg-gray-50/80 rounded-2xl border border-dashed border-gray-200 flex flex-col items-center justify-center gap-1.5 my-2">
+                        <span className="text-2xl">🖼️</span>
+                        <p className="text-xs font-bold text-gray-800">No {currentTabLabel} available yet</p>
+                        <p className="text-[11px] text-gray-500">New arrivals for this category are on the way! Check back soon.</p>
+                      </div>
+                    );
+                  }
+
+                  return filtered.map((product) => (
+                    <div key={product.id || product._id || product.slug} className="w-56 sm:w-72 shrink-0">
+                      <ProductCard
+                        product={product}
+                        onAddToCart={handleAddToCart}
+                        onBuyNow={handleBuyNow}
+                        onAddToWishlist={handleAddToWishlist}
+                        onViewDetails={openProductDetails}
+                        onQuickAdd={setQuickAddProduct}
+                        isWishlisted={wishlist.some((p) => (p.id || p._id) === (product.id || product._id))}
+                        showQuickAdd={true}
+                      />
+                    </div>
+                  ));
+                })()}
               </div>
             </div>
 
@@ -1423,22 +1579,25 @@ function formatDateSafe(dateStr: any): string {
                 ref={newArrivalsSliderRef}
                 className="flex items-stretch gap-4 sm:gap-6 overflow-x-auto pb-4 no-scrollbar scroll-smooth"
               >
-                {(productsList.filter(p => p.new_arrival).length > 0 
-                  ? productsList.filter(p => p.new_arrival)
-                  : productsList.slice(0, 10)
-                ).map((product) => (
-                  <div key={product.id || product._id || product.slug} className="w-56 sm:w-72 shrink-0">
-                    <ProductCard
-                      product={product}
-                      onAddToCart={handleAddToCart}
-                      onBuyNow={handleBuyNow}
-                      onAddToWishlist={handleAddToWishlist}
-                      onViewDetails={openProductDetails}
-                      isWishlisted={wishlist.some((p) => (p.id || p._id) === (product.id || product._id))}
-                      showQuickAdd={true}
-                    />
-                  </div>
-                ))}
+                {(() => {
+                  const nonPolaroid = productsList.filter(p => !isPolaroidProduct(p));
+                  const newArrivals = nonPolaroid.filter(p => p.new_arrival);
+                  const listToRender = newArrivals.length > 0 ? newArrivals : nonPolaroid.slice(0, 10);
+                  return listToRender.map((product) => (
+                    <div key={product.id || product._id || product.slug} className="w-56 sm:w-72 shrink-0">
+                      <ProductCard
+                        product={product}
+                        onAddToCart={handleAddToCart}
+                        onBuyNow={handleBuyNow}
+                        onAddToWishlist={handleAddToWishlist}
+                        onViewDetails={openProductDetails}
+                        onQuickAdd={setQuickAddProduct}
+                        isWishlisted={wishlist.some((p) => (p.id || p._id) === (product.id || product._id))}
+                        showQuickAdd={true}
+                      />
+                    </div>
+                  ));
+                })()}
               </div>
             </div>
 
@@ -1484,6 +1643,7 @@ function formatDateSafe(dateStr: any): string {
                     onBuyNow={handleBuyNow}
                     onAddToWishlist={handleAddToWishlist}
                     onViewDetails={openProductDetails}
+                    onQuickAdd={setQuickAddProduct}
                     isWishlisted={wishlist.some((p) => (p.id || p._id) === (product.id || product._id))}
                   />
                 ))}
@@ -1544,6 +1704,7 @@ function formatDateSafe(dateStr: any): string {
                     onBuyNow={handleBuyNow}
                     onAddToWishlist={handleAddToWishlist}
                     onViewDetails={openProductDetails}
+                    onQuickAdd={setQuickAddProduct}
                     isWishlisted={wishlist.some((p) => (p.id || p._id) === (product.id || product._id))}
                   />
                 ))}
@@ -1571,6 +1732,7 @@ function formatDateSafe(dateStr: any): string {
                     onBuyNow={handleBuyNow}
                     onAddToWishlist={handleAddToWishlist}
                     onViewDetails={openProductDetails}
+                    onQuickAdd={setQuickAddProduct}
                     isWishlisted={true}
                   />
                 ))}
@@ -1582,6 +1744,7 @@ function formatDateSafe(dateStr: any): string {
         {/* Shopping Cart View */}
         {activeTab === 'cart' && (() => {
           const calculatedCart = calculateCartItems(cart);
+          const groupedCart = groupCalculatedCartItems(calculatedCart);
           const cartSubtotal = calculatedCart.reduce((sum, item) => sum + item.final_price, 0);
 
           return (
@@ -1597,34 +1760,56 @@ function formatDateSafe(dateStr: any): string {
                 <div className="flex flex-col lg:flex-row gap-6 items-start">
                   {/* Cart Items List */}
                   <div className="flex-1 w-full flex flex-col gap-3">
-                    {calculatedCart.map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-4 bg-white border border-gray-150 p-4 rounded-2xl shadow-2xs hover:border-gray-250 transition-all">
-                        <img src={getImageUrl(item.thumbnail)} alt={item.title} className="w-16 h-16 object-contain bg-gray-50 p-1.5 rounded-xl shrink-0" />
+                    {groupedCart.map((group) => (
+                      <div key={group.group_id} className="flex items-center gap-3 sm:gap-4 bg-white border border-gray-150 p-3.5 sm:p-4 rounded-2xl shadow-2xs hover:border-gray-250 transition-all">
+                        <img src={getImageUrl(group.thumbnail)} alt={group.title} className="w-14 h-14 sm:w-16 sm:h-16 object-contain bg-gray-50 p-1.5 rounded-xl shrink-0" />
                         <div className="flex-grow min-w-0 text-left">
-                          <h4 className="text-xs sm:text-sm font-bold text-gray-900 truncate">{item.title}</h4>
-                          {item.selected_size && (
-                            <span className="text-[10px] font-semibold text-gray-500 block mt-0.5">Size: {item.selected_size}</span>
+                          <h4 className="text-xs sm:text-sm font-bold text-gray-900 truncate">{group.title}</h4>
+                          {group.selected_size && (
+                            <span className="text-[10px] font-semibold text-gray-500 block mt-0.5">Size: {group.selected_size}</span>
                           )}
                           <div className="flex items-center gap-2 mt-1">
-                            {item.is_free ? (
+                            {group.is_free ? (
                               <>
-                                <span className="text-xs text-gray-400 line-through">₹{item.original_unit_price.toLocaleString('en-IN')}</span>
+                                <span className="text-xs text-gray-400 line-through">₹{group.original_unit_price.toLocaleString('en-IN')}</span>
                                 <span className="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-                                  FREE ({item.offer_applied || 'Offer Applied'})
+                                  ₹0 FREE ({group.offer_applied || 'Offer Applied'})
                                 </span>
                               </>
                             ) : (
-                              <span className="text-xs text-brand-600 font-bold">₹{item.final_price.toLocaleString('en-IN')}</span>
+                              <span className="text-xs text-brand-600 font-bold">₹{group.total_final_price.toLocaleString('en-IN')}</span>
                             )}
                           </div>
                         </div>
+
+                        {/* Interactive Quantity Controls (- QTY +) */}
+                        <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden bg-gray-50 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => handleDecreaseGroupQuantity(group)}
+                            className="px-2.5 py-1 text-gray-600 hover:bg-gray-200 hover:text-black transition-colors font-bold text-xs sm:text-sm cursor-pointer select-none"
+                            title="Decrease quantity"
+                          >
+                            -
+                          </button>
+                          <span className="px-2 py-1 text-xs font-black text-gray-900 min-w-[20px] text-center select-none">
+                            {group.quantity}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleIncreaseGroupQuantity(group)}
+                            className="px-2.5 py-1 text-gray-600 hover:bg-gray-200 hover:text-black transition-colors font-bold text-xs sm:text-sm cursor-pointer select-none"
+                            title="Increase quantity"
+                          >
+                            +
+                          </button>
+                        </div>
+
                         <button 
-                          onClick={() => {
-                            const newCart = cart.filter((_, i) => i !== idx);
-                            syncCartChanges(newCart);
-                          }}
-                          className="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 shrink-0"
-                          title="Remove item"
+                          type="button"
+                          onClick={() => handleRemoveGroup(group)}
+                          className="p-1.5 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50 shrink-0 cursor-pointer"
+                          title="Remove item group"
                         >
                           <X size={16} />
                         </button>
@@ -1889,17 +2074,18 @@ function formatDateSafe(dateStr: any): string {
         {/* Checkout Delivery details view */}
         {activeTab === 'checkout' && isLoggedIn && (
           <CheckoutForm
-            cart={buyNowItem ? [buyNowItem] : cart}
+            cart={buyNowItems ? buyNowItems : cart}
             token={token}
             initialName={userProfile?.name || ''}
             initialEmail={userProfile?.email || ''}
             initialPhone={userProfile?.phone || ''}
             onBack={() => {
-              const wasBuyNow = !!buyNowItem;
-              setBuyNowItem(null);
+              const wasBuyNow = !!buyNowItems;
+              setBuyNowItems(null);
               setActiveTab(wasBuyNow ? 'home' : 'cart');
             }}
             onRemoveItem={handleRemoveFromCheckout}
+            onSyncCart={(newCart) => syncCartChanges(newCart)}
             storeSettings={storeSettings || undefined}
             onSubmit={async (details) => {
               // Automatically update user profile name if profile name is missing or Guest
@@ -1921,9 +2107,10 @@ function formatDateSafe(dateStr: any): string {
                 }
               }
 
-              const checkoutCart = buyNowItem ? [buyNowItem] : cart;
+              const checkoutCart = buyNowItems ? buyNowItems : cart;
+              const calculatedCheckoutCart = calculateCartItems(checkoutCart);
               const orderId = details.paymentDetails?.order_id || `MWM-${Math.floor(100000 + Math.random() * 900000)}`;
-              const subtotal = checkoutCart.reduce((sum, item) => sum + getEffectivePrice(item), 0);
+              const subtotal = calculatedCheckoutCart.reduce((sum, item) => sum + item.final_price, 0);
               const threshold = storeSettings?.delivery_charge_threshold ?? 999;
               const charge = storeSettings?.delivery_charge ?? 70;
               const codFee = storeSettings?.cod_fee ?? 40;
@@ -1933,10 +2120,10 @@ function formatDateSafe(dateStr: any): string {
               const orderStatus = details.paymentDetails?.status || 'Processing';
               const paymentStatus = details.paymentDetails?.payment_status || (details.paymentMethod === 'Cash on Delivery' ? 'pending' : 'pending');
 
-              const mappedItems = checkoutCart.map((it) => ({
+              const mappedItems = calculatedCheckoutCart.map((it) => ({
                 product_id: it.id || (it as any)._id,
                 title: it.title,
-                price: getEffectivePrice(it),
+                price: it.final_price,
                 thumbnail: it.thumbnail,
                 custom_photo: it.custom_photo,
                 selected_size: it.selected_size
@@ -1968,10 +2155,10 @@ function formatDateSafe(dateStr: any): string {
               if (details.paymentMethod === 'Cash on Delivery') {
                 setCompletedOrder(orderPayload);
 
-                if (!buyNowItem) {
+                if (!buyNowItems) {
                   await syncCartChanges([]);
                 }
-                setBuyNowItem(null);
+                setBuyNowItems(null);
                 setActiveTab('home');
                 showToast("🎉 Order placed successfully!");
               }
@@ -2125,6 +2312,16 @@ function formatDateSafe(dateStr: any): string {
         <OrderSuccessModal 
           order={completedOrder} 
           onClose={() => setCompletedOrder(null)} 
+        />
+      )}
+
+      {/* Quick Add Variant Popup Modal (FrameKro style) */}
+      {quickAddProduct && (
+        <QuickAddModal
+          product={quickAddProduct}
+          onClose={() => setQuickAddProduct(null)}
+          onAddToCart={handleQuickAddBatch}
+          onViewDetails={openProductDetails}
         />
       )}
     </div>

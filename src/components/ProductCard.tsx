@@ -10,6 +10,7 @@ interface ProductCardProps {
   onBuyNow?: (product: Product) => void;
   onAddToWishlist: (product: Product) => void;
   onViewDetails?: (product: Product) => void;
+  onQuickAdd?: (product: Product) => void;
   isWishlisted: boolean;
   showQuickAdd?: boolean;
 }
@@ -19,6 +20,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
   onAddToWishlist,
   onViewDetails,
+  onQuickAdd,
   isWishlisted,
   showQuickAdd = true
 }) => {
@@ -74,7 +76,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            if (onAddToCart) {
+            if (onQuickAdd) {
+              onQuickAdd(product);
+            } else if (onAddToCart) {
               onAddToCart(product);
             } else if (onViewDetails) {
               onViewDetails(product);
