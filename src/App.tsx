@@ -654,6 +654,73 @@ function formatDateSafe(dateStr: any): string {
     ];
   }, []);
 
+  // Collage & Wall Sets categories displayed below New Arrivals
+  const collageAndWallSetCategories = useMemo(() => [
+    { 
+      name: "Wall Sets", 
+      category: "Wall Sets",
+      primary: "#ff3d3d", 
+      secondary: "#ff6b00", 
+      accent: "#ffef00" 
+    },
+    { 
+      name: "Anime Collage", 
+      category: "Anime Collage",
+      primary: "#8b5cf6", 
+      secondary: "#ec4899", 
+      accent: "#38bdf8" 
+    },
+    { 
+      name: "Supercar Collage", 
+      category: "Supercar Colage",
+      primary: "#f97316", 
+      secondary: "#ef4444", 
+      accent: "#fde047" 
+    },
+    { 
+      name: "Cricket Collage", 
+      category: "Cricket Collage Block Kits",
+      primary: "#10b981", 
+      secondary: "#0284c7", 
+      accent: "#facc15" 
+    },
+    { 
+      name: "Football Collage", 
+      category: "Football Collage",
+      primary: "#0284c7", 
+      secondary: "#10b981", 
+      accent: "#ffef00" 
+    },
+    { 
+      name: "God Collage", 
+      category: "God Collage/Block kit",
+      primary: "#f59e0b", 
+      secondary: "#b45309", 
+      accent: "#fef08a" 
+    },
+    { 
+      name: "Movie Collage", 
+      category: "Movie Collage",
+      primary: "#e11d48", 
+      secondary: "#7c3aed", 
+      accent: "#38bdf8" 
+    },
+    { 
+      name: "Motivation Collage", 
+      category: "Motivation Collage",
+      primary: "#3b82f6", 
+      secondary: "#dc2626", 
+      accent: "#fde047" 
+    },
+    { 
+      name: "All Collage Kits", 
+      category: "Collage/Block Kits",
+      primary: "#18181b", 
+      secondary: "#ef4444", 
+      accent: "#ffef00" 
+    }
+  ], []);
+
   // Filter products strictly for Category Page view (ensures Wall Sets, Split Posters, Single Posters never bleed into each other)
   const categoryProducts = useMemo(() => {
     if (!selectedCategory) return productsList;
@@ -672,8 +739,13 @@ function formatDateSafe(dateStr: any): string {
       }
 
       // 2. Collage / Block Kits: strictly matches that specific collage category
-      if (selLower.includes('collage')) {
-        return pCat === selLower || pCat.replace('/', ' ').includes(selLower.replace('/', ' '));
+      if (selLower.includes('collage') || selLower.includes('colage')) {
+        const normSel = selLower.replace('colage', 'collage').replace('/', ' ');
+        const normPCat = pCat.replace('colage', 'collage').replace('/', ' ');
+        if (normSel === 'collage kits' || normSel === 'collage block kits' || normSel.includes('all collage')) {
+          return normPCat.includes('collage');
+        }
+        return normPCat === normSel || normPCat.includes(normSel) || normSel.includes(normPCat);
       }
 
       // 3. Wall Sets, Collage, and Polaroids NEVER match poster categories
@@ -1774,6 +1846,51 @@ function formatDateSafe(dateStr: any): string {
                     </div>
                   ));
                 })()}
+              </div>
+            </div>
+
+            {/* COLLAGE KITS & WALL SETS CATEGORIES SECTION directly below New Arrivals */}
+            <div id="collage-wall-sets" className="mb-14 text-left select-none scroll-mt-24">
+              <div className="flex items-center justify-between mb-3 border-b border-gray-150 pb-2">
+                <h2 className="text-xl sm:text-2xl font-display font-black text-[#0e0d0d] tracking-tight uppercase">
+                  COLLAGE & WALL SETS
+                </h2>
+                <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider bg-red-600 text-white px-2.5 py-1 rounded-full shadow-2xs">
+                  POW! SPECIALS
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-gray-500 mb-6 font-medium">
+                Vibrant aesthetic collage kits and premium multi-panel wall sets designed to transform any room.
+              </p>
+
+              {/* Comic Brutalist Category Buttons Grid */}
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 md:gap-6 py-2">
+                {collageAndWallSetCategories.map((cat) => (
+                  <div 
+                    key={cat.name} 
+                    className="comic-brutal-button-container"
+                    style={{
+                      '--primary-color': cat.primary,
+                      '--secondary-color': cat.secondary,
+                      '--accent-color': cat.accent,
+                    } as React.CSSProperties}
+                  >
+                    <button 
+                      type="button"
+                      className="comic-brutal-button"
+                      onClick={() => handleCategorySelect(cat.category)}
+                      aria-label={`Open ${cat.name}`}
+                    >
+                      <div className="button-inner">
+                        <span className="button-text">{cat.name}</span>
+                        <div className="halftone-overlay"></div>
+                        <div className="ink-splatter"></div>
+                      </div>
+                      <div className="button-shadow"></div>
+                      <div className="button-frame"></div>
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
 
