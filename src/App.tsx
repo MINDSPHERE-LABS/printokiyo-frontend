@@ -67,7 +67,7 @@ const HERO_SLIDES = [
 function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeSingleCategory, setActiveSingleCategory] = useState<string>('Supercars');
+  const [activeSingleCategory, setActiveSingleCategory] = useState<string>('Supercar Single Poster');
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const touchStartXRef = useRef<number | null>(null);
   const singlePostersSliderRef = useRef<HTMLDivElement>(null);
@@ -629,38 +629,42 @@ function formatDateSafe(dateStr: any): string {
   // Homepage Split Poster category cards (Strictly 8 Split Poster categories - Wall Sets and Collage kits are accessed via sidebar)
   const homepageCategoryCards = useMemo(() => {
     return [
-      { name: "Anime Split Posters", category: "Anime & Gaming", image: "/cat-anime-opt.mp4", poster: "/cat-anime-poster.webp" },
-      { name: "Superhero Split Posters", category: "Superhero", image: "/cat-superhero-opt.mp4", poster: "/cat-superhero-poster.webp" },
-      { name: "Super Cars Split Posters", category: "Supercars", image: "/cat-supercars-opt.mp4", poster: "/cat-supercars-poster.webp" },
-      { name: "Superbike Split Posters", category: "Superbike", image: "/cat-superbike-opt.mp4", poster: "/cat-superbike-poster.webp" },
-      { name: "Cricket Split Posters", category: "Cricket", image: "/cat-cricket-opt.mp4", poster: "/cat-cricket-poster.webp" },
-      { name: "Devotional Split Posters", category: "Devotional", image: "/cat-devotional-opt.mp4", poster: "/cat-devotional-poster.webp" },
-      { name: "Gym & Fitness Split Posters", category: "Gym & Fitness", image: "/cat-gym-opt.mp4", poster: "/cat-gym-poster.webp" },
-      { name: "Music & Bands Split Posters", category: "Music", image: "/cat-music-opt.mp4", poster: "/cat-music-poster.webp" },
+      { name: "Super Cars Split Posters", category: "Supercar Split Posters", image: "/cat-supercars-opt.mp4", poster: "/cat-supercars-poster.webp" },
+      { name: "Anime Split Posters", category: "Anime Split Posters", image: "/cat-anime-opt.mp4", poster: "/cat-anime-poster.webp" },
+      { name: "Superhero Split Posters", category: "Superhero Split Posters", image: "/cat-superhero-opt.mp4", poster: "/cat-superhero-poster.webp" },
+      { name: "Superbike Split Posters", category: "Superbike Split Posters", image: "/cat-superbike-opt.mp4", poster: "/cat-superbike-poster.webp" },
+      { name: "Cricket Split Posters", category: "Cricket Split Posters", image: "/cat-cricket-opt.mp4", poster: "/cat-cricket-poster.webp" },
+      { name: "Devotional Split Posters", category: "Devotional Split Posters", image: "/cat-devotional-opt.mp4", poster: "/cat-devotional-poster.webp" },
+      { name: "Gym & Fitness Split Posters", category: "Gym & Fitness Split Posters", image: "/cat-gym-opt.mp4", poster: "/cat-gym-poster.webp" },
+      { name: "Music & Bands Split Posters", category: "Music Split Posters", image: "/cat-music-opt.mp4", poster: "/cat-music-poster.webp" },
     ];
   }, []);
 
   // SINGLE POSTERS sub-tabs (Strictly Single Poster categories)
   const singlePosterSubTabs = useMemo(() => {
     return [
-      { label: 'Car Posters', key: 'Supercars' },
-      { label: 'Anime Posters', key: 'Anime & Gaming' },
-      { label: 'Cricket Posters', key: 'Cricket' },
-      { label: 'Superhero Posters', key: 'Superhero' },
-      { label: 'Superbike Posters', key: 'Superbike' },
-      { label: 'Devotional Posters', key: 'Devotional' },
-      { label: 'Gym Posters', key: 'Gym & Fitness' },
-      { label: 'Music Posters', key: 'Music' }
+      { label: 'Car Posters', key: 'Supercar Single Poster' },
+      { label: 'Anime Posters', key: 'Anime Single Poster' },
+      { label: 'Cricket Posters', key: 'Cricket Single Poster' },
+      { label: 'Superhero Posters', key: 'Superhero Single Poster' },
+      { label: 'Superbike Posters', key: 'Superbike Single Poster' },
+      { label: 'Devotional Posters', key: 'Devotional Single Poster' },
+      { label: 'Gym Posters', key: 'Gym & Fitness Single Poster' },
+      { label: 'Music Posters', key: 'Music Single Poster' }
     ];
   }, []);
 
-  // Filter products strictly for Category Page view (ensures Wall Sets and specific categories never bleed into each other)
+  // Filter products strictly for Category Page view (ensures Wall Sets, Split Posters, Single Posters never bleed into each other)
   const categoryProducts = useMemo(() => {
     if (!selectedCategory) return productsList;
     const selLower = selectedCategory.toLowerCase().trim();
+    const isSplitCategory = selLower.includes('split');
+    const isSingleCategory = selLower.includes('single');
+
     return productsList.filter(p => {
       if (!p || !p.category) return false;
       const pCat = p.category.toLowerCase().trim();
+      const pTitle = (p.title || '').toLowerCase().trim();
 
       // 1. Wall Sets: strictly matches products with "wall"
       if (selLower === 'wall sets' || selLower === 'wall set') {
@@ -672,37 +676,65 @@ function formatDateSafe(dateStr: any): string {
         return pCat === selLower || pCat.replace('/', ' ').includes(selLower.replace('/', ' '));
       }
 
-      // 3. Regular poster categories: NEVER match wall sets or collage kits or polaroids
+      // 3. Wall Sets, Collage, and Polaroids NEVER match poster categories
       if (pCat.includes('wall') || pCat.includes('collage') || pCat.includes('polaroid') || pCat.includes('poloride')) {
         return false;
       }
 
-      if (selLower === 'supercars') {
-        return pCat === 'supercars' || pCat === 'supercar' || pCat.includes('racing') || pCat.includes('f1');
+      // 4. Strict Split vs Single isolation:
+      if (isSplitCategory) {
+        if (pCat.includes('single') || pTitle.includes('single')) return false;
       }
-      if (selLower === 'anime & gaming') {
-        return pCat === 'anime & gaming' || pCat.includes('anime') || pCat.includes('gaming') || pCat.includes('manga');
-      }
-      if (selLower === 'superbike') {
-        return pCat === 'superbike' || pCat.includes('bike') || pCat.includes('motorcycle');
-      }
-      if (selLower === 'cricket') {
-        return pCat === 'cricket';
-      }
-      if (selLower === 'superhero') {
-        return pCat === 'superhero' || pCat.includes('marvel') || pCat.includes('dc');
-      }
-      if (selLower === 'devotional') {
-        return pCat === 'devotional' || pCat.includes('spiritual');
-      }
-      if (selLower === 'gym & fitness') {
-        return pCat === 'gym & fitness' || pCat.includes('fitness');
-      }
-      if (selLower === 'music') {
-        return pCat === 'music';
+      if (isSingleCategory) {
+        if (pCat.includes('split') || pTitle.includes('split')) return false;
       }
 
-      return pCat === selLower || pCat.includes(selLower) || selLower.includes(pCat);
+      // 5. Direct exact or normalized category match (handling singular/plural 'posters' vs 'poster')
+      const normPCat = pCat.replace(/s\b/g, '');
+      const normSel = selLower.replace(/s\b/g, '');
+      if (pCat === selLower || normPCat === normSel) {
+        return true;
+      }
+
+      // 6. Match genre and type strictly
+      const checkGenreAndType = (genreWords: string[]) => {
+        const matchesGenre = genreWords.some(w => pCat.includes(w) || pTitle.includes(w));
+        if (!matchesGenre) return false;
+        if (isSplitCategory) {
+          return pCat.includes('split') || pTitle.includes('split');
+        }
+        if (isSingleCategory) {
+          return !pCat.includes('split') && !pTitle.includes('split');
+        }
+        return true;
+      };
+
+      if (selLower.includes('car')) {
+        return checkGenreAndType(['supercar', 'car', 'racing', 'f1']);
+      }
+      if (selLower.includes('anime')) {
+        return checkGenreAndType(['anime', 'manga', 'gaming']);
+      }
+      if (selLower.includes('superbike') || selLower.includes('bike')) {
+        return checkGenreAndType(['bike', 'motorcycle']);
+      }
+      if (selLower.includes('cricket')) {
+        return checkGenreAndType(['cricket']);
+      }
+      if (selLower.includes('superhero')) {
+        return checkGenreAndType(['superhero', 'marvel', 'dc']);
+      }
+      if (selLower.includes('devotional')) {
+        return checkGenreAndType(['devotional', 'spiritual']);
+      }
+      if (selLower.includes('gym')) {
+        return checkGenreAndType(['gym', 'fitness']);
+      }
+      if (selLower.includes('music')) {
+        return checkGenreAndType(['music', 'band']);
+      }
+
+      return pCat === selLower;
     });
   }, [productsList, selectedCategory]);
 
@@ -1099,42 +1131,48 @@ function formatDateSafe(dateStr: any): string {
   const isCategoryMatch = (p: Product, activeKey: string): boolean => {
     if (!p || !p.category) return false;
     const pCat = p.category.toLowerCase().trim();
+    const pTitle = (p.title || '').toLowerCase().trim();
     const targetKey = activeKey.toLowerCase().trim();
 
-    // Wall Sets, Collage kits, and Polaroids are separate product formats — never show in Single Posters
+    // 1. Wall Sets, Collage kits, Polaroids, and SPLIT POSTERS must NEVER show in Single Posters
     if (pCat.includes('wall') || pCat.includes('collage') || pCat.includes('polaroid') || pCat.includes('poloride')) {
       return false;
     }
+    if (pCat.includes('split') || pTitle.includes('split')) {
+      return false;
+    }
 
-    // Direct match
-    if (pCat === targetKey) {
+    // 2. Direct or normalized match (e.g. 'supercar single poster' vs 'supercar single posters')
+    const normPCat = pCat.replace(/s\b/g, '');
+    const normTarget = targetKey.replace(/s\b/g, '');
+    if (pCat === targetKey || normPCat === normTarget) {
       return true;
     }
 
-    // Specific sub-tab keyword matching
-    if (targetKey === 'supercars') {
-      return pCat === 'supercars' || pCat === 'supercar' || pCat.includes('racing') || pCat.includes('f1');
+    // 3. Specific sub-tab keyword matching for single posters
+    if (targetKey.includes('car')) {
+      return (pCat.includes('supercar') || pCat.includes('car') || pCat.includes('racing') || pCat.includes('f1')) && !pCat.includes('split');
     }
-    if (targetKey === 'anime & gaming') {
-      return pCat === 'anime & gaming' || pCat.includes('anime') || pCat.includes('gaming') || pCat.includes('manga');
+    if (targetKey.includes('anime')) {
+      return (pCat.includes('anime') || pCat.includes('gaming') || pCat.includes('manga')) && !pCat.includes('split');
     }
-    if (targetKey === 'superbike') {
-      return pCat === 'superbike' || pCat.includes('bike') || pCat.includes('motorcycle');
+    if (targetKey.includes('superbike') || targetKey.includes('bike')) {
+      return (pCat.includes('bike') || pCat.includes('motorcycle')) && !pCat.includes('split');
     }
-    if (targetKey === 'cricket') {
-      return pCat === 'cricket';
+    if (targetKey.includes('cricket')) {
+      return pCat.includes('cricket') && !pCat.includes('split');
     }
-    if (targetKey === 'superhero') {
-      return pCat === 'superhero' || pCat.includes('marvel') || pCat.includes('dc');
+    if (targetKey.includes('superhero')) {
+      return (pCat.includes('superhero') || pCat.includes('marvel') || pCat.includes('dc')) && !pCat.includes('split');
     }
-    if (targetKey === 'devotional') {
-      return pCat === 'devotional' || pCat.includes('spiritual');
+    if (targetKey.includes('devotional')) {
+      return (pCat.includes('devotional') || pCat.includes('spiritual')) && !pCat.includes('split');
     }
-    if (targetKey === 'gym & fitness') {
-      return pCat === 'gym & fitness' || pCat.includes('fitness');
+    if (targetKey.includes('gym')) {
+      return (pCat.includes('gym') || pCat.includes('fitness')) && !pCat.includes('split');
     }
-    if (targetKey === 'music') {
-      return pCat === 'music';
+    if (targetKey.includes('music')) {
+      return (pCat.includes('music') || pCat.includes('band')) && !pCat.includes('split');
     }
 
     return false;

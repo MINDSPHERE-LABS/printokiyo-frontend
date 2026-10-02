@@ -352,14 +352,14 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
               </button>
 
               {[
-                { label: 'Anime Split Poster', cat: 'Anime & Gaming' },
-                { label: 'Superhero Split Poster', cat: 'Superhero' },
-                { label: 'Supercar Split Poster', cat: 'Supercars' },
-                { label: 'Superbike Split Poster', cat: 'Superbike' },
-                { label: 'Cricket Split Poster', cat: 'Cricket' },
-                { label: 'Devotional Split Poster', cat: 'Devotional' },
-                { label: 'Gym & Fitness Split Poster', cat: 'Gym & Fitness' },
-                { label: 'Music & Bands Split Poster', cat: 'Music' }
+                { label: 'Anime Split Poster', cat: 'Anime Split Posters' },
+                { label: 'Superhero Split Poster', cat: 'Superhero Split Posters' },
+                { label: 'Supercar Split Poster', cat: 'Supercar Split Posters' },
+                { label: 'Superbike Split Poster', cat: 'Superbike Split Posters' },
+                { label: 'Cricket Split Poster', cat: 'Cricket Split Posters' },
+                { label: 'Devotional Split Poster', cat: 'Devotional Split Posters' },
+                { label: 'Gym & Fitness Split Poster', cat: 'Gym & Fitness Split Posters' },
+                { label: 'Music & Bands Split Poster', cat: 'Music Split Posters' }
               ].map((sub) => (
                 <button
                   key={sub.label}
@@ -390,14 +390,14 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
               </button>
 
               {[
-                { label: 'Anime & Gaming Posters', cat: 'Anime & Gaming' },
-                { label: 'Superhero Posters', cat: 'Superhero' },
-                { label: 'Supercars Posters', cat: 'Supercars' },
-                { label: 'Superbike Posters', cat: 'Superbike' },
-                { label: 'Cricket Posters', cat: 'Cricket' },
-                { label: 'Devotional Posters', cat: 'Devotional' },
-                { label: 'Gym & Fitness Posters', cat: 'Gym & Fitness' },
-                { label: 'Music Posters', cat: 'Music' }
+                { label: 'Anime & Gaming Posters', cat: 'Anime Single Poster' },
+                { label: 'Superhero Posters', cat: 'Superhero Single Poster' },
+                { label: 'Supercars Posters', cat: 'Supercar Single Poster' },
+                { label: 'Superbike Posters', cat: 'Superbike Single Poster' },
+                { label: 'Cricket Posters', cat: 'Cricket Single Poster' },
+                { label: 'Devotional Posters', cat: 'Devotional Single Poster' },
+                { label: 'Gym & Fitness Posters', cat: 'Gym & Fitness Single Poster' },
+                { label: 'Music Posters', cat: 'Music Single Poster' }
               ].map((sub) => (
                 <button
                   key={sub.label}
