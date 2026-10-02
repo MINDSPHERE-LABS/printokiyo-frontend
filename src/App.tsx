@@ -21,6 +21,7 @@ import { AboutUsPage } from './components/AboutUsPage';
 import { TermsOfServicePage } from './components/TermsOfServicePage';
 import { ShippingPolicyPage } from './components/ShippingPolicyPage';
 import { RefundPolicyPage } from './components/RefundPolicyPage';
+import { CancelOrderPage } from './components/CancelOrderPage';
 import { BrandBuffer } from './components/BrandBuffer';
 import { SidebarDrawer } from './components/SidebarDrawer';
 import { QuickAddModal } from './components/QuickAddModal';
@@ -116,7 +117,7 @@ function App() {
     }
     touchStartXRef.current = null;
   };
-  const [activeTab, setActiveTab] = useState<'home' | 'category_page' | 'search' | 'wishlist' | 'cart' | 'profile' | 'details' | 'checkout' | 'confirmation' | 'about' | 'terms' | 'shipping' | 'refund'>(() => {
+  const [activeTab, setActiveTab] = useState<'home' | 'category_page' | 'search' | 'wishlist' | 'cart' | 'profile' | 'details' | 'checkout' | 'confirmation' | 'about' | 'terms' | 'shipping' | 'refund' | 'cancel_order'>(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('page') === 'about' || window.location.hash === '#about') {
       return 'about';
@@ -129,6 +130,9 @@ function App() {
     }
     if (params.get('page') === 'refund' || window.location.hash === '#refund') {
       return 'refund';
+    }
+    if (params.get('page') === 'cancel_order' || params.get('page') === 'cancel' || window.location.hash === '#cancel_order' || window.location.hash === '#cancel') {
+      return 'cancel_order';
     }
     if (params.has('product') || params.has('p') || window.location.pathname.startsWith('/product/')) {
       return 'details';
@@ -1159,6 +1163,13 @@ function formatDateSafe(dateStr: any): string {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleOpenCancelOrder = () => {
+    setActiveTab('cancel_order');
+    setSelectedProduct(null);
+    setSelectedCategory(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Open details view in-line instead of a overlapping popup
   const openProductDetails = (product: Product) => {
     if (activeTab !== 'details') {
@@ -1327,6 +1338,7 @@ function formatDateSafe(dateStr: any): string {
         onTermsClick={handleOpenTerms}
         onShippingClick={handleOpenShipping}
         onRefundClick={handleOpenRefund}
+        onCancelOrderClick={handleOpenCancelOrder}
       />
 
       {/* 4. Content main container */}
@@ -1676,6 +1688,7 @@ function formatDateSafe(dateStr: any): string {
                 onTermsClick={handleOpenTerms}
                 onShippingClick={handleOpenShipping}
                 onRefundClick={handleOpenRefund}
+                onCancelOrderClick={handleOpenCancelOrder}
               />
             </div>
           </div>
@@ -1736,6 +1749,7 @@ function formatDateSafe(dateStr: any): string {
                 onTermsClick={handleOpenTerms}
                 onShippingClick={handleOpenShipping}
                 onRefundClick={handleOpenRefund}
+                onCancelOrderClick={handleOpenCancelOrder}
               />
             </div>
           </div>
@@ -1765,6 +1779,7 @@ function formatDateSafe(dateStr: any): string {
                 onTermsClick={handleOpenTerms}
                 onShippingClick={handleOpenShipping}
                 onRefundClick={handleOpenRefund}
+                onCancelOrderClick={handleOpenCancelOrder}
               />
             </div>
           </div>
@@ -1788,6 +1803,7 @@ function formatDateSafe(dateStr: any): string {
                 onTermsClick={handleOpenTerms}
                 onShippingClick={handleOpenShipping}
                 onRefundClick={handleOpenRefund}
+                onCancelOrderClick={handleOpenCancelOrder}
               />
             </div>
           </div>
@@ -1817,6 +1833,7 @@ function formatDateSafe(dateStr: any): string {
                 onTermsClick={handleOpenTerms}
                 onShippingClick={handleOpenShipping}
                 onRefundClick={handleOpenRefund}
+                onCancelOrderClick={handleOpenCancelOrder}
               />
             </div>
           </div>
@@ -1846,6 +1863,47 @@ function formatDateSafe(dateStr: any): string {
                 onTermsClick={handleOpenTerms}
                 onShippingClick={handleOpenShipping}
                 onRefundClick={handleOpenRefund}
+                onCancelOrderClick={handleOpenCancelOrder}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Dedicated Cancel Order Page View */}
+        {activeTab === 'cancel_order' && (
+          <div className="-mx-4 sm:-mx-6 lg:-mx-8 -mt-6 animate-in fade-in duration-300">
+            <CancelOrderPage 
+              onNavigateHome={() => {
+                setActiveTab('home');
+                setSelectedCategory(null);
+                setSelectedProduct(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onExploreProducts={() => {
+                setActiveTab('home');
+                setSelectedCategory(null);
+                setSelectedProduct(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onNavigateOrders={() => {
+                if (isLoggedIn) {
+                  setActiveTab('profile');
+                } else {
+                  setAuthModalOpen(true);
+                }
+                setSelectedCategory(null);
+                setSelectedProduct(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+            {/* Brand Footer */}
+            <div className="border-t border-zinc-900">
+              <Footer 
+                onAboutClick={handleOpenAbout}
+                onTermsClick={handleOpenTerms}
+                onShippingClick={handleOpenShipping}
+                onRefundClick={handleOpenRefund}
+                onCancelOrderClick={handleOpenCancelOrder}
               />
             </div>
           </div>
