@@ -7,9 +7,18 @@ interface NavbarProps {
   cartCount: number;
   wishlistCount: number;
   onProfileClick?: () => void;
+  onAboutClick?: () => void;
+  onShopClick?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onSearch, cartCount, wishlistCount, onProfileClick }) => {
+export const Navbar: React.FC<NavbarProps> = ({ 
+  onSearch, 
+  cartCount, 
+  wishlistCount, 
+  onProfileClick,
+  onAboutClick,
+  onShopClick
+}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [darkMode, setDarkMode] = useState(() => {
     return document.documentElement.classList.contains('dark') || 
@@ -79,12 +88,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onSearch, cartCount, wishlistCou
 
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center space-x-6 lg:space-x-8 text-sm font-medium text-gray-600 dark:text-gray-300">
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">Shop</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">Categories</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">New Arrivals</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">Best Sellers</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">About</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white transition-colors">Contact</a>
+            <button type="button" onClick={onShopClick} className="hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer bg-transparent border-0 p-0 text-sm font-medium">Shop</button>
+            <a href="#categories" className="hover:text-gray-900 dark:hover:text-white transition-colors">Categories</a>
+            <a href="#new-arrivals" className="hover:text-gray-900 dark:hover:text-white transition-colors">New Arrivals</a>
+            <a href="#best-sellers" className="hover:text-gray-900 dark:hover:text-white transition-colors">Best Sellers</a>
+            <button type="button" onClick={onAboutClick} className="hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer bg-transparent border-0 p-0 text-sm font-medium">About</button>
+            <a href="mailto:support@printokiyo.com" className="hover:text-gray-900 dark:hover:text-white transition-colors">Contact</a>
           </nav>
 
           {/* Right Section: Search & Actions */}
@@ -172,12 +181,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onSearch, cartCount, wishlistCou
           </form>
 
           <nav className="flex flex-col space-y-4 font-medium text-gray-700 dark:text-gray-200">
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>Shop All</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>Categories</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>New Arrivals</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>Best Sellers</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>About Us</a>
-            <a href="#" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>Contact</a>
+            <button type="button" className="text-left hover:text-gray-900 dark:hover:text-white bg-transparent border-0 p-0 text-sm font-medium cursor-pointer" onClick={() => { setMobileMenuOpen(false); onShopClick?.(); }}>Shop All</button>
+            <a href="#categories" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>Categories</a>
+            <a href="#new-arrivals" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>New Arrivals</a>
+            <a href="#best-sellers" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>Best Sellers</a>
+            <button type="button" className="text-left hover:text-gray-900 dark:hover:text-white bg-transparent border-0 p-0 text-sm font-medium cursor-pointer" onClick={() => { setMobileMenuOpen(false); onAboutClick?.(); }}>About Us</button>
+            <a href="mailto:support@printokiyo.com" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>Contact</a>
           </nav>
         </div>
       )}

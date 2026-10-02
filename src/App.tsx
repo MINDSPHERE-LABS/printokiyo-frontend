@@ -17,6 +17,7 @@ import { CheckoutForm } from './components/CheckoutForm';
 import { OrderConfirmation } from './components/OrderConfirmation';
 import { OrderSuccessModal } from './components/OrderSuccessModal';
 import { Footer } from './components/Footer';
+import { AboutUsPage } from './components/AboutUsPage';
 import { BrandBuffer } from './components/BrandBuffer';
 import { SidebarDrawer } from './components/SidebarDrawer';
 import { QuickAddModal } from './components/QuickAddModal';
@@ -112,8 +113,11 @@ function App() {
     }
     touchStartXRef.current = null;
   };
-  const [activeTab, setActiveTab] = useState<'home' | 'category_page' | 'search' | 'wishlist' | 'cart' | 'profile' | 'details' | 'checkout' | 'confirmation'>(() => {
+  const [activeTab, setActiveTab] = useState<'home' | 'category_page' | 'search' | 'wishlist' | 'cart' | 'profile' | 'details' | 'checkout' | 'confirmation' | 'about'>(() => {
     const params = new URLSearchParams(window.location.search);
+    if (params.get('page') === 'about' || window.location.hash === '#about') {
+      return 'about';
+    }
     if (params.has('product') || params.has('p') || window.location.pathname.startsWith('/product/')) {
       return 'details';
     }
@@ -1157,18 +1161,37 @@ function formatDateSafe(dateStr: any): string {
       {/* 1. Modern Header */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md py-3.5 px-4 sm:px-6 lg:px-8 border-b border-gray-100 transition-all select-none">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between relative">
-          {/* Left categories menu - hidden on checkout */}
-          {activeTab !== 'checkout' ? (
-            <button 
-              onClick={() => setSidebarOpen(true)}
-              className="p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-colors"
-              aria-label="Categories menu"
-            >
-              <Menu size={22} />
-            </button>
-          ) : (
-            <div className="w-9 h-9" />
-          )}
+          {/* Left categories menu & desktop navigation links */}
+          <div className="flex items-center gap-2">
+            {activeTab !== 'checkout' ? (
+              <button 
+                onClick={() => setSidebarOpen(true)}
+                className="p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-colors cursor-pointer"
+                aria-label="Categories menu"
+              >
+                <Menu size={22} />
+              </button>
+            ) : (
+              <div className="w-9 h-9" />
+            )}
+
+            <nav className="hidden md:flex items-center gap-4 text-xs font-bold text-gray-700 ml-1">
+              <button 
+                type="button"
+                onClick={() => { setActiveTab('home'); setSelectedCategory(null); setSelectedProduct(null); }}
+                className={`hover:text-black transition-colors cursor-pointer bg-transparent border-0 p-0 ${activeTab === 'home' ? 'text-black font-black' : ''}`}
+              >
+                Shop
+              </button>
+              <button 
+                type="button"
+                onClick={() => { setActiveTab('about'); setSelectedCategory(null); setSelectedProduct(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                className={`hover:text-black transition-colors cursor-pointer bg-transparent border-0 p-0 ${activeTab === 'about' ? 'text-black font-black' : ''}`}
+              >
+                About Us
+              </button>
+            </nav>
+          </div>
 
           {/* Brand Logo centered - Reset category & go to All Products */}
           <div 
@@ -1260,6 +1283,12 @@ function formatDateSafe(dateStr: any): string {
         onLogout={handleLogout}
         categoriesList={categoriesList}
         onSelectPolaroid={handleOpenPolaroid}
+        onAboutClick={() => {
+          setActiveTab('about');
+          setSelectedProduct(null);
+          setSelectedCategory(null);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
       />
 
       {/* 4. Content main container */}
@@ -1604,7 +1633,14 @@ function formatDateSafe(dateStr: any): string {
 
             {/* Brand Footer */}
             <div className="-mx-4 sm:-mx-6 lg:-mx-8 mt-12 border-t border-gray-100">
-              <Footer />
+              <Footer 
+                onAboutClick={() => {
+                  setActiveTab('about');
+                  setSelectedProduct(null);
+                  setSelectedCategory(null);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
             </div>
           </div>
         )}
@@ -1659,7 +1695,45 @@ function formatDateSafe(dateStr: any): string {
 
             {/* Brand Footer */}
             <div className="-mx-4 sm:-mx-6 lg:-mx-8 mt-12 border-t border-gray-100">
-              <Footer />
+              <Footer 
+                onAboutClick={() => {
+                  setActiveTab('about');
+                  setSelectedProduct(null);
+                  setSelectedCategory(null);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Dedicated About Us Page View */}
+        {activeTab === 'about' && (
+          <div className="-mx-4 sm:-mx-6 lg:-mx-8 -mt-6 animate-in fade-in duration-300">
+            <AboutUsPage 
+              onNavigateHome={() => {
+                setActiveTab('home');
+                setSelectedCategory(null);
+                setSelectedProduct(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onExploreProducts={() => {
+                setActiveTab('home');
+                setSelectedCategory(null);
+                setSelectedProduct(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+            {/* Brand Footer */}
+            <div className="border-t border-zinc-900">
+              <Footer 
+                onAboutClick={() => {
+                  setActiveTab('about');
+                  setSelectedProduct(null);
+                  setSelectedCategory(null);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+              />
             </div>
           </div>
         )}
