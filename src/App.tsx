@@ -33,7 +33,7 @@ import {
 } from './api/auth';
 import type { UserProfile } from './api/auth';
 import { 
-  X, Check, ShoppingBag, Heart, Search, Home, User, Menu, ChevronLeft, ChevronRight
+  X, Check, ShoppingBag, Heart, Search, Home, User, Menu, ChevronLeft, ChevronRight, Sparkles, Layers
 } from 'lucide-react';
 
 interface Toast {
@@ -656,15 +656,78 @@ function formatDateSafe(dateStr: any): string {
 
   // Collage & Wall Sets categories displayed below New Arrivals
   const collageAndWallSetCategories = useMemo(() => [
-    { name: "Wall Sets", category: "Wall Sets", bg: "#e11d48" },
-    { name: "Anime Collage", category: "Anime Collage", bg: "#7c3aed" },
-    { name: "Supercar Collage", category: "Supercar Colage", bg: "#ea580c" },
-    { name: "Cricket Collage", category: "Cricket Collage Block Kits", bg: "#059669" },
-    { name: "Football Collage", category: "Football Collage", bg: "#0284c7" },
-    { name: "God Collage", category: "God Collage/Block kit", bg: "#d97706" },
-    { name: "Movie Collage", category: "Movie Collage", bg: "#c026d3" },
-    { name: "Motivation Collage", category: "Motivation Collage", bg: "#2563eb" },
-    { name: "All Collage Kits", category: "Collage/Block Kits", bg: "#6225e6" }
+    { 
+      name: "Wall Sets", 
+      category: "Wall Sets",
+      subtitle: "Multi-Panel Statement Art",
+      badge: "FEATURED",
+      image: "/collage-strip.webp",
+      glowColor: "#ff3d3d"
+    },
+    { 
+      name: "Anime Collage", 
+      category: "Anime Collage",
+      subtitle: "Otaku & Manga Edition",
+      badge: "HOT PICK",
+      image: "/cat-anime-poster.webp",
+      glowColor: "#a855f7"
+    },
+    { 
+      name: "Supercar Collage", 
+      category: "Supercar Colage",
+      subtitle: "Speed, F1 & Hypercars",
+      badge: "EXOTICS",
+      image: "/cat-supercars-poster.webp",
+      glowColor: "#f97316"
+    },
+    { 
+      name: "Cricket Collage", 
+      category: "Cricket Collage Block Kits",
+      subtitle: "Stadium & Legends",
+      badge: "CHAMPIONS",
+      image: "/cat-cricket-poster.webp",
+      glowColor: "#10b981"
+    },
+    { 
+      name: "Football Collage", 
+      category: "Football Collage",
+      subtitle: "Matchday & Superstars",
+      badge: "FOOTBALL",
+      image: "/cat-superbike-poster.webp",
+      glowColor: "#0284c7"
+    },
+    { 
+      name: "God Collage", 
+      category: "God Collage/Block kit",
+      subtitle: "Spiritual & Divine Art",
+      badge: "DEVOTIONAL",
+      image: "/cat-devotional-poster.webp",
+      glowColor: "#f59e0b"
+    },
+    { 
+      name: "Movie Collage", 
+      category: "Movie Collage",
+      subtitle: "Cinema & Superhero",
+      badge: "BLOCKBUSTER",
+      image: "/cat-superhero-poster.webp",
+      glowColor: "#e11d48"
+    },
+    { 
+      name: "Motivation Collage", 
+      category: "Motivation Collage",
+      subtitle: "Gym, Hustle & Mindset",
+      badge: "FITNESS",
+      image: "/cat-gym-poster.webp",
+      glowColor: "#3b82f6"
+    },
+    { 
+      name: "All Collage Kits", 
+      category: "Collage/Block Kits",
+      subtitle: "Browse Full Collection",
+      badge: "FULL RANGE",
+      image: "/collage-strip.webp",
+      glowColor: "#fbc638"
+    }
   ], []);
 
   // Filter products strictly for Category Page view (ensures Wall Sets, Split Posters, Single Posters never bleed into each other)
@@ -1796,66 +1859,157 @@ function formatDateSafe(dateStr: any): string {
             </div>
 
             {/* COLLAGE KITS & WALL SETS CATEGORIES SECTION directly below New Arrivals */}
-            <div id="collage-wall-sets" className="mb-14 text-left select-none scroll-mt-24">
-              <div className="flex items-center justify-between mb-3 border-b border-gray-150 pb-2">
-                <h2 className="text-xl sm:text-2xl font-display font-black text-[#0e0d0d] tracking-tight uppercase">
-                  COLLAGE & WALL SETS
-                </h2>
-                <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider bg-red-600 text-white px-2.5 py-1 rounded-full shadow-2xs">
-                  POW! SPECIALS
-                </span>
+            <div id="collage-wall-sets" className="mb-16 text-left select-none scroll-mt-24">
+              {/* Section Header */}
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-5 sm:mb-6 border-b border-gray-150 pb-3 sm:pb-4">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black tracking-wider uppercase bg-red-600 text-white shadow-xs mb-1.5">
+                    <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> CURATED ROOM AESTHETICS
+                  </div>
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-black text-gray-950 tracking-tight uppercase">
+                    COLLAGE KITS & WALL SETS
+                  </h2>
+                  <p className="text-xs sm:text-sm text-gray-500 font-medium mt-0.5">
+                    Transform your walls into gallery masterpieces with curated collage aesthetics and multi-panel wall sets.
+                  </p>
+                </div>
               </div>
-              <p className="text-xs sm:text-sm text-gray-500 mb-6 font-medium">
-                Vibrant aesthetic collage kits and premium multi-panel wall sets designed to transform any room.
-              </p>
 
-              {/* Mobinkakei CTA Category Buttons Grid */}
-              <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 py-4">
-                {collageAndWallSetCategories.map((cat) => (
-                  <button
-                    key={cat.name}
-                    type="button"
-                    className="cta"
-                    style={{ background: cat.bg }}
-                    onClick={() => handleCategorySelect(cat.category)}
-                    aria-label={`Open ${cat.name}`}
+              {/* 1. FEATURED HERO BANNER: WALL SETS */}
+              {(() => {
+                const wallSetItem = collageAndWallSetCategories.find(c => c.name === "Wall Sets") || collageAndWallSetCategories[0];
+                return (
+                  <div
+                    onClick={() => handleCategorySelect(wallSetItem.category)}
+                    className="collage-bento-card group relative mb-4 sm:mb-6 rounded-2xl sm:rounded-3xl overflow-hidden border border-gray-200/60 shadow-lg cursor-pointer transition-all duration-300 min-h-[175px] sm:min-h-[210px] flex items-center"
+                    style={{ '--card-glow': '#ff3d3d' } as React.CSSProperties}
+                    role="button"
+                    tabIndex={0}
+                    aria-label="Browse Wall Sets Collection"
                   >
-                    <span className="span">{cat.name}</span>
-                    <span className="second">
-                      <svg
-                        width="50px"
-                        height="20px"
-                        viewBox="0 0 66 43"
-                        version="1.1"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <g
-                          id="arrow"
-                          stroke="none"
-                          strokeWidth="1"
-                          fill="none"
-                          fillRule="evenodd"
+                    {/* Background Banner Artwork */}
+                    <img
+                      src={wallSetItem.image}
+                      alt="Wall Sets"
+                      loading="eager"
+                      className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                    />
+
+                    {/* Gradient Scrim for Pristine Contrast */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/80 to-black/35 sm:to-black/20" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent sm:hidden" />
+
+                    {/* Content Box */}
+                    <div className="relative z-10 p-4 sm:p-7 md:p-9 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 w-full">
+                      <div className="max-w-xl">
+                        <span className="inline-flex items-center gap-1 text-[9px] sm:text-[11px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-red-600 text-white mb-1.5 shadow-xs">
+                          <Layers className="w-3 h-3" /> {wallSetItem.badge} • MULTI-PANEL ART
+                        </span>
+                        <h3 className="text-lg sm:text-2xl md:text-3xl font-display font-black text-white uppercase tracking-tight drop-shadow-sm group-hover:text-amber-400 transition-colors">
+                          WALL SETS & ART BUNDLES
+                        </h3>
+                        <p className="text-xs sm:text-sm text-gray-300 font-medium mt-1 line-clamp-2 max-w-lg">
+                          Multi-frame synchronized gallery sets designed to give your bedroom, workspace, or living room an iconic designer aesthetic.
+                        </p>
+                      </div>
+
+                      {/* Animated CTA Button */}
+                      <div className="shrink-0 pt-1 sm:pt-0">
+                        <div
+                          className="cta !py-2.5 !px-5 sm:!py-3 sm:!px-6 !text-xs sm:!text-sm !shadow-[4px_4px_0_black] group-hover:!shadow-[6px_6px_0_#fbc638] !bg-red-600"
                         >
-                          <path
-                            className="one"
-                            d="M40.1543933,3.89485454 L43.9763149,0.139296592 C44.1708311,-0.0518420739 44.4826329,-0.0518571125 44.6771675,0.139262789 L65.6916134,20.7848311 C66.0855801,21.1718824 66.0911863,21.8050225 65.704135,22.1989893 C65.7000188,22.2031791 65.6958657,22.2073326 65.6916762,22.2114492 L44.677098,42.8607841 C44.4825957,43.0519059 44.1708242,43.0519358 43.9762853,42.8608513 L40.1545186,39.1069479 C39.9575152,38.9134427 39.9546793,38.5968729 40.1481845,38.3998695 C40.1502893,38.3977268 40.1524132,38.395603 40.1545562,38.3934985 L56.9937789,21.8567812 C57.1908028,21.6632968 57.193672,21.3467273 57.0001876,21.1497035 C56.9980647,21.1475418 56.9959223,21.1453995 56.9937605,21.1432767 L40.1545208,4.60825197 C39.9574869,4.41477773 39.9546013,4.09820839 40.1480756,3.90117456 C40.1501626,3.89904911 40.1522686,3.89694235 40.1543933,3.89485454 Z"
-                            fill="#FFFFFF"
-                          />
-                          <path
-                            className="two"
-                            d="M20.1543933,3.89485454 L23.9763149,0.139296592 C24.1708311,-0.0518420739 24.4826329,-0.0518571125 24.6771675,0.139262789 L45.6916134,20.7848311 C46.0855801,21.1718824 46.0911863,21.8050225 45.704135,22.1989893 C45.7000188,22.2031791 45.6958657,22.2073326 45.6916762,22.2114492 L24.677098,42.8607841 C24.4825957,43.0519059 24.1708242,43.0519358 23.9762853,42.8608513 L20.1545186,39.1069479 C19.9575152,38.9134427 19.9546793,38.5968729 20.1481845,38.3998695 C20.1502893,38.3977268 20.1524132,38.395603 20.1545562,38.3934985 L36.9937789,21.8567812 C37.1908028,21.6632968 37.193672,21.3467273 37.0001876,21.1497035 C36.9980647,21.1475418 36.9959223,21.1453995 36.9937605,21.1432767 L20.1545208,4.60825197 C19.9574869,4.41477773 19.9546013,4.09820839 20.1480756,3.90117456 C20.1501626,3.89904911 20.1522686,3.89694235 20.1543933,3.89485454 Z"
-                            fill="#FFFFFF"
-                          />
-                          <path
-                            className="three"
-                            d="M0.154393339,3.89485454 L3.97631488,0.139296592 C4.17083111,-0.0518420739 4.48263286,-0.0518571125 4.67716753,0.139262789 L25.6916134,20.7848311 C26.0855801,21.1718824 26.0911863,21.8050225 25.704135,22.1989893 C25.7000188,22.2031791 25.6958657,22.2073326 25.6916762,22.2114492 L4.67709797,42.8607841 C4.48259567,43.0519059 4.17082418,43.0519358 3.97628526,42.8608513 L0.154518591,39.1069479 C-0.0424848215,38.9134427 -0.0453206733,38.5968729 0.148184538,38.3998695 C0.150289256,38.3977268 0.152413239,38.395603 0.154556228,38.3934985 L16.9937789,21.8567812 C17.1908028,21.6632968 17.193672,21.3467273 17.0001876,21.1497035 C16.9980647,21.1475418 16.9959223,21.1453995 16.9937605,21.1432767 L0.15452076,4.60825197 C-0.0425130651,4.41477773 -0.0453986756,4.09820839 0.148075568,3.90117456 C0.150162624,3.89904911 0.152268631,3.89694235 0.154393339,3.89485454 Z"
-                            fill="#FFFFFF"
-                          />
-                        </g>
-                      </svg>
-                    </span>
-                  </button>
-                ))}
+                          <span className="span font-black tracking-wider">EXPLORE SETS</span>
+                          <span className="second">
+                            <svg
+                              width="40px"
+                              height="18px"
+                              viewBox="0 0 66 43"
+                              version="1.1"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g id="arrow" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                                <path className="one" d="M40.1543933,3.89485454 L43.9763149,0.139296592 C44.1708311,-0.0518420739 44.4826329,-0.0518571125 44.6771675,0.139262789 L65.6916134,20.7848311 C66.0855801,21.1718824 66.0911863,21.8050225 65.704135,22.1989893 C65.7000188,22.2031791 65.6958657,22.2073326 65.6916762,22.2114492 L44.677098,42.8607841 C44.4825957,43.0519059 44.1708242,43.0519358 43.9762853,42.8608513 L40.1545186,39.1069479 C39.9575152,38.9134427 39.9546793,38.5968729 40.1481845,38.3998695 C40.1502893,38.3977268 40.1524132,38.395603 40.1545562,38.3934985 L56.9937789,21.8567812 C57.1908028,21.6632968 57.193672,21.3467273 57.0001876,21.1497035 C56.9980647,21.1475418 56.9959223,21.1453995 56.9937605,21.1432767 L40.1545208,4.60825197 C39.9574869,4.41477773 39.9546013,4.09820839 40.1480756,3.90117456 C40.1501626,3.89904911 40.1522686,3.89694235 40.1543933,3.89485454 Z" fill="#FFFFFF" />
+                                <path className="two" d="M20.1543933,3.89485454 L23.9763149,0.139296592 C24.1708311,-0.0518420739 24.4826329,-0.0518571125 24.6771675,0.139262789 L45.6916134,20.7848311 C46.0855801,21.1718824 46.0911863,21.8050225 45.704135,22.1989893 C45.7000188,22.2031791 45.6958657,22.2073326 45.6916762,22.2114492 L24.677098,42.8607841 C24.4825957,43.0519059 24.1708242,43.0519358 23.9762853,42.8608513 L20.1545186,39.1069479 C19.9575152,38.9134427 19.9546793,38.5968729 20.1481845,38.3998695 C20.1502893,38.3977268 20.1524132,38.395603 20.1545562,38.3934985 L36.9937789,21.8567812 C37.1908028,21.6632968 37.193672,21.3467273 37.0001876,21.1497035 C36.9980647,21.1475418 36.9959223,21.1453995 36.9937605,21.1432767 L20.1545208,4.60825197 C19.9574869,4.41477773 19.9546013,4.09820839 20.1480756,3.90117456 C20.1501626,3.89904911 20.1522686,3.89694235 20.1543933,3.89485454 Z" fill="#FFFFFF" />
+                                <path className="three" d="M0.154393339,3.89485454 L3.97631488,0.139296592 C4.17083111,-0.0518420739 4.48263286,-0.0518571125 4.67716753,0.139262789 L25.6916134,20.7848311 C26.0855801,21.1718824 26.0911863,21.8050225 25.704135,22.1989893 C25.7000188,22.2031791 25.6958657,22.2073326 25.6916762,22.2114492 L4.67709797,42.8607841 C4.48259567,43.0519059 4.17082418,43.0519358 3.97628526,42.8608513 L0.154518591,39.1069479 C-0.0424848215,38.9134427 -0.0453206733,38.5968729 0.148184538,38.3998695 C0.150289256,38.3977268 0.152413239,38.395603 0.154556228,38.3934985 L16.9937789,21.8567812 C17.1908028,21.6632968 17.193672,21.3467273 17.0001876,21.1497035 C16.9980647,21.1475418 16.9959223,21.1453995 16.9937605,21.1432767 L0.15452076,4.60825197 C-0.0425130651,4.41477773 -0.0453986756,4.09820839 0.148075568,3.90117456 C0.150162624,3.89904911 0.152268631,3.89694235 0.154393339,3.89485454 Z" fill="#FFFFFF" />
+                              </g>
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* 2. 2-COLUMN MOBILE / 4-COLUMN DESKTOP BENTO GRID FOR COLLAGE KITS */}
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-5">
+                {collageAndWallSetCategories
+                  .filter(cat => cat.name !== "Wall Sets")
+                  .map((cat) => (
+                    <div
+                      key={cat.name}
+                      onClick={() => handleCategorySelect(cat.category)}
+                      className="collage-bento-card group relative flex flex-col justify-end p-3 sm:p-4 md:p-5 aspect-[3/4] rounded-2xl overflow-hidden border border-gray-800/80 hover:border-white/40 cursor-pointer"
+                      style={{ '--card-glow': cat.glowColor } as React.CSSProperties}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Explore ${cat.name}`}
+                    >
+                      {/* Background Art Image */}
+                      <img
+                        src={cat.image}
+                        alt={cat.name}
+                        loading="lazy"
+                        className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-108 transition-transform duration-700 ease-out"
+                      />
+
+                      {/* Multi-tier Gradient for legibility */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/55 to-black/10 group-hover:via-black/65 transition-colors" />
+
+                      {/* Category Badge */}
+                      <div className="relative z-10 mb-auto">
+                        <span
+                          className="inline-block text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full text-white backdrop-blur-md shadow-xs border border-white/10"
+                          style={{ backgroundColor: `${cat.glowColor}d9` }}
+                        >
+                          {cat.badge}
+                        </span>
+                      </div>
+
+                      {/* Title & Subtitle */}
+                      <div className="relative z-10 pt-2">
+                        <h3 className="text-sm sm:text-base md:text-lg font-display font-black text-white leading-tight drop-shadow-sm group-hover:text-amber-400 transition-colors uppercase">
+                          {cat.name}
+                        </h3>
+                        <p className="text-[10px] sm:text-xs text-gray-300 font-medium line-clamp-1 mt-0.5 opacity-90">
+                          {cat.subtitle}
+                        </p>
+
+                        {/* Interactive Chevrons Bottom Bar */}
+                        <div className="mt-2.5 pt-2 border-t border-white/15 flex items-center justify-between text-white/90">
+                          <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-wider text-gray-300 group-hover:text-amber-300 transition-colors">
+                            DISCOVER
+                          </span>
+                          <div className="cta-anim-arrow flex items-center">
+                            <svg
+                              width="26px"
+                              height="13px"
+                              viewBox="0 0 66 43"
+                              version="1.1"
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="drop-shadow-sm"
+                            >
+                              <g id="arrow" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                                <path className="one" d="M40.1543933,3.89485454 L43.9763149,0.139296592 C44.1708311,-0.0518420739 44.4826329,-0.0518571125 44.6771675,0.139262789 L65.6916134,20.7848311 C66.0855801,21.1718824 66.0911863,21.8050225 65.704135,22.1989893 C65.7000188,22.2031791 65.6958657,22.2073326 65.6916762,22.2114492 L44.677098,42.8607841 C44.4825957,43.0519059 44.1708242,43.0519358 43.9762853,42.8608513 L40.1545186,39.1069479 C39.9575152,38.9134427 39.9546793,38.5968729 40.1481845,38.3998695 C40.1502893,38.3977268 40.1524132,38.395603 40.1545562,38.3934985 L56.9937789,21.8567812 C57.1908028,21.6632968 57.193672,21.3467273 57.0001876,21.1497035 C56.9980647,21.1475418 56.9959223,21.1453995 56.9937605,21.1432767 L40.1545208,4.60825197 C39.9574869,4.41477773 39.9546013,4.09820839 40.1480756,3.90117456 C40.1501626,3.89904911 40.1522686,3.89694235 40.1543933,3.89485454 Z" fill="#FFFFFF" />
+                                <path className="two" d="M20.1543933,3.89485454 L23.9763149,0.139296592 C24.1708311,-0.0518420739 24.4826329,-0.0518571125 24.6771675,0.139262789 L45.6916134,20.7848311 C46.0855801,21.1718824 46.0911863,21.8050225 45.704135,22.1989893 C45.7000188,22.2031791 45.6958657,22.2073326 45.6916762,22.2114492 L24.677098,42.8607841 C24.4825957,43.0519059 24.1708242,43.0519358 23.9762853,42.8608513 L20.1545186,39.1069479 C19.9575152,38.9134427 19.9546793,38.5968729 20.1481845,38.3998695 C20.1502893,38.3977268 20.1524132,38.395603 20.1545562,38.3934985 L36.9937789,21.8567812 C37.1908028,21.6632968 37.193672,21.3467273 37.0001876,21.1497035 C36.9980647,21.1475418 36.9959223,21.1453995 36.9937605,21.1432767 L20.1545208,4.60825197 C19.9574869,4.41477773 19.9546013,4.09820839 20.1480756,3.90117456 C20.1501626,3.89904911 20.1522686,3.89694235 20.1543933,3.89485454 Z" fill="#FFFFFF" />
+                                <path className="three" d="M0.154393339,3.89485454 L3.97631488,0.139296592 C4.17083111,-0.0518420739 4.48263286,-0.0518571125 4.67716753,0.139262789 L25.6916134,20.7848311 C26.0855801,21.1718824 26.0911863,21.8050225 25.704135,22.1989893 C25.7000188,22.2031791 25.6958657,22.2073326 25.6916762,22.2114492 L4.67709797,42.8607841 C4.48259567,43.0519059 4.17082418,43.0519358 3.97628526,42.8608513 L0.154518591,39.1069479 C-0.0424848215,38.9134427 -0.0453206733,38.5968729 0.148184538,38.3998695 C0.150289256,38.3977268 0.152413239,38.395603 0.154556228,38.3934985 L16.9937789,21.8567812 C17.1908028,21.6632968 17.193672,21.3467273 17.0001876,21.1497035 C16.9980647,21.1475418 16.9959223,21.1453995 16.9937605,21.1432767 L0.15452076,4.60825197 C-0.0425130651,4.41477773 -0.0453986756,4.09820839 0.148075568,3.90117456 C0.150162624,3.89904911 0.152268631,3.89694235 0.154393339,3.89485454 Z" fill="#FFFFFF" />
+                              </g>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
               </div>
             </div>
 
