@@ -203,6 +203,9 @@ function App() {
       setSelectedCategory(category);
     }
     setSelectedProduct(null);
+    setProductsList([]);
+    setSkip(0);
+    setHasMore(true);
     setActiveTab('category_page');
     setSidebarOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -623,9 +626,9 @@ function formatDateSafe(dateStr: any): string {
     }
   }, [productsList]);
 
-  // Dynamically compute homepage category cards (Default 8 split poster categories + any new custom categories created in Admin)
+  // Homepage Split Poster category cards (Strictly 8 Split Poster categories - Wall Sets and Collage kits are accessed via sidebar)
   const homepageCategoryCards = useMemo(() => {
-    const baseCards = [
+    return [
       { name: "Anime Split Posters", category: "Anime & Gaming", image: "/cat-anime-opt.mp4", poster: "/cat-anime-poster.webp" },
       { name: "Superhero Split Posters", category: "Superhero", image: "/cat-superhero-opt.mp4", poster: "/cat-superhero-poster.webp" },
       { name: "Super Cars Split Posters", category: "Supercars", image: "/cat-supercars-opt.mp4", poster: "/cat-supercars-poster.webp" },
@@ -635,40 +638,11 @@ function formatDateSafe(dateStr: any): string {
       { name: "Gym & Fitness Split Posters", category: "Gym & Fitness", image: "/cat-gym-opt.mp4", poster: "/cat-gym-poster.webp" },
       { name: "Music & Bands Split Posters", category: "Music", image: "/cat-music-opt.mp4", poster: "/cat-music-poster.webp" },
     ];
+  }, []);
 
-    if (!productsList || productsList.length === 0) return baseCards;
-
-    const baseKeys = baseCards.map(c => c.category.toLowerCase().trim());
-
-    const extraCategories = new Set<string>();
-    productsList.forEach(p => {
-      if (p.category && p.category.trim()) {
-        const catTrim = p.category.trim();
-        const catLower = catTrim.toLowerCase();
-        if (catLower.includes('poloride') || catLower.includes('polaroid')) return;
-        const matchesBase = baseKeys.some(bk => bk === catLower || catLower.includes(bk) || bk.includes(catLower));
-        if (!matchesBase) {
-          extraCategories.add(catTrim);
-        }
-      }
-    });
-
-    const extraCards = Array.from(extraCategories).map(catName => {
-      const repProd = productsList.find(p => p.category?.trim().toLowerCase() === catName.toLowerCase());
-      return {
-        name: `${catName} Posters`,
-        category: catName,
-        image: "",
-        poster: repProd?.thumbnail || "/cat-anime-poster.webp"
-      };
-    });
-
-    return [...baseCards, ...extraCards];
-  }, [productsList]);
-
-  // Dynamically compute SINGLE POSTERS sub-tabs (Default 8 tabs + any custom categories created in Admin)
+  // SINGLE POSTERS sub-tabs (Strictly Single Poster categories)
   const singlePosterSubTabs = useMemo(() => {
-    const baseTabs = [
+    return [
       { label: 'Car Posters', key: 'Supercars' },
       { label: 'Anime Posters', key: 'Anime & Gaming' },
       { label: 'Cricket Posters', key: 'Cricket' },
@@ -678,28 +652,59 @@ function formatDateSafe(dateStr: any): string {
       { label: 'Gym Posters', key: 'Gym & Fitness' },
       { label: 'Music Posters', key: 'Music' }
     ];
+  }, []);
 
-    if (!productsList || productsList.length === 0) return baseTabs;
+  // Filter products strictly for Category Page view (ensures Wall Sets and specific categories never bleed into each other)
+  const categoryProducts = useMemo(() => {
+    if (!selectedCategory) return productsList;
+    const selLower = selectedCategory.toLowerCase().trim();
+    return productsList.filter(p => {
+      if (!p || !p.category) return false;
+      const pCat = p.category.toLowerCase().trim();
 
-    const baseKeys = baseTabs.map(t => t.key.toLowerCase().trim());
-
-    productsList.forEach(p => {
-      if (p.category && p.category.trim()) {
-        const catTrim = p.category.trim();
-        const catLower = catTrim.toLowerCase();
-        if (catLower.includes('poloride') || catLower.includes('polaroid')) return;
-        const matchesBase = baseKeys.some(bk => bk === catLower || catLower.includes(bk) || bk.includes(catLower));
-        if (!matchesBase && !baseTabs.some(t => t.key.toLowerCase() === catLower)) {
-          baseTabs.push({
-            label: `${catTrim} Posters`,
-            key: catTrim
-          });
-        }
+      // 1. Wall Sets: strictly matches products with "wall"
+      if (selLower === 'wall sets' || selLower === 'wall set') {
+        return pCat.includes('wall');
       }
-    });
 
-    return baseTabs;
-  }, [productsList]);
+      // 2. Collage / Block Kits: strictly matches that specific collage category
+      if (selLower.includes('collage')) {
+        return pCat === selLower || pCat.replace('/', ' ').includes(selLower.replace('/', ' '));
+      }
+
+      // 3. Regular poster categories: NEVER match wall sets or collage kits or polaroids
+      if (pCat.includes('wall') || pCat.includes('collage') || pCat.includes('polaroid') || pCat.includes('poloride')) {
+        return false;
+      }
+
+      if (selLower === 'supercars') {
+        return pCat === 'supercars' || pCat === 'supercar' || pCat.includes('racing') || pCat.includes('f1');
+      }
+      if (selLower === 'anime & gaming') {
+        return pCat === 'anime & gaming' || pCat.includes('anime') || pCat.includes('gaming') || pCat.includes('manga');
+      }
+      if (selLower === 'superbike') {
+        return pCat === 'superbike' || pCat.includes('bike') || pCat.includes('motorcycle');
+      }
+      if (selLower === 'cricket') {
+        return pCat === 'cricket';
+      }
+      if (selLower === 'superhero') {
+        return pCat === 'superhero' || pCat.includes('marvel') || pCat.includes('dc');
+      }
+      if (selLower === 'devotional') {
+        return pCat === 'devotional' || pCat.includes('spiritual');
+      }
+      if (selLower === 'gym & fitness') {
+        return pCat === 'gym & fitness' || pCat.includes('fitness');
+      }
+      if (selLower === 'music') {
+        return pCat === 'music';
+      }
+
+      return pCat === selLower || pCat.includes(selLower) || selLower.includes(pCat);
+    });
+  }, [productsList, selectedCategory]);
 
   // Support direct product links & handle Browser/Mobile Back Button (popstate)
   useEffect(() => {
@@ -1096,35 +1101,40 @@ function formatDateSafe(dateStr: any): string {
     const pCat = p.category.toLowerCase().trim();
     const targetKey = activeKey.toLowerCase().trim();
 
-    // 1. Direct or substring category match
-    if (pCat === targetKey || pCat.includes(targetKey) || targetKey.includes(pCat)) {
+    // Wall Sets, Collage kits, and Polaroids are separate product formats — never show in Single Posters
+    if (pCat.includes('wall') || pCat.includes('collage') || pCat.includes('polaroid') || pCat.includes('poloride')) {
+      return false;
+    }
+
+    // Direct match
+    if (pCat === targetKey) {
       return true;
     }
 
-    // 2. Specific sub-tab keyword matching
+    // Specific sub-tab keyword matching
     if (targetKey === 'supercars') {
-      return pCat.includes('car') || pCat.includes('racing') || pCat.includes('f1') || pCat.includes('vehicle');
+      return pCat === 'supercars' || pCat === 'supercar' || pCat.includes('racing') || pCat.includes('f1');
     }
     if (targetKey === 'anime & gaming') {
-      return pCat.includes('anime') || pCat.includes('gaming') || pCat.includes('manga');
+      return pCat === 'anime & gaming' || pCat.includes('anime') || pCat.includes('gaming') || pCat.includes('manga');
     }
     if (targetKey === 'superbike') {
-      return pCat.includes('bike') || pCat.includes('motorcycle');
+      return pCat === 'superbike' || pCat.includes('bike') || pCat.includes('motorcycle');
     }
     if (targetKey === 'cricket') {
-      return pCat.includes('cricket');
+      return pCat === 'cricket';
     }
     if (targetKey === 'superhero') {
-      return pCat.includes('superhero') || pCat.includes('marvel') || pCat.includes('dc');
+      return pCat === 'superhero' || pCat.includes('marvel') || pCat.includes('dc');
     }
     if (targetKey === 'devotional') {
-      return pCat.includes('devotional') || pCat.includes('spiritual');
+      return pCat === 'devotional' || pCat.includes('spiritual');
     }
     if (targetKey === 'gym & fitness') {
-      return pCat.includes('gym') || pCat.includes('fitness');
+      return pCat === 'gym & fitness' || pCat.includes('fitness');
     }
     if (targetKey === 'music') {
-      return pCat.includes('music');
+      return pCat === 'music';
     }
 
     return false;
@@ -1754,26 +1764,28 @@ function formatDateSafe(dateStr: any): string {
               onClick={() => {
                 setActiveTab('home');
                 setSelectedCategory(null);
+                setProductsList([]);
+                setSkip(0);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               className="inline-flex items-center gap-2 text-xs font-bold text-gray-600 hover:text-gray-950 mb-4 bg-gray-100 hover:bg-gray-200 px-3.5 py-1.5 rounded-full transition-all cursor-pointer"
             >
               <span>←</span>
-              <span>Back to Categories</span>
+              <span>Back to Home</span>
             </button>
 
             {/* Filtered Product Cards Grid */}
-            {productsList.length === 0 && loadingMore ? (
+            {categoryProducts.length === 0 && loadingMore ? (
               <div className="py-16">
-                <BrandBuffer size="lg" message={`Buffering ${selectedCategory || 'Posters'}...`} />
+                <BrandBuffer size="lg" message={`Buffering ${selectedCategory || 'Products'}...`} />
               </div>
-            ) : productsList.length === 0 && !loadingMore ? (
+            ) : categoryProducts.length === 0 && !loadingMore ? (
               <div className="text-center py-12 bg-white rounded-3xl border border-gray-100">
-                <p className="text-xs text-gray-500 font-semibold">No posters match your selected category.</p>
+                <p className="text-xs text-gray-500 font-semibold">No products found in category "{selectedCategory || 'Selected Category'}".</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-                {productsList.map((product) => (
+                {categoryProducts.map((product) => (
                   <ProductCard
                     key={product.id || product._id || product.slug}
                     product={product}
