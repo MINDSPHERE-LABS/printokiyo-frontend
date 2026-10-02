@@ -21,6 +21,18 @@ export function getImageUrl(url: string | undefined | null): string {
   if (clean.startsWith('http://') || clean.startsWith('https://') || clean.startsWith('data:')) {
     return clean;
   }
+
+  // Frontend public static assets (banners, category cards, hero slides)
+  if (
+    clean.startsWith('/cat-') ||
+    clean.startsWith('/hero-') ||
+    clean.startsWith('/collage-') ||
+    clean.startsWith('/polaroid-') ||
+    clean.startsWith('/favicon') ||
+    clean.startsWith('/logo')
+  ) {
+    return clean;
+  }
   
   const relativePath = clean.startsWith('/') ? clean : `/${clean}`;
   return `${backendBase}${relativePath}`;
