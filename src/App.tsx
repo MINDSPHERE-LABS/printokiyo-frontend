@@ -19,6 +19,7 @@ import { OrderSuccessModal } from './components/OrderSuccessModal';
 import { Footer } from './components/Footer';
 import { AboutUsPage } from './components/AboutUsPage';
 import { TermsOfServicePage } from './components/TermsOfServicePage';
+import { ShippingPolicyPage } from './components/ShippingPolicyPage';
 import { BrandBuffer } from './components/BrandBuffer';
 import { SidebarDrawer } from './components/SidebarDrawer';
 import { QuickAddModal } from './components/QuickAddModal';
@@ -114,13 +115,16 @@ function App() {
     }
     touchStartXRef.current = null;
   };
-  const [activeTab, setActiveTab] = useState<'home' | 'category_page' | 'search' | 'wishlist' | 'cart' | 'profile' | 'details' | 'checkout' | 'confirmation' | 'about' | 'terms'>(() => {
+  const [activeTab, setActiveTab] = useState<'home' | 'category_page' | 'search' | 'wishlist' | 'cart' | 'profile' | 'details' | 'checkout' | 'confirmation' | 'about' | 'terms' | 'shipping'>(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('page') === 'about' || window.location.hash === '#about') {
       return 'about';
     }
     if (params.get('page') === 'terms' || window.location.hash === '#terms') {
       return 'terms';
+    }
+    if (params.get('page') === 'shipping' || window.location.hash === '#shipping') {
+      return 'shipping';
     }
     if (params.has('product') || params.has('p') || window.location.pathname.startsWith('/product/')) {
       return 'details';
@@ -1137,6 +1141,13 @@ function formatDateSafe(dateStr: any): string {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleOpenShipping = () => {
+    setActiveTab('shipping');
+    setSelectedProduct(null);
+    setSelectedCategory(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Open details view in-line instead of a overlapping popup
   const openProductDetails = (product: Product) => {
     if (activeTab !== 'details') {
@@ -1303,6 +1314,7 @@ function formatDateSafe(dateStr: any): string {
         onSelectPolaroid={handleOpenPolaroid}
         onAboutClick={handleOpenAbout}
         onTermsClick={handleOpenTerms}
+        onShippingClick={handleOpenShipping}
       />
 
       {/* 4. Content main container */}
@@ -1650,6 +1662,7 @@ function formatDateSafe(dateStr: any): string {
               <Footer 
                 onAboutClick={handleOpenAbout}
                 onTermsClick={handleOpenTerms}
+                onShippingClick={handleOpenShipping}
               />
             </div>
           </div>
@@ -1708,6 +1721,7 @@ function formatDateSafe(dateStr: any): string {
               <Footer 
                 onAboutClick={handleOpenAbout}
                 onTermsClick={handleOpenTerms}
+                onShippingClick={handleOpenShipping}
               />
             </div>
           </div>
@@ -1735,6 +1749,7 @@ function formatDateSafe(dateStr: any): string {
               <Footer 
                 onAboutClick={handleOpenAbout}
                 onTermsClick={handleOpenTerms}
+                onShippingClick={handleOpenShipping}
               />
             </div>
           </div>
@@ -1756,6 +1771,35 @@ function formatDateSafe(dateStr: any): string {
               <Footer 
                 onAboutClick={handleOpenAbout}
                 onTermsClick={handleOpenTerms}
+                onShippingClick={handleOpenShipping}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Dedicated Shipping Policy Page View */}
+        {activeTab === 'shipping' && (
+          <div className="-mx-4 sm:-mx-6 lg:-mx-8 -mt-6 animate-in fade-in duration-300">
+            <ShippingPolicyPage 
+              onNavigateHome={() => {
+                setActiveTab('home');
+                setSelectedCategory(null);
+                setSelectedProduct(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onExploreProducts={() => {
+                setActiveTab('home');
+                setSelectedCategory(null);
+                setSelectedProduct(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+            {/* Brand Footer */}
+            <div className="border-t border-zinc-900">
+              <Footer 
+                onAboutClick={handleOpenAbout}
+                onTermsClick={handleOpenTerms}
+                onShippingClick={handleOpenShipping}
               />
             </div>
           </div>

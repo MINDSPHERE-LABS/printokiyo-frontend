@@ -4,9 +4,10 @@ import { Mail, Facebook, Instagram, ChevronDown } from 'lucide-react';
 interface FooterProps {
   onAboutClick?: () => void;
   onTermsClick?: () => void;
+  onShippingClick?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onAboutClick, onTermsClick }) => {
+export const Footer: React.FC<FooterProps> = ({ onAboutClick, onTermsClick, onShippingClick }) => {
   const [usefulLinksOpen, setUsefulLinksOpen] = useState(false);
   const [mainMenuOpen, setMainMenuOpen] = useState(false);
 
@@ -77,7 +78,7 @@ export const Footer: React.FC<FooterProps> = ({ onAboutClick, onTermsClick }) =>
             <ul className={`flex-col gap-2.5 text-xs sm:text-sm font-medium text-gray-300 transition-all ${usefulLinksOpen ? 'flex pt-1' : 'hidden md:flex'}`}>
               <li><button type="button" onClick={onAboutClick} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">About Us</button></li>
               <li><button type="button" onClick={onTermsClick} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Terms Of Service</button></li>
-              <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Shipping Policy</a></li>
+              <li><button type="button" onClick={onShippingClick} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Shipping Policy</button></li>
               <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Refund Policy</a></li>
               <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Cancel Order</a></li>
               <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Privacy Policy</a></li>
