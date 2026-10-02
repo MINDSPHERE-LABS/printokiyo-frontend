@@ -7,6 +7,7 @@ interface FooterProps {
   onShippingClick?: () => void;
   onRefundClick?: () => void;
   onCancelOrderClick?: () => void;
+  onPrivacyClick?: () => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ 
@@ -14,7 +15,8 @@ export const Footer: React.FC<FooterProps> = ({
   onTermsClick, 
   onShippingClick, 
   onRefundClick,
-  onCancelOrderClick
+  onCancelOrderClick,
+  onPrivacyClick
 }) => {
   const [usefulLinksOpen, setUsefulLinksOpen] = useState(false);
   const [mainMenuOpen, setMainMenuOpen] = useState(false);
@@ -89,7 +91,7 @@ export const Footer: React.FC<FooterProps> = ({
               <li><button type="button" onClick={onShippingClick} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Shipping Policy</button></li>
               <li><button type="button" onClick={onRefundClick} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Refund Policy</button></li>
               <li><button type="button" onClick={onCancelOrderClick} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Cancel Order</button></li>
-              <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Privacy Policy</a></li>
+              <li><button type="button" onClick={onPrivacyClick} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Privacy Policy</button></li>
               <li><button type="button" onClick={onRefundClick} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Refund</button></li>
             </ul>
           </div>
