@@ -421,14 +421,14 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
               </button>
 
               {[
-                'Cricket Collage/Block Kits',
-                'Football Collage/Block Kits',
-                'God Collage/Block Kits',
-                'F1 Collage/Block Kits',
-                'Anime Collage/Block Kits',
-                'Supercar Collage/Block Kits',
-                'Movies Collage/Block Kits',
-                'Motivation Collage/Block Kits'
+                'Cricket Collage Block Kits',
+                'Football Collage',
+                'God Collage/Block kit',
+                'Anime Collage',
+                'Supercar Colage',
+                'Movie Collage',
+                'Motivation Collage',
+                'F1 Collage/Block Kits'
               ].map((kit) => (
                 <button
                   key={kit}
