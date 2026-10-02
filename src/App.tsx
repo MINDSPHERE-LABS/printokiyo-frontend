@@ -539,6 +539,7 @@ function formatDateSafe(dateStr: any): string {
                 const photoFromSession = (it.storage_photo_key ? sessionStorage.getItem(it.storage_photo_key) : null) || sessionStorage.getItem(`mwm_custom_photo_${idx}`);
                 return {
                   product_id: it.id || it._id,
+                  sku: it.SKU || it.sku || '',
                   title: it.title,
                   price: getEffectivePrice(it),
                   thumbnail: it.thumbnail,
@@ -2122,6 +2123,7 @@ function formatDateSafe(dateStr: any): string {
 
               const mappedItems = calculatedCheckoutCart.map((it) => ({
                 product_id: it.id || (it as any)._id,
+                sku: it.SKU || (it as any).sku || '',
                 title: it.title,
                 price: it.final_price,
                 thumbnail: it.thumbnail,

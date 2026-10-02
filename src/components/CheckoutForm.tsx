@@ -270,6 +270,7 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
         address: fullAddress,
         items: cart.map((it) => ({
           product_id: it.id || (it as any)._id,
+          sku: it.SKU || (it as any).sku || '',
           title: it.title,
           price: getEffectivePrice(it),
           thumbnail: typeof it.thumbnail === 'string' && it.thumbnail.startsWith('data:') ? it.thumbnail.slice(0, 60) : it.thumbnail

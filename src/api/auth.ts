@@ -236,9 +236,12 @@ export interface OrderPayload {
   payment_method: string;
   items: Array<{
     product_id?: string;
+    sku?: string;
     title: string;
     price: number;
     thumbnail?: string;
+    custom_photo?: string;
+    selected_size?: string;
   }>;
   grand_total: number;
   status?: string;
