@@ -5,9 +5,10 @@ interface FooterProps {
   onAboutClick?: () => void;
   onTermsClick?: () => void;
   onShippingClick?: () => void;
+  onRefundClick?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onAboutClick, onTermsClick, onShippingClick }) => {
+export const Footer: React.FC<FooterProps> = ({ onAboutClick, onTermsClick, onShippingClick, onRefundClick }) => {
   const [usefulLinksOpen, setUsefulLinksOpen] = useState(false);
   const [mainMenuOpen, setMainMenuOpen] = useState(false);
 
@@ -79,10 +80,10 @@ export const Footer: React.FC<FooterProps> = ({ onAboutClick, onTermsClick, onSh
               <li><button type="button" onClick={onAboutClick} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">About Us</button></li>
               <li><button type="button" onClick={onTermsClick} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Terms Of Service</button></li>
               <li><button type="button" onClick={onShippingClick} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Shipping Policy</button></li>
-              <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Refund Policy</a></li>
+              <li><button type="button" onClick={onRefundClick} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Refund Policy</button></li>
               <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Cancel Order</a></li>
               <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Refund</a></li>
+              <li><button type="button" onClick={onRefundClick} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Refund</button></li>
             </ul>
           </div>
 

@@ -20,6 +20,7 @@ import { Footer } from './components/Footer';
 import { AboutUsPage } from './components/AboutUsPage';
 import { TermsOfServicePage } from './components/TermsOfServicePage';
 import { ShippingPolicyPage } from './components/ShippingPolicyPage';
+import { RefundPolicyPage } from './components/RefundPolicyPage';
 import { BrandBuffer } from './components/BrandBuffer';
 import { SidebarDrawer } from './components/SidebarDrawer';
 import { QuickAddModal } from './components/QuickAddModal';
@@ -115,7 +116,7 @@ function App() {
     }
     touchStartXRef.current = null;
   };
-  const [activeTab, setActiveTab] = useState<'home' | 'category_page' | 'search' | 'wishlist' | 'cart' | 'profile' | 'details' | 'checkout' | 'confirmation' | 'about' | 'terms' | 'shipping'>(() => {
+  const [activeTab, setActiveTab] = useState<'home' | 'category_page' | 'search' | 'wishlist' | 'cart' | 'profile' | 'details' | 'checkout' | 'confirmation' | 'about' | 'terms' | 'shipping' | 'refund'>(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('page') === 'about' || window.location.hash === '#about') {
       return 'about';
@@ -125,6 +126,9 @@ function App() {
     }
     if (params.get('page') === 'shipping' || window.location.hash === '#shipping') {
       return 'shipping';
+    }
+    if (params.get('page') === 'refund' || window.location.hash === '#refund') {
+      return 'refund';
     }
     if (params.has('product') || params.has('p') || window.location.pathname.startsWith('/product/')) {
       return 'details';
@@ -1148,6 +1152,13 @@ function formatDateSafe(dateStr: any): string {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleOpenRefund = () => {
+    setActiveTab('refund');
+    setSelectedProduct(null);
+    setSelectedCategory(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Open details view in-line instead of a overlapping popup
   const openProductDetails = (product: Product) => {
     if (activeTab !== 'details') {
@@ -1315,6 +1326,7 @@ function formatDateSafe(dateStr: any): string {
         onAboutClick={handleOpenAbout}
         onTermsClick={handleOpenTerms}
         onShippingClick={handleOpenShipping}
+        onRefundClick={handleOpenRefund}
       />
 
       {/* 4. Content main container */}
@@ -1663,6 +1675,7 @@ function formatDateSafe(dateStr: any): string {
                 onAboutClick={handleOpenAbout}
                 onTermsClick={handleOpenTerms}
                 onShippingClick={handleOpenShipping}
+                onRefundClick={handleOpenRefund}
               />
             </div>
           </div>
@@ -1722,6 +1735,7 @@ function formatDateSafe(dateStr: any): string {
                 onAboutClick={handleOpenAbout}
                 onTermsClick={handleOpenTerms}
                 onShippingClick={handleOpenShipping}
+                onRefundClick={handleOpenRefund}
               />
             </div>
           </div>
@@ -1750,6 +1764,7 @@ function formatDateSafe(dateStr: any): string {
                 onAboutClick={handleOpenAbout}
                 onTermsClick={handleOpenTerms}
                 onShippingClick={handleOpenShipping}
+                onRefundClick={handleOpenRefund}
               />
             </div>
           </div>
@@ -1772,6 +1787,7 @@ function formatDateSafe(dateStr: any): string {
                 onAboutClick={handleOpenAbout}
                 onTermsClick={handleOpenTerms}
                 onShippingClick={handleOpenShipping}
+                onRefundClick={handleOpenRefund}
               />
             </div>
           </div>
@@ -1800,6 +1816,36 @@ function formatDateSafe(dateStr: any): string {
                 onAboutClick={handleOpenAbout}
                 onTermsClick={handleOpenTerms}
                 onShippingClick={handleOpenShipping}
+                onRefundClick={handleOpenRefund}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Dedicated Refund Policy Page View */}
+        {activeTab === 'refund' && (
+          <div className="-mx-4 sm:-mx-6 lg:-mx-8 -mt-6 animate-in fade-in duration-300">
+            <RefundPolicyPage 
+              onNavigateHome={() => {
+                setActiveTab('home');
+                setSelectedCategory(null);
+                setSelectedProduct(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onExploreProducts={() => {
+                setActiveTab('home');
+                setSelectedCategory(null);
+                setSelectedProduct(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+            {/* Brand Footer */}
+            <div className="border-t border-zinc-900">
+              <Footer 
+                onAboutClick={handleOpenAbout}
+                onTermsClick={handleOpenTerms}
+                onShippingClick={handleOpenShipping}
+                onRefundClick={handleOpenRefund}
               />
             </div>
           </div>
