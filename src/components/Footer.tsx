@@ -8,6 +8,9 @@ interface FooterProps {
   onRefundClick?: () => void;
   onCancelOrderClick?: () => void;
   onPrivacyClick?: () => void;
+  onOpenSplitNewArrivals?: () => void;
+  onOpenSinglePosters?: () => void;
+  onCategoryClick?: (category: string) => void;
 }
 
 export const Footer: React.FC<FooterProps> = ({ 
@@ -16,7 +19,10 @@ export const Footer: React.FC<FooterProps> = ({
   onShippingClick, 
   onRefundClick,
   onCancelOrderClick,
-  onPrivacyClick
+  onPrivacyClick,
+  onOpenSplitNewArrivals,
+  onOpenSinglePosters,
+  onCategoryClick
 }) => {
   const [usefulLinksOpen, setUsefulLinksOpen] = useState(false);
   const [mainMenuOpen, setMainMenuOpen] = useState(false);
@@ -112,13 +118,13 @@ export const Footer: React.FC<FooterProps> = ({
               />
             </button>
             <ul className={`flex-col gap-2.5 text-xs sm:text-sm font-medium text-gray-300 transition-all ${mainMenuOpen ? 'flex pt-1' : 'hidden md:flex'}`}>
-              <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Split Poster</a></li>
-              <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Posters</a></li>
-              <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Wall Sets</a></li>
-              <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Collage/Block Kits</a></li>
-              <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Customization</a></li>
-              <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Happy Customers</a></li>
-              <li><a href="#" className="hover:text-[#e2b04c] transition-colors">Support</a></li>
+              <li><button type="button" onClick={onOpenSplitNewArrivals} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Split Poster</button></li>
+              <li><button type="button" onClick={onOpenSinglePosters} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Posters</button></li>
+              <li><button type="button" onClick={() => onCategoryClick?.('Wall Sets')} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Wall Sets</button></li>
+              <li><button type="button" onClick={() => onCategoryClick?.('Collage/Block Kits')} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Collage/Block Kits</button></li>
+              <li><button type="button" onClick={() => onCategoryClick?.('Customization')} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Customization</button></li>
+              <li><button type="button" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Happy Customers</button></li>
+              <li><a href="mailto:support@printokiyo.com" className="hover:text-[#e2b04c] transition-colors">Support</a></li>
             </ul>
           </div>
 

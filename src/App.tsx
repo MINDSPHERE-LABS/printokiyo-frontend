@@ -1181,6 +1181,40 @@ function formatDateSafe(dateStr: any): string {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleOpenSplitNewArrivals = () => {
+    const isAlreadyHome = activeTab === 'home';
+    if (!isAlreadyHome) {
+      setActiveTab('home');
+      setSelectedCategory(null);
+      setSelectedProduct(null);
+    }
+    setTimeout(() => {
+      const el = document.getElementById('new-arrivals');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (newArrivalsSliderRef.current) {
+        newArrivalsSliderRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, isAlreadyHome ? 50 : 250);
+  };
+
+  const handleOpenSinglePosters = () => {
+    const isAlreadyHome = activeTab === 'home';
+    if (!isAlreadyHome) {
+      setActiveTab('home');
+      setSelectedCategory(null);
+      setSelectedProduct(null);
+    }
+    setTimeout(() => {
+      const el = document.getElementById('single-posters');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (singlePostersSliderRef.current) {
+        singlePostersSliderRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, isAlreadyHome ? 50 : 250);
+  };
+
   // Open details view in-line instead of a overlapping popup
   const openProductDetails = (product: Product) => {
     if (activeTab !== 'details') {
@@ -1351,6 +1385,8 @@ function formatDateSafe(dateStr: any): string {
         onRefundClick={handleOpenRefund}
         onCancelOrderClick={handleOpenCancelOrder}
         onPrivacyClick={handleOpenPrivacy}
+        onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
+        onOpenSinglePosters={handleOpenSinglePosters}
       />
 
       {/* 4. Content main container */}
@@ -1529,7 +1565,7 @@ function formatDateSafe(dateStr: any): string {
             </div>
 
             {/* SINGLE POSTERS Section matching reference image media_1790514554594.png */}
-            <div className="mb-12 text-left select-none">
+            <div id="single-posters" className="mb-12 text-left select-none scroll-mt-24">
               {/* Header: Title in #0e0d0d + Scroll Arrows + EXPLORE link */}
               <div className="flex items-center justify-between mb-3 border-b border-gray-150 pb-2">
                 <h2 className="text-xl sm:text-2xl font-display font-black text-[#0e0d0d] tracking-tight uppercase">
@@ -1628,7 +1664,7 @@ function formatDateSafe(dateStr: any): string {
             </div>
 
             {/* NEW ARRIVALS Section directly below Single Posters */}
-            <div className="mb-12 text-left select-none">
+            <div id="new-arrivals" className="mb-12 text-left select-none scroll-mt-24">
               {/* Header: Title in #0e0d0d + Scroll Arrows + EXPLORE link */}
               <div className="flex items-center justify-between mb-4 border-b border-gray-150 pb-2">
                 <h2 className="text-xl sm:text-2xl font-display font-black text-[#0e0d0d] tracking-tight uppercase">
@@ -1702,6 +1738,9 @@ function formatDateSafe(dateStr: any): string {
                 onRefundClick={handleOpenRefund}
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
+                onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
+                onOpenSinglePosters={handleOpenSinglePosters}
+                onCategoryClick={handleCategorySelect}
               />
             </div>
           </div>
@@ -1764,6 +1803,9 @@ function formatDateSafe(dateStr: any): string {
                 onRefundClick={handleOpenRefund}
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
+                onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
+                onOpenSinglePosters={handleOpenSinglePosters}
+                onCategoryClick={handleCategorySelect}
               />
             </div>
           </div>
@@ -1795,6 +1837,9 @@ function formatDateSafe(dateStr: any): string {
                 onRefundClick={handleOpenRefund}
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
+                onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
+                onOpenSinglePosters={handleOpenSinglePosters}
+                onCategoryClick={handleCategorySelect}
               />
             </div>
           </div>
@@ -1820,6 +1865,9 @@ function formatDateSafe(dateStr: any): string {
                 onRefundClick={handleOpenRefund}
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
+                onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
+                onOpenSinglePosters={handleOpenSinglePosters}
+                onCategoryClick={handleCategorySelect}
               />
             </div>
           </div>
@@ -1851,6 +1899,9 @@ function formatDateSafe(dateStr: any): string {
                 onRefundClick={handleOpenRefund}
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
+                onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
+                onOpenSinglePosters={handleOpenSinglePosters}
+                onCategoryClick={handleCategorySelect}
               />
             </div>
           </div>
@@ -1923,6 +1974,9 @@ function formatDateSafe(dateStr: any): string {
                 onRefundClick={handleOpenRefund}
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
+                onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
+                onOpenSinglePosters={handleOpenSinglePosters}
+                onCategoryClick={handleCategorySelect}
               />
             </div>
           </div>
@@ -1954,6 +2008,9 @@ function formatDateSafe(dateStr: any): string {
                 onRefundClick={handleOpenRefund}
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
+                onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
+                onOpenSinglePosters={handleOpenSinglePosters}
+                onCategoryClick={handleCategorySelect}
               />
             </div>
           </div>

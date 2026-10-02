@@ -20,6 +20,8 @@ interface SidebarDrawerProps {
   onRefundClick?: () => void;
   onCancelOrderClick?: () => void;
   onPrivacyClick?: () => void;
+  onOpenSplitNewArrivals?: () => void;
+  onOpenSinglePosters?: () => void;
 }
 
 type MenuLevel = 'main' | 'split_poster' | 'posters' | 'collage_kits';
@@ -39,7 +41,9 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
   onShippingClick,
   onRefundClick,
   onCancelOrderClick,
-  onPrivacyClick
+  onPrivacyClick,
+  onOpenSplitNewArrivals,
+  onOpenSinglePosters
 }) => {
   const [currentLevel, setCurrentLevel] = useState<MenuLevel>('main');
 
@@ -105,21 +109,53 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
           {/* Level 0: Main Menu */}
           {currentLevel === 'main' && (
             <div className="flex flex-col divide-y divide-gray-100 text-left">
-              <button
-                onClick={() => setCurrentLevel('split_poster')}
-                className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer"
-              >
-                <span>Split Poster</span>
-                <ChevronRight size={16} className="text-gray-400" />
-              </button>
+              <div className="w-full flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <button
+                  onClick={() => {
+                    if (onOpenSplitNewArrivals) {
+                      onOpenSplitNewArrivals();
+                      onClose();
+                    } else {
+                      setCurrentLevel('split_poster');
+                    }
+                  }}
+                  className="flex-1 text-left px-5 py-3.5 text-sm font-medium text-gray-900 cursor-pointer"
+                >
+                  Split Poster
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentLevel('split_poster')}
+                  className="px-4 py-3.5 text-gray-400 hover:text-gray-700 cursor-pointer"
+                  aria-label="View Split Poster subcategories"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
 
-              <button
-                onClick={() => setCurrentLevel('posters')}
-                className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer"
-              >
-                <span>Posters</span>
-                <ChevronRight size={16} className="text-gray-400" />
-              </button>
+              <div className="w-full flex items-center justify-between hover:bg-gray-50 transition-colors">
+                <button
+                  onClick={() => {
+                    if (onOpenSinglePosters) {
+                      onOpenSinglePosters();
+                      onClose();
+                    } else {
+                      setCurrentLevel('posters');
+                    }
+                  }}
+                  className="flex-1 text-left px-5 py-3.5 text-sm font-medium text-gray-900 cursor-pointer"
+                >
+                  Posters
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCurrentLevel('posters')}
+                  className="px-4 py-3.5 text-gray-400 hover:text-gray-700 cursor-pointer"
+                  aria-label="View Posters subcategories"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
 
               <button
                 onClick={() => handleCategoryClick('Wall Sets')}
@@ -302,7 +338,14 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
           {currentLevel === 'split_poster' && (
             <div className="flex flex-col divide-y divide-gray-100 text-left">
               <button
-                onClick={() => handleCategoryClick(null)}
+                onClick={() => {
+                  if (onOpenSplitNewArrivals) {
+                    onOpenSplitNewArrivals();
+                  } else {
+                    handleCategoryClick(null);
+                  }
+                  onClose();
+                }}
                 className="w-full text-left px-5 py-3.5 text-sm font-semibold text-gray-950 hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 Go To Split Poster
@@ -333,7 +376,14 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
           {currentLevel === 'posters' && (
             <div className="flex flex-col divide-y divide-gray-100 text-left">
               <button
-                onClick={() => handleCategoryClick(null)}
+                onClick={() => {
+                  if (onOpenSinglePosters) {
+                    onOpenSinglePosters();
+                  } else {
+                    handleCategoryClick(null);
+                  }
+                  onClose();
+                }}
                 className="w-full text-left px-5 py-3.5 text-sm font-semibold text-gray-950 hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 Go To Posters
