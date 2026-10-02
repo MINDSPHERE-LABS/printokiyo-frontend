@@ -15,6 +15,7 @@ interface SidebarDrawerProps {
   categoriesList?: string[];
   onSelectPolaroid?: () => void;
   onAboutClick?: () => void;
+  onTermsClick?: () => void;
 }
 
 type MenuLevel = 'main' | 'split_poster' | 'posters' | 'collage_kits';
@@ -29,7 +30,8 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
   onOpenAuth,
   onLogout,
   onSelectPolaroid,
-  onAboutClick
+  onAboutClick,
+  onTermsClick
 }) => {
   const [currentLevel, setCurrentLevel] = useState<MenuLevel>('main');
 
@@ -178,6 +180,16 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                 className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 <span>About Us</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  onClose();
+                  onTermsClick?.();
+                }}
+                className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer"
+              >
+                <span>Terms of Service</span>
               </button>
 
               {/* Account Utilities matching bottom of reference screenshot */}

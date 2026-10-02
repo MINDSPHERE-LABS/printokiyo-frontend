@@ -18,6 +18,7 @@ import { OrderConfirmation } from './components/OrderConfirmation';
 import { OrderSuccessModal } from './components/OrderSuccessModal';
 import { Footer } from './components/Footer';
 import { AboutUsPage } from './components/AboutUsPage';
+import { TermsOfServicePage } from './components/TermsOfServicePage';
 import { BrandBuffer } from './components/BrandBuffer';
 import { SidebarDrawer } from './components/SidebarDrawer';
 import { QuickAddModal } from './components/QuickAddModal';
@@ -113,10 +114,13 @@ function App() {
     }
     touchStartXRef.current = null;
   };
-  const [activeTab, setActiveTab] = useState<'home' | 'category_page' | 'search' | 'wishlist' | 'cart' | 'profile' | 'details' | 'checkout' | 'confirmation' | 'about'>(() => {
+  const [activeTab, setActiveTab] = useState<'home' | 'category_page' | 'search' | 'wishlist' | 'cart' | 'profile' | 'details' | 'checkout' | 'confirmation' | 'about' | 'terms'>(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('page') === 'about' || window.location.hash === '#about') {
       return 'about';
+    }
+    if (params.get('page') === 'terms' || window.location.hash === '#terms') {
+      return 'terms';
     }
     if (params.has('product') || params.has('p') || window.location.pathname.startsWith('/product/')) {
       return 'details';
@@ -1119,6 +1123,20 @@ function formatDateSafe(dateStr: any): string {
     }
   };
 
+  const handleOpenAbout = () => {
+    setActiveTab('about');
+    setSelectedProduct(null);
+    setSelectedCategory(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleOpenTerms = () => {
+    setActiveTab('terms');
+    setSelectedProduct(null);
+    setSelectedCategory(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Open details view in-line instead of a overlapping popup
   const openProductDetails = (product: Product) => {
     if (activeTab !== 'details') {
@@ -1283,12 +1301,8 @@ function formatDateSafe(dateStr: any): string {
         onLogout={handleLogout}
         categoriesList={categoriesList}
         onSelectPolaroid={handleOpenPolaroid}
-        onAboutClick={() => {
-          setActiveTab('about');
-          setSelectedProduct(null);
-          setSelectedCategory(null);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
+        onAboutClick={handleOpenAbout}
+        onTermsClick={handleOpenTerms}
       />
 
       {/* 4. Content main container */}
@@ -1634,12 +1648,8 @@ function formatDateSafe(dateStr: any): string {
             {/* Brand Footer */}
             <div className="-mx-4 sm:-mx-6 lg:-mx-8 mt-12 border-t border-gray-100">
               <Footer 
-                onAboutClick={() => {
-                  setActiveTab('about');
-                  setSelectedProduct(null);
-                  setSelectedCategory(null);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
+                onAboutClick={handleOpenAbout}
+                onTermsClick={handleOpenTerms}
               />
             </div>
           </div>
@@ -1696,12 +1706,8 @@ function formatDateSafe(dateStr: any): string {
             {/* Brand Footer */}
             <div className="-mx-4 sm:-mx-6 lg:-mx-8 mt-12 border-t border-gray-100">
               <Footer 
-                onAboutClick={() => {
-                  setActiveTab('about');
-                  setSelectedProduct(null);
-                  setSelectedCategory(null);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
+                onAboutClick={handleOpenAbout}
+                onTermsClick={handleOpenTerms}
               />
             </div>
           </div>
@@ -1727,12 +1733,29 @@ function formatDateSafe(dateStr: any): string {
             {/* Brand Footer */}
             <div className="border-t border-zinc-900">
               <Footer 
-                onAboutClick={() => {
-                  setActiveTab('about');
-                  setSelectedProduct(null);
-                  setSelectedCategory(null);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                }}
+                onAboutClick={handleOpenAbout}
+                onTermsClick={handleOpenTerms}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Dedicated Terms of Service Page View */}
+        {activeTab === 'terms' && (
+          <div className="-mx-4 sm:-mx-6 lg:-mx-8 -mt-6 animate-in fade-in duration-300">
+            <TermsOfServicePage 
+              onNavigateHome={() => {
+                setActiveTab('home');
+                setSelectedCategory(null);
+                setSelectedProduct(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+            />
+            {/* Brand Footer */}
+            <div className="border-t border-zinc-900">
+              <Footer 
+                onAboutClick={handleOpenAbout}
+                onTermsClick={handleOpenTerms}
               />
             </div>
           </div>
