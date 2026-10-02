@@ -1974,10 +1974,10 @@ function formatDateSafe(dateStr: any): string {
                       <div
                         key={cat.name}
                         onClick={() => handleCategorySelect(cat.category)}
-                        className={`collage-bento-card group relative flex flex-col justify-end p-3 sm:p-4 md:p-5 rounded-2xl overflow-hidden border border-gray-800/80 hover:border-white/40 cursor-pointer ${
+                        className={`collage-bento-card group relative flex flex-col justify-end p-2.5 sm:p-4 md:p-5 rounded-2xl overflow-hidden border border-gray-800/80 hover:border-white/40 cursor-pointer ${
                           isAllKits 
-                            ? 'col-span-2 md:col-span-4 aspect-[2.2/1] sm:aspect-[3/1] md:aspect-[3.8/1]' 
-                            : 'aspect-[3/4]'
+                            ? 'col-span-2 md:col-span-4 aspect-[2.1/1] sm:aspect-[2.8/1] md:aspect-[3.6/1]' 
+                            : 'aspect-[16/11] sm:aspect-[16/10] md:aspect-[16/10]'
                         }`}
                         style={{ '--card-glow': cat.glowColor } as React.CSSProperties}
                         role="button"
@@ -2006,23 +2006,25 @@ function formatDateSafe(dateStr: any): string {
                       </div>
 
                       {/* Title & Subtitle */}
-                      <div className="relative z-10 pt-2">
-                        <h3 className="text-sm sm:text-base md:text-lg font-display font-black text-white leading-tight drop-shadow-sm group-hover:text-amber-400 transition-colors uppercase">
+                      <div className="relative z-10 pt-1 sm:pt-2">
+                        <h3 className={`font-display font-black text-white leading-tight drop-shadow-sm group-hover:text-amber-400 transition-colors uppercase ${
+                          isAllKits ? 'text-sm sm:text-lg md:text-xl' : 'text-xs sm:text-sm md:text-base'
+                        }`}>
                           {cat.name}
                         </h3>
-                        <p className="text-[10px] sm:text-xs text-gray-300 font-medium line-clamp-1 mt-0.5 opacity-90">
+                        <p className="text-[9px] sm:text-xs text-gray-300 font-medium line-clamp-1 mt-0.5 opacity-90">
                           {cat.subtitle}
                         </p>
 
                         {/* Interactive Chevrons Bottom Bar */}
-                        <div className="mt-2.5 pt-2 border-t border-white/15 flex items-center justify-between text-white/90">
-                          <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-wider text-gray-300 group-hover:text-amber-300 transition-colors">
-                            DISCOVER
+                        <div className="mt-1 sm:mt-2 pt-1 sm:pt-1.5 border-t border-white/15 flex items-center justify-between text-white/90">
+                          <span className="text-[8px] sm:text-[10px] font-black uppercase tracking-wider text-gray-300 group-hover:text-amber-300 transition-colors">
+                            {isAllKits ? 'EXPLORE ALL KITS & SETS' : 'DISCOVER'}
                           </span>
                           <div className="cta-anim-arrow flex items-center">
                             <svg
-                              width="26px"
-                              height="13px"
+                              width={isAllKits ? "26px" : "20px"}
+                              height={isAllKits ? "13px" : "10px"}
                               viewBox="0 0 66 43"
                               version="1.1"
                               xmlns="http://www.w3.org/2000/svg"
