@@ -402,6 +402,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                 'Supercar Colage',
                 'Movie Collage',
                 'Motivation Collage',
+                'Superbike Collage',
                 'F1 Collage/Block Kits'
               ].map((kit) => (
                 <button

@@ -661,7 +661,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Wall Sets",
       subtitle: "Multi-Panel Statement Art",
       badge: "FEATURED",
-      image: "/collage-strip.webp",
+      image: "/categories/superhero-avengers.jpg",
       glowColor: "#ff3d3d"
     },
     { 
@@ -669,7 +669,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Anime Collage",
       subtitle: "Otaku & Manga Edition",
       badge: "HOT PICK",
-      image: "/cat-anime-poster.webp",
+      image: "/categories/anime.jpg",
       glowColor: "#a855f7"
     },
     { 
@@ -677,7 +677,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Supercar Colage",
       subtitle: "Speed, F1 & Hypercars",
       badge: "EXOTICS",
-      image: "/cat-supercars-poster.webp",
+      image: "/categories/spercars.jpg",
       glowColor: "#f97316"
     },
     { 
@@ -685,7 +685,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Cricket Collage Block Kits",
       subtitle: "Stadium & Legends",
       badge: "CHAMPIONS",
-      image: "/cat-cricket-poster.webp",
+      image: "/categories/criket.jpg",
       glowColor: "#10b981"
     },
     { 
@@ -693,7 +693,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Football Collage",
       subtitle: "Matchday & Superstars",
       badge: "FOOTBALL",
-      image: "/cat-superbike-poster.webp",
+      image: "/categories/football.jpg",
       glowColor: "#0284c7"
     },
     { 
@@ -701,15 +701,15 @@ function formatDateSafe(dateStr: any): string {
       category: "God Collage/Block kit",
       subtitle: "Spiritual & Divine Art",
       badge: "DEVOTIONAL",
-      image: "/cat-devotional-poster.webp",
+      image: "/categories/gods.jpg",
       glowColor: "#f59e0b"
     },
     { 
       name: "Movie Collage", 
       category: "Movie Collage",
-      subtitle: "Cinema & Superhero",
+      subtitle: "Cinema & Action",
       badge: "BLOCKBUSTER",
-      image: "/cat-superhero-poster.webp",
+      image: "/categories/movie.jpg",
       glowColor: "#e11d48"
     },
     { 
@@ -717,15 +717,23 @@ function formatDateSafe(dateStr: any): string {
       category: "Motivation Collage",
       subtitle: "Gym, Hustle & Mindset",
       badge: "FITNESS",
-      image: "/cat-gym-poster.webp",
+      image: "/categories/motivational.jpg",
       glowColor: "#3b82f6"
+    },
+    { 
+      name: "Superbike Collage", 
+      category: "Superbike Collage",
+      subtitle: "Track & High-RPM Machines",
+      badge: "SUPERBIKE",
+      image: "/categories/superbike.jpg",
+      glowColor: "#06b6d4"
     },
     { 
       name: "All Collage Kits", 
       category: "Collage/Block Kits",
-      subtitle: "Browse Full Collection",
+      subtitle: "Browse All Collage Kits & Wall Sets",
       badge: "FULL RANGE",
-      image: "/collage-strip.webp",
+      image: "/categories/collage-allcategories.jpg",
       glowColor: "#fbc638"
     }
   ], []);
@@ -742,18 +750,33 @@ function formatDateSafe(dateStr: any): string {
       const pCat = p.category.toLowerCase().trim();
       const pTitle = (p.title || '').toLowerCase().trim();
 
-      // 1. Wall Sets: strictly matches products with "wall"
-      if (selLower === 'wall sets' || selLower === 'wall set') {
-        return pCat.includes('wall');
+      // Check if viewing "All Collage Kits" / "Collage/Block Kits"
+      const isAllCollageKits = 
+        selLower === 'collage/block kits' || 
+        selLower === 'all collage kits' || 
+        selLower === 'collage kits' ||
+        selLower === 'all collage';
+
+      if (isAllCollageKits) {
+        // Show ALL products of all categories from Collage kits and Wall Sets!
+        return (
+          pCat.includes('collage') || 
+          pCat.includes('colage') || 
+          pCat.includes('wall') ||
+          pTitle.includes('collage') ||
+          pTitle.includes('wall set')
+        );
       }
 
-      // 2. Collage / Block Kits: strictly matches that specific collage category
+      // 1. Wall Sets: strictly matches products with "wall"
+      if (selLower === 'wall sets' || selLower === 'wall set') {
+        return pCat.includes('wall') || pTitle.includes('wall');
+      }
+
+      // 2. Specific Collage / Block Kits: strictly matches that specific collage category
       if (selLower.includes('collage') || selLower.includes('colage')) {
         const normSel = selLower.replace('colage', 'collage').replace('/', ' ');
         const normPCat = pCat.replace('colage', 'collage').replace('/', ' ');
-        if (normSel === 'collage kits' || normSel === 'collage block kits' || normSel.includes('all collage')) {
-          return normPCat.includes('collage');
-        }
         return normPCat === normSel || normPCat.includes(normSel) || normSel.includes(normPCat);
       }
 
@@ -1945,16 +1968,22 @@ function formatDateSafe(dateStr: any): string {
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 md:gap-5">
                 {collageAndWallSetCategories
                   .filter(cat => cat.name !== "Wall Sets")
-                  .map((cat) => (
-                    <div
-                      key={cat.name}
-                      onClick={() => handleCategorySelect(cat.category)}
-                      className="collage-bento-card group relative flex flex-col justify-end p-3 sm:p-4 md:p-5 aspect-[3/4] rounded-2xl overflow-hidden border border-gray-800/80 hover:border-white/40 cursor-pointer"
-                      style={{ '--card-glow': cat.glowColor } as React.CSSProperties}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`Explore ${cat.name}`}
-                    >
+                  .map((cat) => {
+                    const isAllKits = cat.name === "All Collage Kits";
+                    return (
+                      <div
+                        key={cat.name}
+                        onClick={() => handleCategorySelect(cat.category)}
+                        className={`collage-bento-card group relative flex flex-col justify-end p-3 sm:p-4 md:p-5 rounded-2xl overflow-hidden border border-gray-800/80 hover:border-white/40 cursor-pointer ${
+                          isAllKits 
+                            ? 'col-span-2 md:col-span-4 aspect-[2.2/1] sm:aspect-[3/1] md:aspect-[3.8/1]' 
+                            : 'aspect-[3/4]'
+                        }`}
+                        style={{ '--card-glow': cat.glowColor } as React.CSSProperties}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Explore ${cat.name}`}
+                      >
                       {/* Background Art Image */}
                       <img
                         src={cat.image}
@@ -2009,7 +2038,8 @@ function formatDateSafe(dateStr: any): string {
                         </div>
                       </div>
                     </div>
-                  ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -2047,6 +2077,26 @@ function formatDateSafe(dateStr: any): string {
               <span>←</span>
               <span>Back to Home</span>
             </button>
+
+            {/* Category Title Header */}
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6 border-b border-gray-150 pb-3">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-red-600 bg-red-50 px-2.5 py-0.5 rounded-full inline-block mb-1">
+                  CATEGORY SHOWCASE
+                </span>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-display font-black text-gray-950 uppercase tracking-tight">
+                  {selectedCategory === 'Collage/Block Kits' ? 'All Collage Kits & Wall Sets' : selectedCategory}
+                </h1>
+                <p className="text-xs sm:text-sm text-gray-500 font-medium mt-0.5">
+                  {selectedCategory === 'Collage/Block Kits' 
+                    ? 'Explore complete collection of curated collage kits and statement wall sets.'
+                    : `Showing all products in ${selectedCategory}`}
+                </p>
+              </div>
+              <span className="text-xs text-gray-400 font-bold">
+                {categoryProducts.length} {categoryProducts.length === 1 ? 'Product' : 'Products'}
+              </span>
+            </div>
 
             {/* Filtered Product Cards Grid */}
             {categoryProducts.length === 0 && loadingMore ? (
