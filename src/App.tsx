@@ -661,7 +661,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Wall Sets",
       subtitle: "Multi-Panel Statement Art",
       badge: "FEATURED",
-      image: "/categories/superhero-avengers.jpg",
+      image: "/categories/superhero-avengers-v2.jpg?v=2",
       glowColor: "#ff3d3d"
     },
     { 
@@ -669,7 +669,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Anime Collage",
       subtitle: "Otaku & Manga Edition",
       badge: "HOT PICK",
-      image: "/categories/anime.jpg",
+      image: "/categories/anime-v2.jpg?v=2",
       glowColor: "#a855f7"
     },
     { 
@@ -677,7 +677,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Supercar Colage",
       subtitle: "Speed, F1 & Hypercars",
       badge: "EXOTICS",
-      image: "/categories/spercars.jpg",
+      image: "/categories/supercars-v2.jpg?v=2",
       glowColor: "#f97316"
     },
     { 
@@ -685,7 +685,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Cricket Collage Block Kits",
       subtitle: "Stadium & Legends",
       badge: "CHAMPIONS",
-      image: "/categories/criket.jpg",
+      image: "/categories/cricket-v2.jpg?v=2",
       glowColor: "#10b981"
     },
     { 
@@ -693,7 +693,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Football Collage",
       subtitle: "Matchday & Superstars",
       badge: "FOOTBALL",
-      image: "/categories/football.jpg",
+      image: "/categories/football-v2.jpg?v=2",
       glowColor: "#0284c7"
     },
     { 
@@ -701,7 +701,7 @@ function formatDateSafe(dateStr: any): string {
       category: "God Collage/Block kit",
       subtitle: "Spiritual & Divine Art",
       badge: "DEVOTIONAL",
-      image: "/categories/gods.jpg",
+      image: "/categories/gods-v2.jpg?v=2",
       glowColor: "#f59e0b"
     },
     { 
@@ -709,7 +709,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Movie Collage",
       subtitle: "Cinema & Action",
       badge: "BLOCKBUSTER",
-      image: "/categories/movie.jpg",
+      image: "/categories/movie-v2.jpg?v=2",
       glowColor: "#e11d48"
     },
     { 
@@ -717,7 +717,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Motivation Collage",
       subtitle: "Gym, Hustle & Mindset",
       badge: "FITNESS",
-      image: "/categories/motivational.jpg",
+      image: "/categories/motivational-v2.jpg?v=2",
       glowColor: "#3b82f6"
     },
     { 
@@ -725,7 +725,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Superbike Collage",
       subtitle: "Track & High-RPM Machines",
       badge: "SUPERBIKE",
-      image: "/categories/superbike.jpg",
+      image: "/categories/superbike-v2.jpg?v=2",
       glowColor: "#06b6d4"
     },
     { 
@@ -733,7 +733,7 @@ function formatDateSafe(dateStr: any): string {
       category: "Collage/Block Kits",
       subtitle: "Browse All Collage Kits & Wall Sets",
       badge: "FULL RANGE",
-      image: "/categories/collage-allcategories.jpg",
+      image: "/categories/collage-allcategories-v2.jpg?v=2",
       glowColor: "#fbc638"
     }
   ], []);
