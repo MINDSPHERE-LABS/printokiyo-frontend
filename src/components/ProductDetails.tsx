@@ -315,59 +315,62 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
       <div className="flex flex-col md:flex-row gap-6 md:gap-10">
         
         {/* Left: Product Image Display with Thumbnail Previews Below */}
-        <div className="md:w-1/2 flex flex-col gap-3">
+        <div className="md:w-1/2 flex flex-col gap-3 items-center">
           {/* Main Large Display Box */}
           <div 
             onClick={() => setIsMaximized(true)}
             className="relative w-full bg-transparent border-0 rounded-none overflow-hidden flex items-center justify-center group cursor-zoom-in"
             title="Click to maximize image"
           >
-            <img 
-              src={getImageUrl(gallery[activeImageIndex])} 
-              alt={product.title} 
-              className="w-full h-auto max-h-[70vh] sm:max-h-[80vh] object-contain transition-all duration-300 rounded-none group-hover:scale-[1.01]"
-            />
+            {/* Image Wrapper — Anchors controls directly over the rendered image bounds */}
+            <div className="relative inline-block max-w-full">
+              <img 
+                src={getImageUrl(gallery[activeImageIndex])} 
+                alt={product.title} 
+                className="w-auto h-auto max-w-full max-h-[70vh] sm:max-h-[80vh] object-contain transition-all duration-300 rounded-none group-hover:scale-[1.01] block mx-auto"
+              />
 
-            {/* Maximize Button (Bottom-Left Corner, Icon-only) */}
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsMaximized(true);
-              }}
-              className="absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 p-2 bg-white/90 hover:bg-black text-gray-800 hover:text-white border border-gray-200/80 shadow-xs rounded-none transition-all flex items-center justify-center opacity-80 group-hover:opacity-100 cursor-pointer z-10 backdrop-blur-xs"
-              title="Maximize image"
-              aria-label="Maximize image"
-            >
-              <Maximize2 size={16} strokeWidth={2.2} />
-            </button>
+              {/* Maximize Button (Over Image Bottom-Left Corner, Transparent Glass Style) */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsMaximized(true);
+                }}
+                className="absolute bottom-2.5 left-2.5 p-2 bg-black/40 hover:bg-black/75 text-white backdrop-blur-md border border-white/25 rounded-none transition-all flex items-center justify-center opacity-85 hover:opacity-100 cursor-pointer z-10 shadow-sm"
+                title="Maximize image"
+                aria-label="Maximize image"
+              >
+                <Maximize2 size={16} strokeWidth={2.2} />
+              </button>
 
-            {/* Slider Arrows if gallery > 1 */}
-            {gallery.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  onClick={handlePrevImage}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 text-gray-700 hover:text-black hover:bg-white transition-all shadow-md rounded-none border border-gray-200 cursor-pointer z-10"
-                  title="Previous image"
-                >
-                  <ChevronLeft size={18} strokeWidth={2.5} />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleNextImage}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 text-gray-700 hover:text-black hover:bg-white transition-all shadow-md rounded-none border border-gray-200 cursor-pointer z-10"
-                  title="Next image"
-                >
-                  <ChevronRight size={18} strokeWidth={2.5} />
-                </button>
-              </>
-            )}
+              {/* Slider Arrows if gallery > 1 (Transparent Glass Effect over Image) */}
+              {gallery.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={handlePrevImage}
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 p-2 bg-black/35 hover:bg-black/70 text-white backdrop-blur-md border border-white/20 transition-all rounded-none cursor-pointer z-10 opacity-70 group-hover:opacity-100 shadow-sm"
+                    title="Previous image"
+                  >
+                    <ChevronLeft size={18} strokeWidth={2.5} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNextImage}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-2 bg-black/35 hover:bg-black/70 text-white backdrop-blur-md border border-white/20 transition-all rounded-none cursor-pointer z-10 opacity-70 group-hover:opacity-100 shadow-sm"
+                    title="Next image"
+                  >
+                    <ChevronRight size={18} strokeWidth={2.5} />
+                  </button>
+                </>
+              )}
+            </div>
           </div>
 
-          {/* Image Previews Strip BELOW Main Image */}
+          {/* Image Previews Strip BELOW Main Image - CENTERED */}
           {gallery.length > 1 && (
-            <div className="flex items-center gap-2.5 overflow-x-auto pb-1 no-scrollbar">
+            <div className="flex items-center justify-center gap-2.5 overflow-x-auto pb-1 no-scrollbar w-full">
               {gallery.map((img, idx) => (
                 <button
                   key={idx}
