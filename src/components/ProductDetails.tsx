@@ -319,7 +319,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
           {/* Main Large Display Box */}
           <div 
             onClick={() => setIsMaximized(true)}
-            className="relative aspect-[3/4] w-full bg-[#f8f9fa] border border-gray-200 rounded-none overflow-hidden flex items-center justify-center group shadow-xs cursor-zoom-in"
+            className="relative aspect-[3/4] w-full bg-transparent border-0 rounded-none overflow-hidden flex items-center justify-center group cursor-zoom-in"
             title="Click to maximize image"
           >
             <img 
@@ -328,18 +328,18 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
               className="w-full h-full object-contain transition-all duration-300 rounded-none group-hover:scale-[1.02]"
             />
 
-            {/* Maximize Button (Top-Right) */}
+            {/* Maximize Button (Bottom-Left Corner, Icon-only) */}
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 setIsMaximized(true);
               }}
-              className="absolute top-2.5 right-2.5 px-2.5 py-1.5 bg-white/95 hover:bg-black text-gray-900 hover:text-white border border-gray-300 shadow-sm rounded-none transition-all flex items-center gap-1.5 opacity-90 group-hover:opacity-100 cursor-pointer z-10 font-bold"
-              title="Maximize poster image"
+              className="absolute bottom-2.5 left-2.5 sm:bottom-3 sm:left-3 p-2 bg-white/90 hover:bg-black text-gray-800 hover:text-white border border-gray-200/80 shadow-xs rounded-none transition-all flex items-center justify-center opacity-80 group-hover:opacity-100 cursor-pointer z-10 backdrop-blur-xs"
+              title="Maximize image"
+              aria-label="Maximize image"
             >
-              <Maximize2 size={13} strokeWidth={2.5} />
-              <span className="text-[10px] tracking-wider uppercase font-black">Maximize</span>
+              <Maximize2 size={16} strokeWidth={2.2} />
             </button>
 
             {/* Slider Arrows if gallery > 1 */}
@@ -372,7 +372,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                 <button
                   key={idx}
                   onClick={() => setActiveImageIndex(idx)}
-                  className={`w-16 h-20 rounded-none border-2 overflow-hidden bg-[#f8f9fa] p-0.5 shrink-0 transition-all cursor-pointer ${
+                  className={`w-16 h-20 rounded-none border-2 overflow-hidden bg-transparent p-0.5 shrink-0 transition-all cursor-pointer ${
                     activeImageIndex === idx ? 'border-[#041E42] shadow-sm' : 'border-gray-200 opacity-70 hover:opacity-100'
                   }`}
                 >
