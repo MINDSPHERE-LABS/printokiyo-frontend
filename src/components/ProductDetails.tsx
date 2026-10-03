@@ -283,11 +283,11 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
         {/* Left: Product Image Display with Thumbnail Previews Below */}
         <div className="md:w-1/2 flex flex-col gap-3">
           {/* Main Large Display Box */}
-          <div className="relative aspect-square w-full bg-gray-50 border border-gray-150 rounded-2xl overflow-hidden flex items-center justify-center group shadow-2xs">
+          <div className="relative aspect-[3/4] w-full bg-[#f8f9fa] border border-gray-200 rounded-none overflow-hidden flex items-center justify-center group shadow-xs">
             <img 
               src={getImageUrl(gallery[activeImageIndex])} 
               alt={product.title} 
-              className="w-full h-full object-cover transition-all duration-300"
+              className="w-full h-full object-contain transition-all duration-300 rounded-none"
             />
 
             {/* Slider Arrows if gallery > 1 */}
@@ -295,13 +295,13 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
               <>
                 <button
                   onClick={handlePrevImage}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/90 text-gray-700 hover:text-black hover:bg-white transition-all shadow-md"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 text-gray-700 hover:text-black hover:bg-white transition-all shadow-md rounded-none border border-gray-200 cursor-pointer"
                 >
                   <ChevronLeft size={18} strokeWidth={2.5} />
                 </button>
                 <button
                   onClick={handleNextImage}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/90 text-gray-700 hover:text-black hover:bg-white transition-all shadow-md"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 text-gray-700 hover:text-black hover:bg-white transition-all shadow-md rounded-none border border-gray-200 cursor-pointer"
                 >
                   <ChevronRight size={18} strokeWidth={2.5} />
                 </button>
@@ -316,11 +316,11 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                 <button
                   key={idx}
                   onClick={() => setActiveImageIndex(idx)}
-                  className={`w-16 h-16 rounded-xl border-2 overflow-hidden bg-gray-50 p-0.5 shrink-0 transition-all cursor-pointer ${
-                    activeImageIndex === idx ? 'border-[#041E42] shadow-sm scale-102' : 'border-gray-200 opacity-70 hover:opacity-100'
+                  className={`w-16 h-20 rounded-none border-2 overflow-hidden bg-[#f8f9fa] p-0.5 shrink-0 transition-all cursor-pointer ${
+                    activeImageIndex === idx ? 'border-[#041E42] shadow-sm' : 'border-gray-200 opacity-70 hover:opacity-100'
                   }`}
                 >
-                  <img src={getImageUrl(img)} alt="" className="w-full h-full object-cover rounded-lg" />
+                  <img src={getImageUrl(img)} alt="" className="w-full h-full object-contain rounded-none" />
                 </button>
               ))}
             </div>
@@ -516,7 +516,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                     <div key={idx} className="relative flex flex-col items-center gap-1">
                       {photo ? (
                         /* Filled slot — preview */
-                        <div className="relative w-full aspect-square rounded-xl overflow-hidden border-2 border-green-400 shadow-sm group">
+                        <div className="relative w-full aspect-square rounded-none overflow-hidden border-2 border-green-400 shadow-sm group">
                           <img
                             src={photo}
                             alt={`Photo ${idx + 1}`}
@@ -525,7 +525,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                           {/* Overlay on hover */}
                           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1 flex-col">
                             {/* Re-upload */}
-                            <label className="cursor-pointer bg-white/90 text-slate-800 text-[8px] font-bold px-2 py-0.5 rounded-full hover:bg-white transition">
+                            <label className="cursor-pointer bg-white/90 text-slate-800 text-[8px] font-bold px-2 py-0.5 rounded-none hover:bg-white transition">
                               Change
                               <input
                                 type="file"
@@ -538,19 +538,19 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
                             <button
                               type="button"
                               onClick={() => handleRemovePhoto(idx)}
-                              className="bg-red-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-full hover:bg-red-600 transition"
+                              className="bg-red-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-none hover:bg-red-600 transition"
                             >
                               Remove
                             </button>
                           </div>
                           {/* Green check badge */}
-                          <div className="absolute top-1 right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center shadow">
+                          <div className="absolute top-1 right-1 w-4 h-4 bg-green-500 rounded-none flex items-center justify-center shadow">
                             <span className="text-white text-[8px] font-black">✓</span>
                           </div>
                         </div>
                       ) : (
                         /* Empty slot */
-                        <label className={`w-full aspect-square flex flex-col items-center justify-center border-2 border-dashed rounded-xl cursor-pointer transition-all select-none
+                        <label className={`w-full aspect-square flex flex-col items-center justify-center border-2 border-dashed rounded-none cursor-pointer transition-all select-none
                           ${photoError ? 'border-red-400 bg-red-50 hover:border-red-500' : 'border-slate-300 bg-white hover:border-blue-400 hover:bg-blue-50/50'}
                         `}>
                           <span className="text-xl leading-none mb-1">+</span>
@@ -767,7 +767,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
           ].map((item, idx) => (
             <div 
               key={idx} 
-              className={`relative ${item.aspect} w-full overflow-hidden bg-gray-100 rounded-2xl group border border-gray-200/70 shadow-2xs hover:shadow-lg transition-all duration-300 break-inside-avoid mb-3.5`}
+              className={`relative ${item.aspect} w-full overflow-hidden bg-gray-100 rounded-none group border border-gray-200/70 shadow-2xs hover:shadow-lg transition-all duration-300 break-inside-avoid mb-3.5`}
             >
               <img 
                 src={item.src} 
