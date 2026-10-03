@@ -1622,7 +1622,7 @@ function formatDateSafe(dateStr: any): string {
       />
 
       {/* 4. Content main container */}
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+      <main className="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 mt-3 sm:mt-5">
         
         {/* Active Product Details Inline View */}
         {activeTab === 'details' && selectedProduct && (
@@ -2154,43 +2154,23 @@ function formatDateSafe(dateStr: any): string {
                 setSkip(0);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="inline-flex items-center gap-2 text-xs font-bold text-gray-600 hover:text-gray-950 mb-4 bg-gray-100 hover:bg-gray-200 px-3.5 py-1.5 rounded-full transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 text-xs font-bold text-gray-600 hover:text-gray-950 mb-2.5 sm:mb-3 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-full transition-all cursor-pointer"
             >
               <span>←</span>
               <span>Back to Home</span>
             </button>
 
-            {/* Category Title Header */}
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6 border-b border-gray-150 pb-3">
-              <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-red-600 bg-red-50 px-2.5 py-0.5 rounded-full inline-block mb-1">
-                  CATEGORY SHOWCASE
-                </span>
-                <h1 className="text-xl sm:text-2xl md:text-3xl font-display font-black text-gray-950 uppercase tracking-tight">
-                  {selectedCategory === 'Collage/Block Kits' ? 'All Collage Kits & Wall Sets' : selectedCategory}
-                </h1>
-                <p className="text-xs sm:text-sm text-gray-500 font-medium mt-0.5">
-                  {selectedCategory === 'Collage/Block Kits' 
-                    ? 'Explore complete collection of curated collage kits and statement wall sets.'
-                    : `Showing all products in ${selectedCategory}`}
-                </p>
-              </div>
-              <span className="text-xs text-gray-400 font-bold">
-                {categoryProducts.length} {categoryProducts.length === 1 ? 'Product' : 'Products'}
-              </span>
-            </div>
-
             {/* Filtered Product Cards Grid */}
             {categoryProducts.length === 0 && loadingMore ? (
-              <div className="py-16">
+              <div className="py-12">
                 <BrandBuffer size="lg" message={`Buffering ${selectedCategory || 'Products'}...`} />
               </div>
             ) : categoryProducts.length === 0 && !loadingMore ? (
-              <div className="text-center py-12 bg-white rounded-3xl border border-gray-100">
+              <div className="text-center py-10 bg-white rounded-2xl border border-gray-100">
                 <p className="text-xs text-gray-500 font-semibold">No products found in category "{selectedCategory || 'Selected Category'}".</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 md:gap-6">
                 {categoryProducts.map((product) => (
                   <ProductCard
                     key={product.id || product._id || product.slug}
