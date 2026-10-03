@@ -1622,7 +1622,7 @@ function formatDateSafe(dateStr: any): string {
       />
 
       {/* 4. Content main container */}
-      <main className="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 mt-3 sm:mt-5">
+      <main className={`flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 ${activeTab === 'details' ? 'mt-1 sm:mt-2.5' : 'mt-3 sm:mt-5'}`}>
         
         {/* Active Product Details Inline View */}
         {activeTab === 'details' && selectedProduct && (

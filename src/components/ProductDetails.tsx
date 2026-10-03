@@ -319,13 +319,13 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
           {/* Main Large Display Box */}
           <div 
             onClick={() => setIsMaximized(true)}
-            className="relative aspect-[3/4] w-full bg-transparent border-0 rounded-none overflow-hidden flex items-center justify-center group cursor-zoom-in"
+            className="relative w-full bg-transparent border-0 rounded-none overflow-hidden flex items-center justify-center group cursor-zoom-in"
             title="Click to maximize image"
           >
             <img 
               src={getImageUrl(gallery[activeImageIndex])} 
               alt={product.title} 
-              className="w-full h-full object-contain transition-all duration-300 rounded-none group-hover:scale-[1.02]"
+              className="w-full h-auto max-h-[70vh] sm:max-h-[80vh] object-contain transition-all duration-300 rounded-none group-hover:scale-[1.01]"
             />
 
             {/* Maximize Button (Bottom-Left Corner, Icon-only) */}
