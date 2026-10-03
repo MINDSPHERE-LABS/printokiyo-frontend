@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import type { Product } from '../types';
 import { 
   ShoppingBag, ChevronLeft, ChevronRight, CreditCard, 
-  Plus, Minus
+  Plus, Minus, Maximize2, X, ZoomIn, ZoomOut
 } from 'lucide-react';
 import { getImageUrl } from '../utils/image';
 import { ProductCard } from './ProductCard';
@@ -144,6 +144,40 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
   // Gallery array
   const gallery = product.gallery && product.gallery.length > 0 ? product.gallery : [product.thumbnail];
 
+  // Fullscreen / Maximize Modal State
+  const [isMaximized, setIsMaximized] = useState(false);
+  const [isZoomedIn, setIsZoomedIn] = useState(false);
+
+  // Reset zoom whenever image changes
+  useEffect(() => {
+    setIsZoomedIn(false);
+  }, [activeImageIndex]);
+
+  // Handle escape key, arrow keys, and background scroll locking for maximize lightbox
+  useEffect(() => {
+    if (!isMaximized) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsMaximized(false);
+        setIsZoomedIn(false);
+      } else if (e.key === 'ArrowLeft') {
+        setActiveImageIndex((prev) => (prev === 0 ? gallery.length - 1 : prev - 1));
+      } else if (e.key === 'ArrowRight') {
+        setActiveImageIndex((prev) => (prev === gallery.length - 1 ? 0 : prev + 1));
+      }
+    };
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMaximized, gallery.length]);
+
   const handlePrevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     setActiveImageIndex((prev) => (prev === 0 ? gallery.length - 1 : prev - 1));
@@ -283,25 +317,47 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
         {/* Left: Product Image Display with Thumbnail Previews Below */}
         <div className="md:w-1/2 flex flex-col gap-3">
           {/* Main Large Display Box */}
-          <div className="relative aspect-[3/4] w-full bg-[#f8f9fa] border border-gray-200 rounded-none overflow-hidden flex items-center justify-center group shadow-xs">
+          <div 
+            onClick={() => setIsMaximized(true)}
+            className="relative aspect-[3/4] w-full bg-[#f8f9fa] border border-gray-200 rounded-none overflow-hidden flex items-center justify-center group shadow-xs cursor-zoom-in"
+            title="Click to maximize image"
+          >
             <img 
               src={getImageUrl(gallery[activeImageIndex])} 
               alt={product.title} 
-              className="w-full h-full object-contain transition-all duration-300 rounded-none"
+              className="w-full h-full object-contain transition-all duration-300 rounded-none group-hover:scale-[1.02]"
             />
+
+            {/* Maximize Button (Top-Right) */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMaximized(true);
+              }}
+              className="absolute top-2.5 right-2.5 px-2.5 py-1.5 bg-white/95 hover:bg-black text-gray-900 hover:text-white border border-gray-300 shadow-sm rounded-none transition-all flex items-center gap-1.5 opacity-90 group-hover:opacity-100 cursor-pointer z-10 font-bold"
+              title="Maximize poster image"
+            >
+              <Maximize2 size={13} strokeWidth={2.5} />
+              <span className="text-[10px] tracking-wider uppercase font-black">Maximize</span>
+            </button>
 
             {/* Slider Arrows if gallery > 1 */}
             {gallery.length > 1 && (
               <>
                 <button
+                  type="button"
                   onClick={handlePrevImage}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 text-gray-700 hover:text-black hover:bg-white transition-all shadow-md rounded-none border border-gray-200 cursor-pointer"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 text-gray-700 hover:text-black hover:bg-white transition-all shadow-md rounded-none border border-gray-200 cursor-pointer z-10"
+                  title="Previous image"
                 >
                   <ChevronLeft size={18} strokeWidth={2.5} />
                 </button>
                 <button
+                  type="button"
                   onClick={handleNextImage}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 text-gray-700 hover:text-black hover:bg-white transition-all shadow-md rounded-none border border-gray-200 cursor-pointer"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-white/90 text-gray-700 hover:text-black hover:bg-white transition-all shadow-md rounded-none border border-gray-200 cursor-pointer z-10"
+                  title="Next image"
                 >
                   <ChevronRight size={18} strokeWidth={2.5} />
                 </button>
@@ -787,6 +843,139 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
           ))}
         </div>
       </div>
+
+      {/* 4. Fullscreen Maximize Lightbox Modal */}
+      {isMaximized && (
+        <div 
+          className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex flex-col justify-between p-3 sm:p-6 animate-in fade-in duration-200 select-none"
+          onClick={() => {
+            setIsMaximized(false);
+            setIsZoomedIn(false);
+          }}
+        >
+          {/* Top Bar: Title & Action Controls */}
+          <div 
+            className="flex items-center justify-between text-white w-full z-20 shrink-0"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="text-xs sm:text-sm font-display font-black uppercase tracking-wider text-gray-200 line-clamp-1 max-w-[200px] sm:max-w-md">
+                {product.title}
+              </span>
+              {gallery.length > 1 && (
+                <span className="text-[10px] sm:text-xs font-mono bg-white/10 px-2 py-0.5 border border-white/20 text-gray-300 rounded-none">
+                  {activeImageIndex + 1} / {gallery.length}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              {/* Zoom In / Out Toggle Button */}
+              <button
+                type="button"
+                onClick={() => setIsZoomedIn(!isZoomedIn)}
+                className="px-2.5 py-1.5 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-none transition-colors cursor-pointer flex items-center gap-1.5 text-xs font-bold"
+                title={isZoomedIn ? "Reset Zoom" : "Zoom In"}
+              >
+                {isZoomedIn ? <ZoomOut size={15} /> : <ZoomIn size={15} />}
+                <span className="hidden sm:inline">{isZoomedIn ? "100%" : "Zoom"}</span>
+              </button>
+
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMaximized(false);
+                  setIsZoomedIn(false);
+                }}
+                className="px-3 py-1.5 bg-white text-black hover:bg-amber-400 rounded-none transition-colors cursor-pointer flex items-center gap-1 font-black text-xs"
+                title="Close (Esc)"
+              >
+                <X size={16} strokeWidth={2.5} />
+                <span className="hidden sm:inline">ESC</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Center Image Viewport */}
+          <div 
+            className="relative flex-1 flex items-center justify-center overflow-auto my-2 p-2"
+            onClick={() => {
+              setIsMaximized(false);
+              setIsZoomedIn(false);
+            }}
+          >
+            <div 
+              className={`relative transition-transform duration-300 ${isZoomedIn ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in'}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsZoomedIn(!isZoomedIn);
+              }}
+              title={isZoomedIn ? "Click to zoom out" : "Click to zoom in"}
+            >
+              <img 
+                src={getImageUrl(gallery[activeImageIndex])} 
+                alt={product.title} 
+                className="max-h-[75vh] sm:max-h-[80vh] max-w-[92vw] object-contain rounded-none shadow-2xl bg-[#0e1015]"
+              />
+            </div>
+
+            {/* Lightbox Prev Button */}
+            {gallery.length > 1 && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevImage(e);
+                }}
+                className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 p-3 bg-black/70 hover:bg-black text-white border border-white/20 rounded-none transition-all cursor-pointer shadow-xl z-20"
+                title="Previous Image (←)"
+              >
+                <ChevronLeft size={22} strokeWidth={2.5} />
+              </button>
+            )}
+
+            {/* Lightbox Next Button */}
+            {gallery.length > 1 && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNextImage(e);
+                }}
+                className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 p-3 bg-black/70 hover:bg-black text-white border border-white/20 rounded-none transition-all cursor-pointer shadow-xl z-20"
+                title="Next Image (→)"
+              >
+                <ChevronRight size={22} strokeWidth={2.5} />
+              </button>
+            )}
+          </div>
+
+          {/* Bottom Thumbnails Strip (if > 1) */}
+          {gallery.length > 1 && (
+            <div 
+              className="flex items-center justify-center gap-2 overflow-x-auto py-1 z-20 shrink-0"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {gallery.map((img, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    setActiveImageIndex(idx);
+                    setIsZoomedIn(false);
+                  }}
+                  className={`w-12 h-16 rounded-none border-2 overflow-hidden bg-black/50 p-0.5 shrink-0 transition-all cursor-pointer ${
+                    activeImageIndex === idx ? 'border-amber-400 scale-105 shadow-md' : 'border-white/30 opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <img src={getImageUrl(img)} alt="" className="w-full h-full object-contain rounded-none" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
