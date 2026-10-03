@@ -105,6 +105,46 @@ body {
   -webkit-backface-visibility: hidden;
 }
 
+/* Offer Strip Infinite Scroller Animation */
+@keyframes offer-marquee-strip {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.offer-marquee-track {
+  display: flex !important;
+  width: max-content !important;
+  animation: offer-marquee-strip 28s linear infinite !important;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.offer-marquee-track:hover {
+  animation-play-state: paused !important;
+}
+
+@keyframes flash-glow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: drop-shadow(0 0 3px rgba(251, 198, 56, 0.9));
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 1px rgba(251, 198, 56, 0.3));
+  }
+}
+
+.offer-flash-icon {
+  display: inline-block;
+  animation: flash-glow 1.4s ease-in-out infinite;
+}
+
 /* From Uiverse.io by mobinkakei */ 
 .cta {
   display: inline-flex;

@@ -738,6 +738,52 @@ function formatDateSafe(dateStr: any): string {
     }
   ], []);
 
+  // Flashing Store Offers for Infinite Marquee Scroller below Navbar
+  const flashingOffers = useMemo(() => [
+    {
+      badge: "FLASH OFFER",
+      badgeColor: "bg-red-600 text-white",
+      highlight: "BUY 1 GET 2 FREE",
+      text: "Add 3 posters to cart — pay for only 1!",
+      icon: "🔥"
+    },
+    {
+      badge: "FREE SHIPPING",
+      badgeColor: "bg-amber-400 text-black",
+      highlight: "FREE DELIVERY ACROSS INDIA",
+      text: "On all orders above ₹999",
+      icon: "🚚"
+    },
+    {
+      badge: "AUTO DISCOUNT",
+      badgeColor: "bg-emerald-500 text-white",
+      highlight: "BUY 2 GET 4 FREE",
+      text: "Cart discount applies automatically",
+      icon: "⚡"
+    },
+    {
+      badge: "BEST VALUE",
+      badgeColor: "bg-gradient-to-r from-amber-400 to-yellow-300 text-black font-black",
+      highlight: "BUY 3 GET 9 FREE",
+      text: "Get 12 posters total — biggest room aesthetic deal!",
+      icon: "👑"
+    },
+    {
+      badge: "PRINT QUALITY",
+      badgeColor: "bg-blue-600 text-white",
+      highlight: "300 GSM ARCHIVAL MATTE",
+      text: "HD 12-color archival prints — fade resistant 50+ yrs",
+      icon: "✨"
+    },
+    {
+      badge: "WARRANTY",
+      badgeColor: "bg-purple-600 text-white",
+      highlight: "100% TRANSIT PROTECTION",
+      text: "Hassle-free replacement for any delivery damage",
+      icon: "🔄"
+    }
+  ], []);
+
   // Filter products strictly for Category Page view (ensures Wall Sets, Split Posters, Single Posters never bleed into each other)
   const categoryProducts = useMemo(() => {
     if (!selectedCategory) return productsList;
@@ -1407,107 +1453,141 @@ function formatDateSafe(dateStr: any): string {
       {isInitialLoading && <BrandBuffer fullScreen message="Buffering PrintOkiyo Store..." />}
 
       {/* 1. Modern Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md py-3.5 px-4 sm:px-6 lg:px-8 border-b border-gray-100 transition-all select-none">
-        <div className="max-w-7xl mx-auto w-full flex items-center justify-between relative">
-          {/* Left categories menu & desktop navigation links */}
-          <div className="flex items-center gap-2">
-            {activeTab !== 'checkout' ? (
-              <button 
-                onClick={() => setSidebarOpen(true)}
-                className="p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-colors cursor-pointer"
-                aria-label="Categories menu"
-              >
-                <Menu size={22} />
-              </button>
-            ) : (
-              <div className="w-9 h-9" />
-            )}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all select-none shadow-xs">
+        {/* Main Navbar */}
+        <div className="py-3 sm:py-3.5 px-4 sm:px-6 lg:px-8 border-b border-gray-100">
+          <div className="max-w-7xl mx-auto w-full flex items-center justify-between relative">
+            {/* Left categories menu & desktop navigation links */}
+            <div className="flex items-center gap-2">
+              {activeTab !== 'checkout' ? (
+                <button 
+                  onClick={() => setSidebarOpen(true)}
+                  className="p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-colors cursor-pointer"
+                  aria-label="Categories menu"
+                >
+                  <Menu size={22} />
+                </button>
+              ) : (
+                <div className="w-9 h-9" />
+              )}
 
-            <nav className="hidden md:flex items-center gap-4 text-xs font-bold text-gray-700 ml-1">
+              <nav className="hidden md:flex items-center gap-4 text-xs font-bold text-gray-700 ml-1">
+                <button 
+                  type="button"
+                  onClick={() => { setActiveTab('home'); setSelectedCategory(null); setSelectedProduct(null); }}
+                  className={`hover:text-black transition-colors cursor-pointer bg-transparent border-0 p-0 ${activeTab === 'home' ? 'text-black font-black' : ''}`}
+                >
+                  Shop
+                </button>
+                <button 
+                  type="button"
+                  onClick={() => { setActiveTab('about'); setSelectedCategory(null); setSelectedProduct(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  className={`hover:text-black transition-colors cursor-pointer bg-transparent border-0 p-0 ${activeTab === 'about' ? 'text-black font-black' : ''}`}
+                >
+                  About Us
+                </button>
+              </nav>
+            </div>
+
+            {/* Brand Logo centered - Reset category & go to All Products */}
+            <div 
+              onClick={() => {
+                setActiveTab('home');
+                setSelectedCategory(null);
+                setSelectedProduct(null);
+                setSearchQuery('');
+              }}
+              className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 cursor-pointer"
+            >
+              <img src={logoPng} alt="PrintOkiyo" className="h-11.5 sm:h-14 w-auto object-contain" />
+            </div>
+
+            {/* Right Header Actions - Cart & Profile shown on ALL devices (Mobile + Desktop); Search & Wishlist shown on Desktop only */}
+            <div className="flex items-center gap-1 sm:gap-2">
               <button 
-                type="button"
-                onClick={() => { setActiveTab('home'); setSelectedCategory(null); setSelectedProduct(null); }}
-                className={`hover:text-black transition-colors cursor-pointer bg-transparent border-0 p-0 ${activeTab === 'home' ? 'text-black font-black' : ''}`}
+                onClick={() => { 
+                  setActiveTab('search'); 
+                  setSelectedProduct(null); 
+                }}
+                className="hidden md:flex p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
+                aria-label="Search"
               >
-                Shop
+                <Search size={20} />
               </button>
+
               <button 
-                type="button"
-                onClick={() => { setActiveTab('about'); setSelectedCategory(null); setSelectedProduct(null); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-                className={`hover:text-black transition-colors cursor-pointer bg-transparent border-0 p-0 ${activeTab === 'about' ? 'text-black font-black' : ''}`}
+                onClick={() => { 
+                  setActiveTab('wishlist'); 
+                  setSelectedProduct(null); 
+                }}
+                className="hidden md:flex relative p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
+                aria-label="Wishlist"
               >
-                About Us
+                <Heart size={20} className={wishlist.length > 0 ? "text-red-500 fill-red-500" : ""} />
+                {wishlist.length > 0 && (
+                  <span className="absolute top-1 right-1 w-4 h-4 bg-red-600 text-white rounded-full text-[9px] font-black flex items-center justify-center shadow-xs">
+                    {wishlist.length}
+                  </span>
+                )}
               </button>
-            </nav>
+
+              <button 
+                onClick={() => { 
+                  setActiveTab('cart'); 
+                  setSelectedProduct(null); 
+                }}
+                className="relative p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
+                aria-label="Cart"
+              >
+                <ShoppingBag size={20} />
+                {cart.length > 0 && (
+                  <span className="absolute top-1 right-1 w-4.5 h-4.5 bg-black text-white rounded-full text-[9px] font-black flex items-center justify-center shadow-xs">
+                    {cart.length}
+                  </span>
+                )}
+              </button>
+
+              {activeTab !== 'profile' && (
+                <button 
+                  onClick={handleProfileClick}
+                  className="p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
+                  aria-label="Profile"
+                >
+                  <User size={20} />
+                </button>
+              )}
+            </div>
           </div>
+        </div>
 
-          {/* Brand Logo centered - Reset category & go to All Products */}
-          <div 
-            onClick={() => {
+        {/* Flashing Infinite Scroller Offer Announcement Strip */}
+        <div 
+          onClick={() => {
+            if (activeTab !== 'home') {
               setActiveTab('home');
               setSelectedCategory(null);
               setSelectedProduct(null);
-              setSearchQuery('');
-            }}
-            className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2 cursor-pointer"
-          >
-            <img src={logoPng} alt="PrintOkiyo" className="h-11.5 sm:h-14 w-auto object-contain" />
-          </div>
-
-          {/* Right Header Actions - Cart & Profile shown on ALL devices (Mobile + Desktop); Search & Wishlist shown on Desktop only */}
-          <div className="flex items-center gap-1 sm:gap-2">
-            <button 
-              onClick={() => { 
-                setActiveTab('search'); 
-                setSelectedProduct(null); 
-              }}
-              className="hidden md:flex p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
-              aria-label="Search"
-            >
-              <Search size={20} />
-            </button>
-
-            <button 
-              onClick={() => { 
-                setActiveTab('wishlist'); 
-                setSelectedProduct(null); 
-              }}
-              className="hidden md:flex relative p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
-              aria-label="Wishlist"
-            >
-              <Heart size={20} className={wishlist.length > 0 ? "text-red-500 fill-red-500" : ""} />
-              {wishlist.length > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 bg-red-600 text-white rounded-full text-[9px] font-black flex items-center justify-center shadow-xs">
-                  {wishlist.length}
+            }
+          }}
+          className="w-full bg-[#0c0d10] text-white overflow-hidden py-1.5 sm:py-2 select-none border-b border-amber-400/20 shadow-xs cursor-pointer hover:bg-black transition-colors"
+          title="PrintOkiyo Special Store Offers"
+        >
+          <div className="offer-marquee-track flex items-center">
+            {[...flashingOffers, ...flashingOffers].map((item, idx) => (
+              <div key={idx} className="inline-flex items-center gap-2 px-3 sm:px-5 whitespace-nowrap shrink-0">
+                <span className="text-xs sm:text-sm offer-flash-icon">{item.icon}</span>
+                <span className={`text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-none ${item.badgeColor}`}>
+                  {item.badge}
                 </span>
-              )}
-            </button>
-
-            <button 
-              onClick={() => { 
-                setActiveTab('cart'); 
-                setSelectedProduct(null); 
-              }}
-              className="relative p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
-              aria-label="Cart"
-            >
-              <ShoppingBag size={20} />
-              {cart.length > 0 && (
-                <span className="absolute top-1 right-1 w-4.5 h-4.5 bg-black text-white rounded-full text-[9px] font-black flex items-center justify-center shadow-xs">
-                  {cart.length}
+                <span className="text-[11px] sm:text-xs font-black tracking-wide text-amber-300 uppercase">
+                  {item.highlight}
                 </span>
-              )}
-            </button>
-
-            {activeTab !== 'profile' && (
-              <button 
-                onClick={handleProfileClick}
-                className="p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
-                aria-label="Profile"
-              >
-                <User size={20} />
-              </button>
-            )}
+                <span className="text-[10px] sm:text-[11px] text-gray-300 font-medium hidden sm:inline">
+                  — {item.text}
+                </span>
+                <span className="text-gray-600 mx-2 text-[10px]">✦</span>
+              </div>
+            ))}
           </div>
         </div>
       </header>
