@@ -237,6 +237,7 @@ export interface OrderPayload {
   items: Array<{
     product_id?: string;
     sku?: string;
+    SKU?: string;
     title: string;
     price: number;
     thumbnail?: string;

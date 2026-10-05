@@ -235,6 +235,8 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
       // Save clean order context locally without heavy Base64 image data
       const cleanCartForStorage = cart.map((item, idx) => ({
         id: item.id || (item as any)._id,
+        sku: item.SKU || (item as any).sku || '',
+        SKU: item.SKU || (item as any).sku || '',
         title: item.title,
         price: getEffectivePrice(item),
         selected_size: item.selected_size,
@@ -271,6 +273,7 @@ export const CheckoutForm: React.FC<CheckoutFormProps> = ({
         items: cart.map((it) => ({
           product_id: it.id || (it as any)._id,
           sku: it.SKU || (it as any).sku || '',
+          SKU: it.SKU || (it as any).sku || '',
           title: it.title,
           price: getEffectivePrice(it),
           thumbnail: typeof it.thumbnail === 'string' && it.thumbnail.startsWith('data:') ? it.thumbnail.slice(0, 60) : it.thumbnail

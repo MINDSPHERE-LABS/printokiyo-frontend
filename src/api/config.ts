@@ -18,8 +18,8 @@ const isLocal = hostname === 'localhost' ||
                 hostname.endsWith('.local');
 
 // --- Backend URLs ---
-const PRIMARY_BACKEND = 'https://api.makewithmojo.com';
-const FALLBACK_BACKEND = 'https://makewithmojo-backend.onrender.com';
+const PRIMARY_BACKEND = 'https://printokiyo-backend.onrender.com';
+const FALLBACK_BACKEND = 'https://api.printokiyo.com';
 const LOCAL_BACKEND = `http://${hostname}:8000`;
 
 // Resolved backend base (without /api) — updated after health check

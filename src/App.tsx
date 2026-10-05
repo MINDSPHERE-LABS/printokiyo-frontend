@@ -567,6 +567,7 @@ function formatDateSafe(dateStr: any): string {
                 return {
                   product_id: it.id || it._id,
                   sku: it.SKU || it.sku || '',
+                  SKU: it.SKU || it.sku || '',
                   title: it.title,
                   price: getEffectivePrice(it),
                   thumbnail: it.thumbnail,
@@ -738,49 +739,42 @@ function formatDateSafe(dateStr: any): string {
     }
   ], []);
 
-  // Flashing Store Offers for Infinite Marquee Scroller below Navbar
+  // Flashing Store Offers for Infinite Marquee Scroller below Navbar (Best Value Packs Only)
   const flashingOffers = useMemo(() => [
     {
-      badge: "FLASH OFFER",
+      badge: "PACK 1",
       badgeColor: "bg-red-600 text-white",
       highlight: "BUY 1 GET 2 FREE",
       text: "Add 3 posters to cart — pay for only 1!",
       icon: "🔥"
     },
     {
-      badge: "FREE SHIPPING",
-      badgeColor: "bg-amber-400 text-black",
-      highlight: "FREE DELIVERY ACROSS INDIA",
-      text: "On all orders above ₹999",
-      icon: "🚚"
-    },
-    {
-      badge: "AUTO DISCOUNT",
+      badge: "PACK 2",
       badgeColor: "bg-emerald-500 text-white",
       highlight: "BUY 2 GET 4 FREE",
-      text: "Cart discount applies automatically",
+      text: "Add 6 posters to cart — pay for only 2!",
       icon: "⚡"
     },
     {
       badge: "BEST VALUE",
       badgeColor: "bg-gradient-to-r from-amber-400 to-yellow-300 text-black font-black",
       highlight: "BUY 3 GET 9 FREE",
-      text: "Get 12 posters total — biggest room aesthetic deal!",
+      text: "Add 12 posters to cart — pay for only 3!",
       icon: "👑"
     },
     {
-      badge: "PRINT QUALITY",
-      badgeColor: "bg-blue-600 text-white",
-      highlight: "300 GSM ARCHIVAL MATTE",
-      text: "HD 12-color archival prints — fade resistant 50+ yrs",
-      icon: "✨"
+      badge: "AUTO DISCOUNT",
+      badgeColor: "bg-amber-400 text-black",
+      highlight: "NO COUPON NEEDED",
+      text: "Best value discounts apply automatically at cart & checkout",
+      icon: "🎉"
     },
     {
-      badge: "WARRANTY",
-      badgeColor: "bg-purple-600 text-white",
-      highlight: "100% TRANSIT PROTECTION",
-      text: "Hassle-free replacement for any delivery damage",
-      icon: "🔄"
+      badge: "FREE SHIPPING",
+      badgeColor: "bg-blue-600 text-white",
+      highlight: "FREE PAN-INDIA DELIVERY",
+      text: "Complimentary shipping on orders above ₹999",
+      icon: "🚚"
     }
   ], []);
 
@@ -1626,16 +1620,33 @@ function formatDateSafe(dateStr: any): string {
         
         {/* Active Product Details Inline View */}
         {activeTab === 'details' && selectedProduct && (
-          <ProductDetails
-            product={selectedProduct}
-            allProducts={productsList}
-            onAddToCart={handleAddToCart}
-            onAddToWishlist={handleAddToWishlist}
-            onBuyNow={handleBuyNow}
-            onViewDetails={openProductDetails}
-            onQuickAdd={setQuickAddProduct}
-            isWishlisted={wishlist.some((p) => (p.id || p._id) === (selectedProduct.id || selectedProduct._id))}
-          />
+          <div>
+            <ProductDetails
+              product={selectedProduct}
+              allProducts={productsList}
+              onAddToCart={handleAddToCart}
+              onAddToWishlist={handleAddToWishlist}
+              onBuyNow={handleBuyNow}
+              onViewDetails={openProductDetails}
+              onQuickAdd={setQuickAddProduct}
+              isWishlisted={wishlist.some((p) => (p.id || p._id) === (selectedProduct.id || selectedProduct._id))}
+            />
+
+            {/* Brand Footer on Product Page */}
+            <div className="-mx-3 sm:-mx-6 lg:-mx-8 mt-12 border-t border-gray-100">
+              <Footer 
+                onAboutClick={handleOpenAbout}
+                onTermsClick={handleOpenTerms}
+                onShippingClick={handleOpenShipping}
+                onRefundClick={handleOpenRefund}
+                onCancelOrderClick={handleOpenCancelOrder}
+                onPrivacyClick={handleOpenPrivacy}
+                onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
+                onOpenSinglePosters={handleOpenSinglePosters}
+                onCategoryClick={handleCategorySelect}
+              />
+            </div>
+          </div>
         )}
 
         {/* Homepage View */}
@@ -2874,6 +2885,7 @@ function formatDateSafe(dateStr: any): string {
               const mappedItems = calculatedCheckoutCart.map((it) => ({
                 product_id: it.id || (it as any)._id,
                 sku: it.SKU || (it as any).sku || '',
+                SKU: it.SKU || (it as any).sku || '',
                 title: it.title,
                 price: it.final_price,
                 thumbnail: it.thumbnail,
