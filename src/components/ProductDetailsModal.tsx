@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Product } from '../types';
-import { X, ShoppingBag, Heart, Star, ChevronLeft, ChevronRight, CreditCard } from 'lucide-react';
+import { X, ShoppingBag, Heart, Star, ChevronLeft, ChevronRight, CreditCard, Flame } from 'lucide-react';
 import { getImageUrl } from '../utils/image';
 
 interface ProductDetailsModalProps {
@@ -294,8 +294,8 @@ export const ProductDetailsModal: React.FC<ProductDetailsModalProps> = ({
             {product.show_best_value_packs !== false && (
               <div className="mb-4 p-2.5 sm:p-3 bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-amber-500/10 border border-amber-200/90 rounded-xl flex flex-col gap-2 shadow-2xs select-none">
                 <div className="flex items-center justify-between border-b border-amber-200/60 pb-1.5">
-                  <div className="flex items-center gap-1">
-                    <span className="text-xs">🔥</span>
+                  <div className="flex items-center gap-1.5">
+                    <Flame size={14} className="text-amber-600 fill-amber-500/30" />
                     <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-gray-950">
                       BEST VALUE PACKS
                     </span>

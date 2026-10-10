@@ -131,18 +131,18 @@ body {
   0%, 100% {
     opacity: 1;
     transform: scale(1);
-    filter: drop-shadow(0 0 3px rgba(251, 198, 56, 0.9));
   }
   50% {
-    opacity: 0.8;
-    transform: scale(1.15);
-    filter: drop-shadow(0 0 1px rgba(251, 198, 56, 0.3));
+    opacity: 0.88;
+    transform: scale(1.08);
   }
 }
 
 .offer-flash-icon {
-  display: inline-block;
-  animation: flash-glow 1.4s ease-in-out infinite;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  animation: flash-glow 1.8s ease-in-out infinite;
 }
 
 /* From Uiverse.io by mobinkakei */ 

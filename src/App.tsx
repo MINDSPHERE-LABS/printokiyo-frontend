@@ -34,7 +34,8 @@ import {
 } from './api/auth';
 import type { UserProfile } from './api/auth';
 import { 
-  X, Check, ShoppingBag, Heart, Search, Home, User, Menu, ChevronLeft, ChevronRight, Sparkles, Layers
+  X, Check, ShoppingBag, Heart, Search, Home, User, Menu, ChevronLeft, ChevronRight, Sparkles, Layers,
+  Flame, Zap, Crown, Truck
 } from 'lucide-react';
 
 interface Toast {
@@ -749,38 +750,48 @@ function formatDateSafe(dateStr: any): string {
   const flashingOffers = useMemo(() => [
     {
       badge: "PACK 1",
-      badgeColor: "bg-red-600 text-white",
+      badgeColor: "bg-rose-600 text-white font-black",
       highlight: "BUY 1 GET 2 FREE",
       text: "Add 3 posters to cart — pay for only 1!",
-      icon: "🔥"
+      icon: Flame,
+      iconColor: "text-rose-400 fill-rose-500/25",
+      glowBg: "bg-rose-500/10 border-rose-500/30 shadow-[0_0_8px_rgba(244,63,94,0.35)]"
     },
     {
       badge: "PACK 2",
-      badgeColor: "bg-emerald-500 text-white",
+      badgeColor: "bg-emerald-600 text-white font-black",
       highlight: "BUY 2 GET 4 FREE",
       text: "Add 6 posters to cart — pay for only 2!",
-      icon: "⚡"
+      icon: Zap,
+      iconColor: "text-emerald-400 fill-emerald-400/25",
+      glowBg: "bg-emerald-500/10 border-emerald-500/30 shadow-[0_0_8px_rgba(16,185,129,0.35)]"
     },
     {
       badge: "BEST VALUE",
       badgeColor: "bg-gradient-to-r from-amber-400 to-yellow-300 text-black font-black",
       highlight: "BUY 3 GET 9 FREE",
       text: "Add 12 posters to cart — pay for only 3!",
-      icon: "👑"
+      icon: Crown,
+      iconColor: "text-amber-300 fill-amber-300/25",
+      glowBg: "bg-amber-400/10 border-amber-400/30 shadow-[0_0_8px_rgba(251,191,36,0.35)]"
     },
     {
       badge: "AUTO DISCOUNT",
-      badgeColor: "bg-amber-400 text-black",
+      badgeColor: "bg-amber-400 text-black font-black",
       highlight: "NO COUPON NEEDED",
       text: "Best value discounts apply automatically at cart & checkout",
-      icon: "🎉"
+      icon: Sparkles,
+      iconColor: "text-amber-300 fill-amber-300/25",
+      glowBg: "bg-amber-400/10 border-amber-400/30 shadow-[0_0_8px_rgba(251,191,36,0.25)]"
     },
     {
       badge: "FREE SHIPPING",
-      badgeColor: "bg-blue-600 text-white",
+      badgeColor: "bg-sky-600 text-white font-black",
       highlight: "FREE PAN-INDIA DELIVERY",
       text: "Complimentary shipping on orders above ₹999",
-      icon: "🚚"
+      icon: Truck,
+      iconColor: "text-sky-400",
+      glowBg: "bg-sky-500/10 border-sky-400/30 shadow-[0_0_8px_rgba(56,189,248,0.35)]"
     }
   ], []);
 
@@ -1569,25 +1580,30 @@ function formatDateSafe(dateStr: any): string {
               setSelectedProduct(null);
             }
           }}
-          className="w-full bg-[#0c0d10] text-white overflow-hidden py-1.5 sm:py-2 select-none border-b border-amber-400/20 shadow-xs cursor-pointer hover:bg-black transition-colors"
+          className="w-full bg-[#09090b] text-white overflow-hidden py-1.5 sm:py-2 select-none border-b border-zinc-800/80 shadow-xs cursor-pointer hover:bg-black transition-colors"
           title="PrintOkiyo Special Store Offers"
         >
           <div className="offer-marquee-track flex items-center">
-            {[...flashingOffers, ...flashingOffers].map((item, idx) => (
-              <div key={idx} className="inline-flex items-center gap-2 px-3 sm:px-5 whitespace-nowrap shrink-0">
-                <span className="text-xs sm:text-sm offer-flash-icon">{item.icon}</span>
-                <span className={`text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-none ${item.badgeColor}`}>
-                  {item.badge}
-                </span>
-                <span className="text-[11px] sm:text-xs font-black tracking-wide text-amber-300 uppercase">
-                  {item.highlight}
-                </span>
-                <span className="text-[10px] sm:text-[11px] text-gray-300 font-medium hidden sm:inline">
-                  — {item.text}
-                </span>
-                <span className="text-gray-600 mx-2 text-[10px]">✦</span>
-              </div>
-            ))}
+            {[...flashingOffers, ...flashingOffers].map((item, idx) => {
+              const IconComponent = item.icon;
+              return (
+                <div key={idx} className="inline-flex items-center gap-2 px-3 sm:px-5 whitespace-nowrap shrink-0">
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border ${item.glowBg} transition-transform`}>
+                    <IconComponent size={11} className={item.iconColor} strokeWidth={2.4} />
+                  </span>
+                  <span className={`text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-none ${item.badgeColor}`}>
+                    {item.badge}
+                  </span>
+                  <span className="text-[11px] sm:text-xs font-black tracking-wide text-amber-300 uppercase">
+                    {item.highlight}
+                  </span>
+                  <span className="text-[10px] sm:text-[11px] text-zinc-300 font-medium hidden sm:inline">
+                    — {item.text}
+                  </span>
+                  <span className="text-zinc-600 mx-2 text-[10px]">✦</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </header>
@@ -1887,7 +1903,7 @@ function formatDateSafe(dateStr: any): string {
                     const currentTabLabel = singlePosterSubTabs.find(t => t.key === activeSingleCategory)?.label || 'posters';
                     return (
                       <div className="w-full py-10 px-4 text-center bg-gray-50/80 rounded-2xl border border-dashed border-gray-200 flex flex-col items-center justify-center gap-1.5 my-2">
-                        <span className="text-2xl">🖼️</span>
+                        <Layers className="w-8 h-8 text-gray-400" strokeWidth={1.5} />
                         <p className="text-xs font-bold text-gray-800">No {currentTabLabel} available yet</p>
                         <p className="text-[11px] text-gray-500">New arrivals for this category are on the way! Check back soon.</p>
                       </div>
