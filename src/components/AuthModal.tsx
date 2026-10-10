@@ -18,7 +18,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [waNotice, setWaNotice] = useState<string | null>(null);
-  const [devOtp, setDevOtp] = useState<string | null>(null);
 
   // 2-Minute Timer state
   const [timerSeconds, setTimerSeconds] = useState<number>(120);
@@ -62,22 +61,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     setLoading(true);
     setErrorMsg(null);
     setWaNotice(null);
-    setDevOtp(null);
     setOtpCode('');
     try {
-      const response = await sendOTP(`+91${phone}`);
-      if (response && response.whatsapp_delivery?.reason) {
-        setWaNotice(response.whatsapp_delivery.reason);
-      }
-      const code = response?.otp || response?.dev_otp || response?.whatsapp_delivery?.dev_otp;
-      if (code) {
-        setDevOtp(code);
-        setOtpCode(code);
-      }
+      await sendOTP(`+91${phone}`);
       setTimerSeconds(120);
       setIsTimerExpired(false);
     } catch (err: any) {
-      setErrorMsg(err.message || 'Failed to resend OTP.');
+      setErrorMsg(err.message || 'Failed to resend WhatsApp OTP.');
     } finally {
       setLoading(false);
     }
@@ -95,20 +85,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
     setLoading(true);
     setErrorMsg(null);
     setWaNotice(null);
-    setDevOtp(null);
     try {
-      const response = await sendOTP(`+91${phone}`);
-      if (response && response.whatsapp_delivery?.reason) {
-        setWaNotice(response.whatsapp_delivery.reason);
-      }
-      const code = response?.otp || response?.dev_otp || response?.whatsapp_delivery?.dev_otp;
-      if (code) {
-        setDevOtp(code);
-        setOtpCode(code);
-      }
+      await sendOTP(`+91${phone}`);
       setStep('otp');
     } catch (err: any) {
-      setErrorMsg(err.message || 'Failed to send verification code.');
+      setErrorMsg(err.message || 'Failed to send WhatsApp verification code.');
     } finally {
       setLoading(false);
     }
@@ -132,7 +113,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
       setPhone('');
       setOtpCode('');
       setWaNotice(null);
-      setDevOtp(null);
     } catch (err: any) {
       setErrorMsg(err.message || 'Verification failed. Please try again.');
     } finally {
@@ -189,11 +169,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
         )}
 
         {/* Informative message box */}
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-3.5 flex flex-col gap-1 text-left">
-          <p className="text-[10px] text-blue-900 leading-normal font-semibold">
+        <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3.5 flex flex-col gap-1 text-left">
+          <p className="text-[10px] text-emerald-900 leading-normal font-semibold">
             {step === 'input' 
-              ? 'Enter your 10-digit mobile number to receive a 6-digit verification code.' 
-              : `A 6-digit verification code was sent to +91 ${phone}.`}
+              ? 'Enter your 10-digit mobile number to receive your WhatsApp verification code.' 
+              : `💬 A 6-digit verification code was sent to your WhatsApp on +91 ${phone}.`}
           </p>
           {waNotice && (
             <p className="text-[9px] text-amber-800 bg-amber-100/80 p-2 rounded-lg font-bold leading-normal mt-1 border border-amber-200">
@@ -201,23 +181,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSuccess
             </p>
           )}
         </div>
-
-        {/* Dev OTP Display Banner */}
-        {step === 'otp' && devOtp && (
-          <div className="bg-emerald-50 border border-emerald-200/90 rounded-xl p-3 text-left flex items-center justify-between animate-in fade-in">
-            <div className="flex flex-col gap-0.5">
-              <span className="text-[9px] font-black uppercase text-emerald-800 tracking-wider">DEV OTP / TEST CODE</span>
-              <span className="text-xs font-mono font-bold text-emerald-950">Use code: <strong className="text-emerald-700 tracking-widest text-sm font-black">{devOtp}</strong></span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setOtpCode(devOtp)}
-              className="text-[10px] font-bold text-emerald-800 hover:text-emerald-950 bg-emerald-100 hover:bg-emerald-200 px-2.5 py-1 rounded-lg transition-colors cursor-pointer border border-emerald-300/60 shadow-xs"
-            >
-              Auto-fill Code
-            </button>
-          </div>
-        )}
 
         {/* Error Callout */}
         {errorMsg && (

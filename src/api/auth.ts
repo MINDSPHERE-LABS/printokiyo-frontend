@@ -80,7 +80,7 @@ export async function devLoginUser(phone: string): Promise<AuthResponse> {
   return res.json();
 }
 
-export async function sendOTP(phone: string): Promise<{ message: string; phone: string; whatsapp_delivery?: any; otp?: string; dev_otp?: string }> {
+export async function sendOTP(phone: string): Promise<{ success: boolean; message: string; phone: string }> {
   const apiBase = await API_BASE();
   const res = await fetch(`${apiBase}/auth/send-otp`, {
     method: 'POST',
