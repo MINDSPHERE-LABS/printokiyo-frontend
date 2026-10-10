@@ -26,6 +26,7 @@ import { PrivacyPolicyPage } from './components/PrivacyPolicyPage';
 import { BrandBuffer } from './components/BrandBuffer';
 import { SidebarDrawer } from './components/SidebarDrawer';
 import { QuickAddModal } from './components/QuickAddModal';
+import { initVisitorTracker } from './utils/visitorTracker';
 import { 
   fetchUserCart, syncUserCart, mergeGuestCart,
   fetchUserWishlist, addToUserWishlist, removeFromUserWishlist,
@@ -93,6 +94,11 @@ function App() {
       setIsInitialLoading(false);
     }, 50);
     return () => clearTimeout(timer);
+  }, []);
+
+  // Real-time storefront browsing visitor tracker
+  useEffect(() => {
+    return initVisitorTracker();
   }, []);
 
   // Automated sliding effect every 5 seconds
