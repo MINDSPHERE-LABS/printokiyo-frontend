@@ -44,11 +44,11 @@ export const Footer: React.FC<FooterProps> = ({
 
             <div className="flex flex-col gap-2 mt-1">
               <a 
-                href="mailto:support@printokiyo.com" 
+                href="mailto:printokiyo@gmail.com" 
                 className="flex items-center gap-2.5 text-gray-200 hover:text-[#e2b04c] transition-colors text-xs sm:text-sm font-semibold group"
               >
                 <Mail size={15} className="text-[#e2b04c]" />
-                <span className="underline underline-offset-2">support@printokiyo.com</span>
+                <span className="underline underline-offset-2">printokiyo@gmail.com</span>
               </a>
             </div>
 
@@ -124,7 +124,7 @@ export const Footer: React.FC<FooterProps> = ({
               <li><button type="button" onClick={() => onCategoryClick?.('Collage/Block Kits')} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Collage/Block Kits</button></li>
               <li><button type="button" onClick={() => onCategoryClick?.('Customization')} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Customization</button></li>
               <li><button type="button" onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })} className="hover:text-[#e2b04c] transition-colors bg-transparent border-0 p-0 text-left cursor-pointer font-medium">Happy Customers</button></li>
-              <li><a href="mailto:support@printokiyo.com" className="hover:text-[#e2b04c] transition-colors">Support</a></li>
+              <li><a href="mailto:printokiyo@gmail.com" className="hover:text-[#e2b04c] transition-colors">Support</a></li>
             </ul>
           </div>
 

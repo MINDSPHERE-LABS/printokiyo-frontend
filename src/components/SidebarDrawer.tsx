@@ -184,7 +184,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
               </button>
 
               <a
-                href="mailto:support@printokiyo.com"
+                href="mailto:printokiyo@gmail.com"
                 className="w-full flex items-center justify-between px-5 py-3.5 text-sm font-medium text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer"
               >
                 <span>Support</span>

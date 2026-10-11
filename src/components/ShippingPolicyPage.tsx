@@ -326,7 +326,7 @@ export const ShippingPolicyPage: React.FC<ShippingPolicyPageProps> = ({
             </ul>
 
             <p className="text-[11px] text-gray-500 leading-relaxed">
-              If your parcel sustains transit damage, simply email us an unboxing photo or video within 48 hours of delivery at <a href="mailto:support@printokiyo.com" className="text-[#041e42] underline font-bold">support@printokiyo.com</a> and we will dispatch a brand-new replacement at zero cost.
+              If your parcel sustains transit damage, simply email us an unboxing photo or video within 48 hours of delivery at <a href="mailto:printokiyo@gmail.com" className="text-[#041e42] underline font-bold">printokiyo@gmail.com</a> and we will dispatch a brand-new replacement at zero cost.
             </p>
           </div>
 
@@ -343,7 +343,7 @@ export const ShippingPolicyPage: React.FC<ShippingPolicyPageProps> = ({
 
             <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
               <a
-                href="mailto:support@printokiyo.com"
+                href="mailto:printokiyo@gmail.com"
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-[#041e42] font-black text-xs hover:bg-[#e2b04c] hover:text-black transition-all cursor-pointer shadow-xs"
               >
                 <Mail size={15} />

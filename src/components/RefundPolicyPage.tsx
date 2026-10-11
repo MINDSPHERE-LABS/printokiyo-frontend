@@ -82,7 +82,7 @@ export const RefundPolicyPage: React.FC<RefundPolicyPageProps> = ({
               </div>
               <div className="text-left">
                 <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider block">Official Support</span>
-                <span className="text-xs sm:text-sm font-black text-gray-900">printokiyoinfo@gmail.com</span>
+                <span className="text-xs sm:text-sm font-black text-gray-900">printokiyo@gmail.com</span>
               </div>
             </div>
 
@@ -186,7 +186,7 @@ export const RefundPolicyPage: React.FC<RefundPolicyPageProps> = ({
             {/* Contact Channel */}
             <div className="mb-6">
               <a 
-                href="mailto:printokiyoinfo@gmail.com?subject=Replacement%20Request%20-%20PrintOkiyo"
+                href="mailto:printokiyo@gmail.com?subject=Replacement%20Request%20-%20PrintOkiyo"
                 className="group flex items-center gap-3.5 p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-all cursor-pointer max-w-md shadow-2xs"
               >
                 <div className="w-10 h-10 rounded-full bg-[#041e42] text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
@@ -197,7 +197,7 @@ export const RefundPolicyPage: React.FC<RefundPolicyPageProps> = ({
                     Official Support Email
                   </span>
                   <span className="text-sm sm:text-base font-black text-gray-900 group-hover:text-[#041e42]">
-                    printokiyoinfo@gmail.com
+                    printokiyo@gmail.com
                   </span>
                 </div>
               </a>
@@ -379,11 +379,11 @@ export const RefundPolicyPage: React.FC<RefundPolicyPageProps> = ({
 
             <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
               <a
-                href="mailto:printokiyoinfo@gmail.com?subject=Replacement%20Claim%20-%20PrintOkiyo"
+                href="mailto:printokiyo@gmail.com?subject=Replacement%20Claim%20-%20PrintOkiyo"
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-[#041e42] hover:bg-[#e2b04c] hover:text-black font-black text-xs transition-all cursor-pointer shadow-xs"
               >
                 <Mail size={16} />
-                <span>Email Support (printokiyoinfo@gmail.com)</span>
+                <span>Email Support (printokiyo@gmail.com)</span>
               </a>
 
               {onExploreProducts && (

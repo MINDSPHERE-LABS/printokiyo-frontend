@@ -99,11 +99,11 @@ export const TermsOfServicePage: React.FC<TermsOfServicePageProps> = ({ onNaviga
               <div className="mt-6 pt-4 border-t border-gray-200 flex flex-col gap-2">
                 <span className="text-[11px] font-semibold text-gray-500">Need legal assistance?</span>
                 <a 
-                  href="mailto:support@printokiyo.com" 
+                  href="mailto:printokiyo@gmail.com" 
                   className="text-xs font-bold text-[#041e42] hover:underline flex items-center gap-1.5"
                 >
                   <HelpCircle size={13} />
-                  <span>support@printokiyo.com</span>
+                  <span>printokiyo@gmail.com</span>
                 </a>
               </div>
             </div>
@@ -251,7 +251,7 @@ export const TermsOfServicePage: React.FC<TermsOfServicePageProps> = ({ onNaviga
                 </p>
                 <ol className="list-decimal pl-5 space-y-1">
                   <li>Capture a clear photo or short unboxing video of the damaged item and packaging within <strong>48 hours</strong> of delivery.</li>
-                  <li>Email us at <strong>support@printokiyo.com</strong> or WhatsApp our support line with your Order ID (#PO-XXXX).</li>
+                  <li>Email us at <strong>printokiyo@gmail.com</strong> or WhatsApp our support line with your Order ID (#PO-XXXX).</li>
                   <li>Upon prompt verification, we will dispatch a <strong>brand-new replacement completely free of charge</strong>, or issue a full refund if the item is out of stock.</li>
                 </ol>
               </div>
@@ -266,7 +266,7 @@ export const TermsOfServicePage: React.FC<TermsOfServicePageProps> = ({ onNaviga
                 The website design, branding, logo, code, layout, graphics, text, and user interface are the exclusive intellectual property of PrintOkiyo and protected under Indian and international copyright and trademark laws.
               </p>
               <p>
-                <strong>Fan Art Disclaimer:</strong> All anime, cinema, superhero, sports, and pop-culture posters curated on this platform are intended as transformative fan art and creative tributes for personal indoor aesthetic decoration. They are not purported to be official licensed merchandise unless explicitly stated. If you are a copyright holder and believe any artwork infringes on your rights, please reach out to our IP Grievance channel at <strong>support@printokiyo.com</strong> for prompt takedown review.
+                <strong>Fan Art Disclaimer:</strong> All anime, cinema, superhero, sports, and pop-culture posters curated on this platform are intended as transformative fan art and creative tributes for personal indoor aesthetic decoration. They are not purported to be official licensed merchandise unless explicitly stated. If you are a copyright holder and believe any artwork infringes on your rights, please reach out to our IP Grievance channel at <strong>printokiyo@gmail.com</strong> for prompt takedown review.
               </p>
             </section>
 
@@ -322,7 +322,7 @@ export const TermsOfServicePage: React.FC<TermsOfServicePageProps> = ({ onNaviga
               <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5 text-xs sm:text-sm space-y-2">
                 <p><strong>Grievance Officer:</strong> Legal & Customer Support Team</p>
                 <p><strong>Brand / Entity:</strong> PrintOkiyo India</p>
-                <p><strong>Official Support Email:</strong> <a href="mailto:support@printokiyo.com" className="text-blue-600 hover:underline font-semibold">support@printokiyo.com</a></p>
+                <p><strong>Official Support Email:</strong> <a href="mailto:printokiyo@gmail.com" className="text-blue-600 hover:underline font-semibold">printokiyo@gmail.com</a></p>
                 <p><strong>WhatsApp Support:</strong> Available 10:00 AM &ndash; 7:00 PM IST (Mon &ndash; Sat)</p>
                 <p><strong>Acknowledgment Time:</strong> Within 48 business hours of ticket receipt</p>
                 <p><strong>Resolution Target:</strong> Within 30 days from grievance submission</p>

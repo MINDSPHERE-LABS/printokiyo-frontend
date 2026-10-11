@@ -93,7 +93,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <a href="#new-arrivals" className="hover:text-gray-900 dark:hover:text-white transition-colors">New Arrivals</a>
             <a href="#best-sellers" className="hover:text-gray-900 dark:hover:text-white transition-colors">Best Sellers</a>
             <button type="button" onClick={onAboutClick} className="hover:text-gray-900 dark:hover:text-white transition-colors cursor-pointer bg-transparent border-0 p-0 text-sm font-medium">About</button>
-            <a href="mailto:support@printokiyo.com" className="hover:text-gray-900 dark:hover:text-white transition-colors">Contact</a>
+            <a href="mailto:printokiyo@gmail.com" className="hover:text-gray-900 dark:hover:text-white transition-colors">Contact</a>
           </nav>
 
           {/* Right Section: Search & Actions */}
@@ -186,7 +186,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <a href="#new-arrivals" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>New Arrivals</a>
             <a href="#best-sellers" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>Best Sellers</a>
             <button type="button" className="text-left hover:text-gray-900 dark:hover:text-white bg-transparent border-0 p-0 text-sm font-medium cursor-pointer" onClick={() => { setMobileMenuOpen(false); onAboutClick?.(); }}>About Us</button>
-            <a href="mailto:support@printokiyo.com" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>Contact</a>
+            <a href="mailto:printokiyo@gmail.com" className="hover:text-gray-900 dark:hover:text-white" onClick={() => setMobileMenuOpen(false)}>Contact</a>
           </nav>
         </div>
       )}
