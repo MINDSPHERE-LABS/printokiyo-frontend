@@ -107,11 +107,11 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({
               <div className="mt-6 pt-4 border-t border-gray-200 flex flex-col gap-2">
                 <span className="text-[11px] font-semibold text-gray-500">Privacy Questions?</span>
                 <a 
-                  href="mailto:printokiyo@gmail.com" 
+                  href="mailto:printokiyoinfo@gmail.com" 
                   className="text-xs font-bold text-[#041e42] hover:underline flex items-center gap-1.5"
                 >
                   <Mail size={13} />
-                  <span>printokiyo@gmail.com</span>
+                  <span>printokiyoinfo@gmail.com</span>
                 </a>
               </div>
             </div>
@@ -356,11 +356,11 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({
 
               <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
                 <a
-                  href="mailto:printokiyo@gmail.com?subject=Privacy%20Data%20Request%20-%20PrintOkiyo"
+                  href="mailto:printokiyoinfo@gmail.com?subject=Privacy%20Data%20Request%20-%20PrintOkiyo"
                   className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-[#041e42] font-black text-xs hover:bg-[#e2b04c] hover:text-black transition-all cursor-pointer shadow-xs"
                 >
                   <Mail size={15} />
-                  <span>Email: printokiyo@gmail.com</span>
+                  <span>Email: printokiyoinfo@gmail.com</span>
                 </a>
 
                 {onExploreProducts && (

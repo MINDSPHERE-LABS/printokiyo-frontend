@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Home, ChevronRight, ShieldCheck, RefreshCw, AlertTriangle, 
-  CheckCircle2, MessageCircle, Mail, ArrowRight, Ban, 
+  CheckCircle2, Mail, ArrowRight, Ban, 
   CreditCard, PackageX
 } from 'lucide-react';
 
@@ -77,12 +77,12 @@ export const RefundPolicyPage: React.FC<RefundPolicyPageProps> = ({
             </div>
 
             <div className="flex items-center gap-3 justify-center sm:justify-start px-2 pt-3 sm:pt-0">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-                <MessageCircle size={20} />
+              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                <Mail size={20} />
               </div>
               <div className="text-left">
-                <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider block">Quick Help</span>
-                <span className="text-xs sm:text-sm font-black text-gray-900">WhatsApp Support</span>
+                <span className="text-[10px] uppercase font-bold text-gray-500 tracking-wider block">Official Support</span>
+                <span className="text-xs sm:text-sm font-black text-gray-900">printokiyoinfo@gmail.com</span>
               </div>
             </div>
 
@@ -169,7 +169,7 @@ export const RefundPolicyPage: React.FC<RefundPolicyPageProps> = ({
           <div className="bg-white rounded-2xl p-6 sm:p-8 border border-gray-200/90 shadow-xs">
             <div className="flex items-center gap-3 mb-5">
               <div className="w-10 h-10 rounded-xl bg-[#041e42] text-white flex items-center justify-center shrink-0">
-                <MessageCircle size={20} />
+                <Mail size={20} />
               </div>
               <div>
                 <h2 className="text-lg sm:text-xl font-black uppercase tracking-wider text-gray-900">
@@ -180,43 +180,24 @@ export const RefundPolicyPage: React.FC<RefundPolicyPageProps> = ({
             </div>
 
             <p className="text-xs sm:text-sm text-gray-700 leading-relaxed mb-4">
-              If your item meets the above criteria, please reach out to us immediately via:
+              If your item meets the above criteria, please reach out to our support team directly via email:
             </p>
 
-            {/* Contact Channels */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            {/* Contact Channel */}
+            <div className="mb-6">
               <a 
-                href="https://wa.me/917678647069?text=Hi%20PrintOkiyo,%20I%20would%20like%20to%20request%20a%20replacement%20for%20my%20order."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center gap-3 p-4 rounded-xl border border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100/70 transition-all cursor-pointer"
-              >
-                <div className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <MessageCircle size={20} />
-                </div>
-                <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 block">
-                    Fastest Response (Recommended)
-                  </span>
-                  <span className="text-sm font-black text-gray-900 group-hover:text-emerald-950">
-                    WhatsApp: +91-7678647069
-                  </span>
-                </div>
-              </a>
-
-              <a 
-                href="mailto:framekro@gmail.com?subject=Replacement%20Request%20-%20PrintOkiyo"
-                className="group flex items-center gap-3 p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-all cursor-pointer"
+                href="mailto:printokiyoinfo@gmail.com?subject=Replacement%20Request%20-%20PrintOkiyo"
+                className="group flex items-center gap-3.5 p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-all cursor-pointer max-w-md shadow-2xs"
               >
                 <div className="w-10 h-10 rounded-full bg-[#041e42] text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                   <Mail size={18} />
                 </div>
                 <div>
                   <span className="text-[10px] font-black uppercase tracking-wider text-gray-500 block">
-                    Email Support
+                    Official Support Email
                   </span>
-                  <span className="text-sm font-black text-gray-900 group-hover:text-[#041e42]">
-                    framekro@gmail.com
+                  <span className="text-sm sm:text-base font-black text-gray-900 group-hover:text-[#041e42]">
+                    printokiyoinfo@gmail.com
                   </span>
                 </div>
               </a>
@@ -392,19 +373,17 @@ export const RefundPolicyPage: React.FC<RefundPolicyPageProps> = ({
                 Need to submit a replacement claim?
               </h3>
               <p className="text-xs sm:text-sm text-gray-300 max-w-md">
-                Our support team is ready to help resolve damaged or defective items swiftly over WhatsApp or email.
+                Our support team is ready to help resolve damaged or defective items swiftly via email.
               </p>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
               <a
-                href="https://wa.me/917678647069?text=Hi%20PrintOkiyo,%20I%20have%20an%20issue%20with%20my%20order."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xs transition-all cursor-pointer shadow-xs"
+                href="mailto:printokiyoinfo@gmail.com?subject=Replacement%20Claim%20-%20PrintOkiyo"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-[#041e42] hover:bg-[#e2b04c] hover:text-black font-black text-xs transition-all cursor-pointer shadow-xs"
               >
-                <MessageCircle size={16} />
-                <span>WhatsApp (+91-7678647069)</span>
+                <Mail size={16} />
+                <span>Email Support (printokiyoinfo@gmail.com)</span>
               </a>
 
               {onExploreProducts && (

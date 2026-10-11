@@ -23,7 +23,7 @@ export const CancelOrderPage: React.FC<CancelOrderPageProps> = ({
     const body = encodeURIComponent(
       `Hello PrintOkiyo Support,\n\nI would like to request a cancellation for my order.\n\nOrder ID: ${orderIdInput.trim() || 'N/A'}\nReason for Cancellation: ${reasonInput.trim() || 'N/A'}\n\nPlease confirm the cancellation status.\n\nThank you,\nPrintOkiyo Customer`
     );
-    return `mailto:printokiyo@gmail.com?subject=${subject}&body=${body}`;
+    return `mailto:printokiyoinfo@gmail.com?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -73,11 +73,11 @@ export const CancelOrderPage: React.FC<CancelOrderPageProps> = ({
               <span>Cancellations must be requested within <strong>1 day of dispatch</strong>.</span>
             </div>
             <a 
-              href="mailto:printokiyo@gmail.com"
+              href="mailto:printokiyoinfo@gmail.com"
               className="text-xs font-black text-[#041e42] hover:underline flex items-center gap-1.5"
             >
               <Mail size={14} />
-              <span>printokiyo@gmail.com</span>
+              <span>printokiyoinfo@gmail.com</span>
             </a>
           </div>
         </div>
@@ -103,10 +103,10 @@ export const CancelOrderPage: React.FC<CancelOrderPageProps> = ({
                 <p className="text-sm sm:text-base font-semibold text-gray-800 mt-2 leading-relaxed">
                   If you wish to cancel your order, you can contact us via email at{' '}
                   <a 
-                    href="mailto:printokiyo@gmail.com" 
+                    href="mailto:printokiyoinfo@gmail.com" 
                     className="text-[#041e42] underline decoration-2 font-black hover:text-[#002f6c]"
                   >
-                    printokiyo@gmail.com
+                    printokiyoinfo@gmail.com
                   </a>
                   . Please include your <strong className="text-black font-black">Order ID</strong> in the message.
                 </p>
@@ -120,7 +120,7 @@ export const CancelOrderPage: React.FC<CancelOrderPageProps> = ({
                 <span>Quick Email Composer</span>
               </h3>
               <p className="text-xs text-gray-600 mb-4">
-                Enter your Order ID below to pre-populate an official cancellation request to send to <strong>printokiyo@gmail.com</strong>:
+                Enter your Order ID below to pre-populate an official cancellation request to send to <strong>printokiyoinfo@gmail.com</strong>:
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3">
@@ -227,11 +227,11 @@ export const CancelOrderPage: React.FC<CancelOrderPageProps> = ({
 
             <div className="flex flex-wrap items-center justify-center gap-3 shrink-0">
               <a
-                href="mailto:printokiyo@gmail.com"
+                href="mailto:printokiyoinfo@gmail.com"
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-[#041e42] font-black text-xs hover:bg-[#e2b04c] hover:text-black transition-all cursor-pointer shadow-xs"
               >
                 <Mail size={16} />
-                <span>Email: printokiyo@gmail.com</span>
+                <span>Email: printokiyoinfo@gmail.com</span>
               </a>
 
               {onNavigateOrders && (
