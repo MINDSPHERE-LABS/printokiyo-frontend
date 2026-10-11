@@ -151,11 +151,13 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
     const pTitle = (p.title || '').toLowerCase().trim();
     const lowerKey = targetKey.toLowerCase().trim();
 
+    const isMeme = lowerKey.includes('meme') || lowerKey.includes('funny') || lowerKey.includes('humor') || pCat.includes('meme') || pCat.includes('funny') || pTitle.includes('meme') || pTitle.includes('funny');
+
     // Never show Wall Sets, Collage kits, Polaroids, or Split Posters
     if (pCat.includes('wall') || pCat.includes('collage') || pCat.includes('polaroid') || pCat.includes('poloride')) {
       return false;
     }
-    if (pCat.includes('split') || pTitle.includes('split')) {
+    if ((pCat.includes('split') || pTitle.includes('split')) && !isMeme) {
       return false;
     }
 
@@ -163,11 +165,11 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
     const normTarget = lowerKey.replace(/s\b/g, '');
     if (normPCat === normTarget || pCat === lowerKey) return true;
 
+    if (lowerKey.includes('meme') || lowerKey.includes('funny') || lowerKey.includes('humor')) {
+      return isMeme;
+    }
     if (lowerKey.includes('anime')) {
       return (pCat.includes('anime') || pTitle.includes('anime')) && !pCat.includes('split');
-    }
-    if (lowerKey.includes('meme') || lowerKey.includes('funny') || lowerKey.includes('humor')) {
-      return (pCat.includes('meme') || pCat.includes('funny') || pCat.includes('humor') || pTitle.includes('meme') || pTitle.includes('funny')) && !pCat.includes('split');
     }
     if (lowerKey.includes('car') || lowerKey.includes('supercar')) {
       return (pCat.includes('car') || pCat.includes('supercar') || pCat.includes('f1')) && !pCat.includes('split');
@@ -200,12 +202,17 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
       if (!p || !p.category) return false;
       const pCat = p.category.toLowerCase().trim();
       const pTitle = (p.title || '').toLowerCase().trim();
-      if (pCat.includes('wall') || pCat.includes('collage') || pCat.includes('polaroid') || pCat.includes('poloride') || pCat.includes('split') || pTitle.includes('split')) {
+      const isMeme = pCat.includes('meme') || pCat.includes('funny') || pCat.includes('humor') || pTitle.includes('meme') || pTitle.includes('funny');
+
+      if (pCat.includes('wall') || pCat.includes('collage') || pCat.includes('polaroid') || pCat.includes('poloride')) {
+        return false;
+      }
+      if ((pCat.includes('split') || pTitle.includes('split')) && !isMeme) {
         return false;
       }
 
       if (selectedSubTab === 'all') {
-        return SINGLE_POSTER_CATEGORIES.some(cat => isMatch(p, cat.category)) || pCat.includes('single');
+        return SINGLE_POSTER_CATEGORIES.some(cat => isMatch(p, cat.category)) || pCat.includes('single') || isMeme;
       }
 
       return isMatch(p, selectedSubTab);

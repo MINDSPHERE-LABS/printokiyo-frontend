@@ -189,7 +189,7 @@ function App() {
   // Infinite Scroll States with instant local storage cache for 0ms loading across all browser sessions
   const [productsList, setProductsList] = useState<Product[]>(() => {
     try {
-      const saved = localStorage.getItem('mwm_cached_products_v2');
+      const saved = localStorage.getItem('mwm_cached_products_v3');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -852,11 +852,21 @@ function formatDateSafe(dateStr: any): string {
       }
 
       // 4. Strict Split vs Single isolation:
-      if (isSplitCategory) {
-        if (pCat.includes('single') || pTitle.includes('single')) return false;
-      }
-      if (isSingleCategory) {
-        if (pCat.includes('split') || pTitle.includes('split')) return false;
+      const isMemeContext = selLower.includes('meme') || selLower.includes('funny') || selLower.includes('humor') || pCat.includes('meme') || pCat.includes('funny') || pTitle.includes('meme') || pTitle.includes('funny');
+      if (!isMemeContext) {
+        if (isSplitCategory) {
+          if (pCat.includes('single') || pTitle.includes('single')) return false;
+        }
+        if (isSingleCategory) {
+          if (pCat.includes('split') || pTitle.includes('split')) return false;
+        }
+      } else {
+        if (isSplitCategory) {
+          if (pCat.includes('single') && !pCat.includes('split') && !pTitle.includes('split')) return false;
+        }
+        if (isSingleCategory) {
+          if (pCat.includes('split') && !pCat.includes('single') && !pTitle.includes('single')) return false;
+        }
       }
 
       // 5. Direct exact or normalized category match (handling singular/plural 'posters' vs 'poster')
@@ -870,6 +880,15 @@ function formatDateSafe(dateStr: any): string {
       const checkGenreAndType = (genreWords: string[]) => {
         const matchesGenre = genreWords.some(w => pCat.includes(w) || pTitle.includes(w));
         if (!matchesGenre) return false;
+        if (genreWords.includes('meme')) {
+          if (isSplitCategory) {
+            return pCat.includes('split') || (pTitle.includes('split') && !pTitle.includes('single'));
+          }
+          if (isSingleCategory) {
+            return pCat.includes('single') || pTitle.includes('single') || !pTitle.includes('split');
+          }
+          return true;
+        }
         if (isSplitCategory) {
           return pCat.includes('split') || pTitle.includes('split');
         }
@@ -903,7 +922,7 @@ function formatDateSafe(dateStr: any): string {
       if (selLower.includes('music')) {
         return checkGenreAndType(['music', 'band']);
       }
-      if (selLower.includes('meme') || selLower.includes('funny')) {
+      if (selLower.includes('meme') || selLower.includes('funny') || selLower.includes('humor')) {
         return checkGenreAndType(['meme', 'funny', 'humor', 'joke']);
       }
 
@@ -996,7 +1015,7 @@ function formatDateSafe(dateStr: any): string {
       if (isReset) {
         setProductsList(safeData);
         if (safeData.length > 0 && !searchQuery && !selectedCategory) {
-          safeSetStorage(localStorage, 'mwm_cached_products_v2', safeData);
+          safeSetStorage(localStorage, 'mwm_cached_products_v3', safeData);
         }
       } else {
         setProductsList((prev) => {
@@ -1304,7 +1323,8 @@ function formatDateSafe(dateStr: any): string {
     if (pCat.includes('wall') || pCat.includes('collage') || pCat.includes('polaroid') || pCat.includes('poloride')) {
       return false;
     }
-    if (pCat.includes('split') || pTitle.includes('split')) {
+    const isMeme = pCat.includes('meme') || pCat.includes('funny') || pCat.includes('humor') || pTitle.includes('meme') || pTitle.includes('funny');
+    if ((pCat.includes('split') || pTitle.includes('split')) && !isMeme) {
       return false;
     }
 
@@ -1316,6 +1336,9 @@ function formatDateSafe(dateStr: any): string {
     }
 
     // 3. Specific sub-tab keyword matching for single posters
+    if (targetKey.includes('meme') || targetKey.includes('funny') || targetKey.includes('humor')) {
+      return isMeme;
+    }
     if (targetKey.includes('car')) {
       return (pCat.includes('supercar') || pCat.includes('car') || pCat.includes('racing') || pCat.includes('f1')) && !pCat.includes('split');
     }
@@ -1339,9 +1362,6 @@ function formatDateSafe(dateStr: any): string {
     }
     if (targetKey.includes('music')) {
       return (pCat.includes('music') || pCat.includes('band')) && !pCat.includes('split');
-    }
-    if (targetKey.includes('meme') || targetKey.includes('funny') || targetKey.includes('humor')) {
-      return (pCat.includes('meme') || pCat.includes('funny') || pCat.includes('humor') || pTitle.includes('meme') || pTitle.includes('funny')) && !pCat.includes('split');
     }
 
     return false;

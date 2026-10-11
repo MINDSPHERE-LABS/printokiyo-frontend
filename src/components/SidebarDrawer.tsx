@@ -327,6 +327,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
 
               {[
                 { label: 'Anime Split Poster', cat: 'Anime Split Posters' },
+                { label: 'Meme/Funny Split Poster', cat: 'Meme/Funny Split Posters' },
                 { label: 'Superhero Split Poster', cat: 'Superhero Split Posters' },
                 { label: 'Supercar Split Poster', cat: 'Supercar Split Posters' },
                 { label: 'Superbike Split Poster', cat: 'Superbike Split Posters' },
