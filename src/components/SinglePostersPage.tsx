@@ -190,21 +190,22 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
   }, [products, selectedSubTab]);
 
   return (
-    <div className="animate-in fade-in duration-300 text-left select-none pb-12">
-      {/* 1. Only Clean Back to Home Navigation Button */}
+    <div className="w-full text-left select-none pb-12">
+      {/* 1. Only Clean Back to Home Navigation Button (Aligned) */}
       <div className="mb-4 sm:mb-6">
         <button
           onClick={onNavigateHome}
-          className="inline-flex items-center gap-2 text-xs font-bold text-gray-700 hover:text-black bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full transition-all cursor-pointer shadow-xs active:scale-95"
+          className="inline-flex items-center gap-2 text-xs font-bold text-gray-800 hover:text-black bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full transition-all cursor-pointer shadow-xs active:scale-95 border-0"
+          style={{ border: 0 }}
         >
           <ArrowLeft size={14} className="stroke-[2.5]" />
           <span>Back to Home</span>
         </button>
       </div>
 
-      {/* 2. Creative Minimalist Header (No Border Boxes, Pure Typography) */}
-      <div className="mb-8 sm:mb-10">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-gray-150 pb-4">
+      {/* 2. Creative Minimalist Header (Zero Borders, Clean Typography) */}
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-1">
           <div>
             <span className="text-[11px] sm:text-xs font-extrabold uppercase tracking-widest text-red-600">
               Curated Single Posters
@@ -217,42 +218,50 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
             </p>
           </div>
 
-          {/* Automatic Offer Pill */}
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-50 border border-red-200 text-red-700 text-[11px] font-bold w-fit shrink-0">
+          {/* Automatic Offer Pill (border: 0) */}
+          <div 
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-50 text-red-700 text-[11px] font-bold w-fit shrink-0 border-0" 
+            style={{ border: 0 }}
+          >
             <Flame size={14} className="text-red-500 shrink-0" />
             <span>Buy 3 Get 1 FREE Applied Automatically</span>
           </div>
         </div>
       </div>
 
-      {/* 3. Aesthetic Portrait Category Cards (Zero Heavy Borders, Real Poster Proportions) */}
-      <div className="mb-14">
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
+      {/* 3. Aesthetic Portrait Category Cards (border: 0px, 3:4 Aspect Ratio, Matching Grid) */}
+      <div className="mb-12 sm:mb-14">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
           {SINGLE_POSTER_CATEGORIES.map((cat) => (
             <div
               key={cat.category}
               onClick={() => onCategorySelect(cat.category)}
-              className="group relative rounded-2xl overflow-hidden cursor-pointer aspect-[3/4] sm:aspect-[4/5] shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-end p-3.5 sm:p-5"
+              className="group relative rounded-2xl overflow-hidden cursor-pointer aspect-[3/4] shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-between p-3.5 sm:p-5 border-0"
+              style={{ border: 0 }}
               role="button"
               tabIndex={0}
               aria-label={`Explore ${cat.name}`}
             >
-              {/* High-Resolution Artwork */}
+              {/* High-Resolution Artwork (border: 0px) */}
               <img
                 src={cat.image}
                 alt={cat.name}
                 loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-108 transition-transform duration-700 ease-out"
+                className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-108 transition-transform duration-700 ease-out border-0"
+                style={{ border: 0 }}
               />
 
-              {/* Cinematic Vignette Gradient Scrim (No harsh box borders) */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent group-hover:via-black/55 transition-colors" />
+              {/* Cinematic Vignette Gradient Scrim (Zero Borders) */}
+              <div 
+                className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent group-hover:via-black/55 transition-colors border-0" 
+                style={{ border: 0 }} 
+              />
 
-              {/* Floating Accent Tag */}
+              {/* Floating Accent Tag (border: 0px) */}
               <div className="relative z-10 mb-auto">
                 <span
-                  className="inline-block text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full text-white backdrop-blur-md shadow-xs"
-                  style={{ backgroundColor: `${cat.accentColor}cc` }}
+                  className="inline-block text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full text-white backdrop-blur-md shadow-xs border-0"
+                  style={{ backgroundColor: `${cat.accentColor}dd`, border: 0 }}
                 >
                   {cat.badge}
                 </span>
@@ -279,7 +288,7 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
 
       {/* 4. Live Posters Catalog Explorer with Category Pills */}
       <div id="catalog-explorer" className="mb-14 scroll-mt-24">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 border-b border-gray-150 pb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4 pb-2">
           <div>
             <h2 className="text-lg sm:text-xl font-display font-black uppercase text-[#0e0d0d] tracking-tight">
               All Single Posters
@@ -288,20 +297,24 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
               Browse individual posters or filter by category directly
             </p>
           </div>
-          <span className="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1 rounded-full w-fit">
+          <span 
+            className="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1 rounded-full w-fit border-0" 
+            style={{ border: 0 }}
+          >
             {filteredProducts.length} Posters
           </span>
         </div>
 
-        {/* Clean Pill Sub-Tabs */}
+        {/* Clean Pill Sub-Tabs (border: 0px) */}
         <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 no-scrollbar text-xs whitespace-nowrap">
           <button
             onClick={() => setSelectedSubTab('all')}
-            className={`px-4 py-2 rounded-full font-bold transition-all cursor-pointer ${
+            className={`px-4 py-2 rounded-full font-bold transition-all cursor-pointer border-0 ${
               selectedSubTab === 'all'
                 ? 'bg-black text-white shadow-sm'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
+            style={{ border: 0 }}
           >
             All Single Posters
           </button>
@@ -312,11 +325,12 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
               <button
                 key={cat.category}
                 onClick={() => setSelectedSubTab(cat.category)}
-                className={`px-4 py-2 rounded-full font-bold transition-all cursor-pointer ${
+                className={`px-4 py-2 rounded-full font-bold transition-all cursor-pointer border-0 ${
                   isActive
                     ? 'bg-black text-white shadow-sm'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
+                style={{ border: 0 }}
               >
                 {cat.name}
               </button>
@@ -324,9 +338,12 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
           })}
         </div>
 
-        {/* Live Product Cards Grid */}
+        {/* Live Product Cards Grid (Matching Category Grid Alignment) */}
         {filteredProducts.length === 0 ? (
-          <div className="w-full py-14 px-4 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-200 flex flex-col items-center justify-center gap-2">
+          <div 
+            className="w-full py-14 px-4 text-center bg-gray-50 rounded-2xl flex flex-col items-center justify-center gap-2 border-0" 
+            style={{ border: 0 }}
+          >
             <Layers className="w-9 h-9 text-gray-400" strokeWidth={1.5} />
             <p className="text-sm font-bold text-gray-800">
               No posters found in this category yet
@@ -336,13 +353,14 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
             </p>
             <button
               onClick={() => setSelectedSubTab('all')}
-              className="mt-2 text-xs font-bold text-red-600 hover:underline cursor-pointer"
+              className="mt-2 text-xs font-bold text-red-600 hover:underline cursor-pointer border-0"
+              style={{ border: 0 }}
             >
               View All Single Posters →
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 md:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id || product._id || product.slug}
@@ -362,8 +380,8 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
         )}
       </div>
 
-      {/* 5. Brand Footer */}
-      <div className="-mx-4 sm:-mx-6 lg:-mx-8 mt-12 border-t border-gray-150">
+      {/* 5. Brand Footer (Clean Full-Width Alignment) */}
+      <div className="-mx-3 sm:-mx-6 lg:-mx-8 mt-14">
         <Footer
           onAboutClick={onAboutClick}
           onTermsClick={onTermsClick}

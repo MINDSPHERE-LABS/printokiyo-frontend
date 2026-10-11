@@ -2256,7 +2256,7 @@ function formatDateSafe(dateStr: any): string {
 
         {/* Dedicated Single Posters Categories View */}
         {activeTab === 'single_posters_categories' && (
-          <div className="-mx-4 sm:-mx-6 lg:-mx-8 -mt-6 animate-in fade-in duration-300">
+          <div className="animate-in fade-in duration-200 text-left">
             <SinglePostersPage 
               products={productsList}
               wishlist={wishlist}

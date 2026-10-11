@@ -32,7 +32,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       className="group bg-white cursor-pointer flex flex-col h-full select-none text-left"
     >
       {/* Product Image Container - 3:4 Aspect Ratio (+30% taller height) */}
-      <div className="relative aspect-[3/4] overflow-hidden bg-[#f8f9fa] border border-gray-100 p-1.5 w-full flex items-center justify-center">
+      <div className="relative aspect-[3/4] overflow-hidden bg-[#f8f9fa] border-0 p-1.5 w-full flex items-center justify-center">
         {/* Subtle "New" Badge on Top-Left */}
         {product.new_arrival && (
           <span className="absolute top-2.5 left-2.5 z-10 bg-[#5c8b7c] text-white text-[8px] sm:text-[9px] font-semibold px-2 py-0.5 tracking-wider select-none uppercase">
