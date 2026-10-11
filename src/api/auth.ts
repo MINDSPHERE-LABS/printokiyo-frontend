@@ -240,11 +240,18 @@ export interface OrderPayload {
     SKU?: string;
     title: string;
     price: number;
+    original_price?: number;
+    is_free?: boolean;
+    offer_applied?: string;
     thumbnail?: string;
     custom_photo?: string;
     selected_size?: string;
   }>;
   grand_total: number;
+  subtotal?: number;
+  delivery_charge?: number;
+  cod_fee?: number;
+  applied_offers?: string[];
   status?: string;
   payment_status?: string;
   razorpay_order_id?: string;

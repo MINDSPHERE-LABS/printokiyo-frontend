@@ -2904,12 +2904,32 @@ function formatDateSafe(dateStr: any): string {
               const orderStatus = details.paymentDetails?.status || 'Processing';
               const paymentStatus = details.paymentDetails?.payment_status || (details.paymentMethod === 'Cash on Delivery' ? 'pending' : 'pending');
 
+              // Detect all applied offers for this order
+              const appliedOffers: string[] = [];
+              const packOffers = Array.from(new Set(
+                calculatedCheckoutCart
+                  .filter((it) => it.offer_applied)
+                  .map((it) => it.offer_applied as string)
+              ));
+              appliedOffers.push(...packOffers);
+
+              if (subtotal > 0 && shippingCost === 0) {
+                appliedOffers.push(`Free Shipping (Orders above ₹${threshold})`);
+              }
+
+              if (details.paymentMethod !== 'Cash on Delivery' && codFee > 0) {
+                appliedOffers.push(`Prepaid UPI (Saved ₹${codFee} COD Fee)`);
+              }
+
               const mappedItems = calculatedCheckoutCart.map((it) => ({
                 product_id: it.id || (it as any)._id,
                 sku: it.SKU || (it as any).sku || '',
                 SKU: it.SKU || (it as any).sku || '',
                 title: it.title,
                 price: it.final_price,
+                original_price: it.original_unit_price,
+                is_free: it.is_free,
+                offer_applied: it.offer_applied || undefined,
                 thumbnail: it.thumbnail,
                 custom_photo: it.custom_photo,
                 selected_size: it.selected_size
@@ -2924,6 +2944,10 @@ function formatDateSafe(dateStr: any): string {
                 payment_method: details.paymentMethod,
                 items: mappedItems,
                 grand_total: grandTotal,
+                subtotal: subtotal,
+                delivery_charge: shippingCost,
+                cod_fee: codFeeCost,
+                applied_offers: appliedOffers,
                 status: orderStatus,
                 payment_status: paymentStatus
               };
