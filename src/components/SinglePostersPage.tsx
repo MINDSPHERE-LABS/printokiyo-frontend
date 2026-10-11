@@ -3,7 +3,7 @@ import type { Product } from '../types';
 import { ProductCard } from './ProductCard';
 import { Footer } from './Footer';
 import { 
-  ArrowLeft, Layers, Flame, ArrowRight
+  ArrowLeft, Layers, ArrowRight
 } from 'lucide-react';
 
 export interface SinglePosterCategoryItem {
@@ -216,15 +216,6 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
             <p className="text-xs sm:text-sm text-gray-500 font-medium mt-1 max-w-xl">
               High-definition single posters printed on heavy 300+ GSM art cardstock with premium anti-glare matte lamination.
             </p>
-          </div>
-
-          {/* Automatic Offer Pill (border: 0) */}
-          <div 
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-50 text-red-700 text-[11px] font-bold w-fit shrink-0 border-0" 
-            style={{ border: 0 }}
-          >
-            <Flame size={14} className="text-red-500 shrink-0" />
-            <span>Buy 3 Get 1 FREE Applied Automatically</span>
           </div>
         </div>
       </div>
