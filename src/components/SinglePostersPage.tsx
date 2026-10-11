@@ -33,6 +33,14 @@ export const SINGLE_POSTER_CATEGORIES: SinglePosterCategoryItem[] = [
     accentColor: '#f97316'
   },
   {
+    name: 'Meme/Funny Posters',
+    category: 'Meme/Funny Single Poster',
+    subtitle: 'Viral Memes, Pop Culture Humor & Relatable Art',
+    badge: '😂 VIRAL',
+    image: '/categories/meme-v2.jpg?v=2',
+    accentColor: '#f43f5e'
+  },
+  {
     name: 'Cricket Posters',
     category: 'Cricket Single Poster',
     subtitle: 'Virat Kohli, Rohit Sharma & Stadium Icons',
@@ -157,6 +165,9 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
 
     if (lowerKey.includes('anime')) {
       return (pCat.includes('anime') || pTitle.includes('anime')) && !pCat.includes('split');
+    }
+    if (lowerKey.includes('meme') || lowerKey.includes('funny') || lowerKey.includes('humor')) {
+      return (pCat.includes('meme') || pCat.includes('funny') || pCat.includes('humor') || pTitle.includes('meme') || pTitle.includes('funny')) && !pCat.includes('split');
     }
     if (lowerKey.includes('car') || lowerKey.includes('supercar')) {
       return (pCat.includes('car') || pCat.includes('supercar') || pCat.includes('f1')) && !pCat.includes('split');

@@ -661,6 +661,7 @@ function formatDateSafe(dateStr: any): string {
     return [
       { label: 'Car Posters', key: 'Supercar Single Poster' },
       { label: 'Anime Posters', key: 'Anime Single Poster' },
+      { label: 'Meme/Funny Posters', key: 'Meme/Funny Single Poster' },
       { label: 'Cricket Posters', key: 'Cricket Single Poster' },
       { label: 'Superhero Posters', key: 'Superhero Single Poster' },
       { label: 'Superbike Posters', key: 'Superbike Single Poster' },
@@ -901,6 +902,9 @@ function formatDateSafe(dateStr: any): string {
       }
       if (selLower.includes('music')) {
         return checkGenreAndType(['music', 'band']);
+      }
+      if (selLower.includes('meme') || selLower.includes('funny')) {
+        return checkGenreAndType(['meme', 'funny', 'humor', 'joke']);
       }
 
       return pCat === selLower;
@@ -1335,6 +1339,9 @@ function formatDateSafe(dateStr: any): string {
     }
     if (targetKey.includes('music')) {
       return (pCat.includes('music') || pCat.includes('band')) && !pCat.includes('split');
+    }
+    if (targetKey.includes('meme') || targetKey.includes('funny') || targetKey.includes('humor')) {
+      return (pCat.includes('meme') || pCat.includes('funny') || pCat.includes('humor') || pTitle.includes('meme') || pTitle.includes('funny')) && !pCat.includes('split');
     }
 
     return false;

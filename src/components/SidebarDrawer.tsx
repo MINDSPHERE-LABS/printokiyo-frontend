@@ -365,6 +365,7 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
 
               {[
                 { label: 'Anime & Gaming Posters', cat: 'Anime Single Poster' },
+                { label: 'Meme/Funny Posters', cat: 'Meme/Funny Single Poster' },
                 { label: 'Superhero Posters', cat: 'Superhero Single Poster' },
                 { label: 'Supercars Posters', cat: 'Supercar Single Poster' },
                 { label: 'Superbike Posters', cat: 'Superbike Single Poster' },
