@@ -23,6 +23,7 @@ import { ShippingPolicyPage } from './components/ShippingPolicyPage';
 import { RefundPolicyPage } from './components/RefundPolicyPage';
 import { CancelOrderPage } from './components/CancelOrderPage';
 import { PrivacyPolicyPage } from './components/PrivacyPolicyPage';
+import { SinglePostersPage } from './components/SinglePostersPage';
 import { BrandBuffer } from './components/BrandBuffer';
 import { SidebarDrawer } from './components/SidebarDrawer';
 import { QuickAddModal } from './components/QuickAddModal';
@@ -125,8 +126,11 @@ function App() {
     }
     touchStartXRef.current = null;
   };
-  const [activeTab, setActiveTab] = useState<'home' | 'category_page' | 'search' | 'wishlist' | 'cart' | 'profile' | 'details' | 'checkout' | 'confirmation' | 'about' | 'terms' | 'shipping' | 'refund' | 'cancel_order' | 'privacy'>(() => {
+  const [activeTab, setActiveTab] = useState<'home' | 'category_page' | 'single_posters_categories' | 'search' | 'wishlist' | 'cart' | 'profile' | 'details' | 'checkout' | 'confirmation' | 'about' | 'terms' | 'shipping' | 'refund' | 'cancel_order' | 'privacy'>(() => {
     const params = new URLSearchParams(window.location.search);
+    if (params.get('page') === 'single_posters' || params.get('page') === 'single-posters' || window.location.hash === '#single-posters' || window.location.hash === '#single-posters-categories') {
+      return 'single_posters_categories';
+    }
     if (params.get('page') === 'about' || window.location.hash === '#about') {
       return 'about';
     }
@@ -1424,6 +1428,16 @@ function formatDateSafe(dateStr: any): string {
     }, isAlreadyHome ? 50 : 250);
   };
 
+  const handleOpenSinglePostersCategories = () => {
+    setActiveTab('single_posters_categories');
+    setSelectedCategory(null);
+    setSelectedProduct(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    try {
+      window.history.pushState({}, '', '/?page=single-posters');
+    } catch (e) {}
+  };
+
   // Open details view in-line instead of a overlapping popup
   const openProductDetails = (product: Product) => {
     if (activeTab !== 'details') {
@@ -1634,7 +1648,7 @@ function formatDateSafe(dateStr: any): string {
         onCancelOrderClick={handleOpenCancelOrder}
         onPrivacyClick={handleOpenPrivacy}
         onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
-        onOpenSinglePosters={handleOpenSinglePosters}
+        onOpenSinglePosters={handleOpenSinglePostersCategories}
       />
 
       {/* 4. Content main container */}
@@ -1857,11 +1871,9 @@ function formatDateSafe(dateStr: any): string {
                   </div>
 
                   <button
-                    onClick={() => {
-                      setActiveTab('search');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
+                    onClick={handleOpenSinglePostersCategories}
                     className="text-[#0e0d0d] font-bold text-xs sm:text-sm underline hover:text-black cursor-pointer uppercase tracking-wider"
+                    title="Explore All Single Posters Categories"
                   >
                     EXPLORE
                   </button>
@@ -2168,7 +2180,7 @@ function formatDateSafe(dateStr: any): string {
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
                 onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
-                onOpenSinglePosters={handleOpenSinglePosters}
+                onOpenSinglePosters={handleOpenSinglePostersCategories}
                 onCategoryClick={handleCategorySelect}
               />
             </div>
@@ -2235,10 +2247,43 @@ function formatDateSafe(dateStr: any): string {
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
                 onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
-                onOpenSinglePosters={handleOpenSinglePosters}
+                onOpenSinglePosters={handleOpenSinglePostersCategories}
                 onCategoryClick={handleCategorySelect}
               />
             </div>
+          </div>
+        )}
+
+        {/* Dedicated Single Posters Categories View */}
+        {activeTab === 'single_posters_categories' && (
+          <div className="-mx-4 sm:-mx-6 lg:-mx-8 -mt-6 animate-in fade-in duration-300">
+            <SinglePostersPage 
+              products={productsList}
+              wishlist={wishlist}
+              onNavigateHome={() => {
+                setActiveTab('home');
+                setSelectedCategory(null);
+                setSelectedProduct(null);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                try {
+                  window.history.pushState({}, '', '/');
+                } catch (e) {}
+              }}
+              onCategorySelect={handleCategorySelect}
+              onAddToCart={handleAddToCart}
+              onBuyNow={handleBuyNow}
+              onAddToWishlist={handleAddToWishlist}
+              onViewDetails={openProductDetails}
+              onQuickAdd={setQuickAddProduct}
+              onAboutClick={handleOpenAbout}
+              onTermsClick={handleOpenTerms}
+              onShippingClick={handleOpenShipping}
+              onRefundClick={handleOpenRefund}
+              onCancelOrderClick={handleOpenCancelOrder}
+              onPrivacyClick={handleOpenPrivacy}
+              onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
+              onOpenSinglePosters={handleOpenSinglePostersCategories}
+            />
           </div>
         )}
 
@@ -2269,7 +2314,7 @@ function formatDateSafe(dateStr: any): string {
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
                 onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
-                onOpenSinglePosters={handleOpenSinglePosters}
+                onOpenSinglePosters={handleOpenSinglePostersCategories}
                 onCategoryClick={handleCategorySelect}
               />
             </div>
@@ -2297,7 +2342,7 @@ function formatDateSafe(dateStr: any): string {
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
                 onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
-                onOpenSinglePosters={handleOpenSinglePosters}
+                onOpenSinglePosters={handleOpenSinglePostersCategories}
                 onCategoryClick={handleCategorySelect}
               />
             </div>
@@ -2331,7 +2376,7 @@ function formatDateSafe(dateStr: any): string {
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
                 onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
-                onOpenSinglePosters={handleOpenSinglePosters}
+                onOpenSinglePosters={handleOpenSinglePostersCategories}
                 onCategoryClick={handleCategorySelect}
               />
             </div>
@@ -2406,7 +2451,7 @@ function formatDateSafe(dateStr: any): string {
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
                 onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
-                onOpenSinglePosters={handleOpenSinglePosters}
+                onOpenSinglePosters={handleOpenSinglePostersCategories}
                 onCategoryClick={handleCategorySelect}
               />
             </div>
@@ -2440,7 +2485,7 @@ function formatDateSafe(dateStr: any): string {
                 onCancelOrderClick={handleOpenCancelOrder}
                 onPrivacyClick={handleOpenPrivacy}
                 onOpenSplitNewArrivals={handleOpenSplitNewArrivals}
-                onOpenSinglePosters={handleOpenSinglePosters}
+                onOpenSinglePosters={handleOpenSinglePostersCategories}
                 onCategoryClick={handleCategorySelect}
               />
             </div>
