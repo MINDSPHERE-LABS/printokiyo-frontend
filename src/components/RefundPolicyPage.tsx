@@ -238,7 +238,7 @@ export const RefundPolicyPage: React.FC<RefundPolicyPageProps> = ({
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
-                  <span>Order ID (e.g. MWM-123456 or #1042)</span>
+                  <span>Order ID (e.g. PO-123456 or #1042)</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />

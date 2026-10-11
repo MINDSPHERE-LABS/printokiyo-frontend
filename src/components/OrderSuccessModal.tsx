@@ -35,7 +35,7 @@ export const OrderSuccessModal: React.FC<OrderSuccessModalProps> = ({ order, onC
             Thank You For Your Order!
           </h2>
           <p className="text-xs text-gray-500 font-semibold mt-1">
-            Order ID: <span className="font-mono font-bold text-blue-900 bg-blue-50 px-2 py-0.5 rounded">#{order.order_id || order.id || 'MWM-ORDER'}</span>
+            Order ID: <span className="font-mono font-bold text-blue-900 bg-blue-50 px-2 py-0.5 rounded">#{order.order_id || order.id || 'PO-ORDER'}</span>
           </p>
         </div>
 

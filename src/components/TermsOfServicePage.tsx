@@ -251,7 +251,7 @@ export const TermsOfServicePage: React.FC<TermsOfServicePageProps> = ({ onNaviga
                 </p>
                 <ol className="list-decimal pl-5 space-y-1">
                   <li>Capture a clear photo or short unboxing video of the damaged item and packaging within <strong>48 hours</strong> of delivery.</li>
-                  <li>Email us at <strong>support@printokiyo.com</strong> or WhatsApp our support line with your Order ID (#MWM-XXXX).</li>
+                  <li>Email us at <strong>support@printokiyo.com</strong> or WhatsApp our support line with your Order ID (#PO-XXXX).</li>
                   <li>Upon prompt verification, we will dispatch a <strong>brand-new replacement completely free of charge</strong>, or issue a full refund if the item is out of stock.</li>
                 </ol>
               </div>

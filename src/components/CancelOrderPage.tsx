@@ -126,7 +126,7 @@ export const CancelOrderPage: React.FC<CancelOrderPageProps> = ({
               <div className="flex flex-col sm:flex-row gap-3">
                 <input 
                   type="text"
-                  placeholder="Enter Order ID (e.g. MWM-104928)"
+                  placeholder="Enter Order ID (e.g. PO-104928)"
                   value={orderIdInput}
                   onChange={(e) => setOrderIdInput(e.target.value)}
                   className="flex-1 bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#041e42]"
@@ -182,7 +182,7 @@ export const CancelOrderPage: React.FC<CancelOrderPageProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm font-semibold text-gray-800">
               <div className="flex items-center gap-2.5 p-3 rounded-xl bg-gray-50 border border-gray-150">
                 <span className="w-6 h-6 rounded-full bg-[#041e42] text-white flex items-center justify-center text-[10px] font-black shrink-0">1</span>
-                <span>Your Order ID (e.g. MWM-123456)</span>
+                <span>Your Order ID (e.g. PO-123456)</span>
               </div>
               <div className="flex items-center gap-2.5 p-3 rounded-xl bg-gray-50 border border-gray-150">
                 <span className="w-6 h-6 rounded-full bg-[#041e42] text-white flex items-center justify-center text-[10px] font-black shrink-0">2</span>

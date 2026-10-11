@@ -457,7 +457,7 @@ function formatDateSafe(dateStr: any): string {
           try {
             const userOrders = await fetchUserOrders(token);
             const formattedOrders = (Array.isArray(userOrders) ? userOrders : []).map((ord: any) => ({
-              orderId: ord.order_id || ord.orderId || 'MWM-ORDER',
+              orderId: ord.order_id || ord.orderId || 'PO-ORDER',
               items: Array.isArray(ord.items) ? ord.items : [],
               grandTotal: ord.grand_total || ord.grandTotal || 0,
               date: formatDateSafe(ord.created_at || ord.date),
@@ -2893,7 +2893,7 @@ function formatDateSafe(dateStr: any): string {
 
               const checkoutCart = buyNowItems ? buyNowItems : cart;
               const calculatedCheckoutCart = calculateCartItems(checkoutCart);
-              const orderId = details.paymentDetails?.order_id || `MWM-${Math.floor(100000 + Math.random() * 900000)}`;
+              const orderId = details.paymentDetails?.order_id || `PO-${Math.floor(100000 + Math.random() * 900000)}`;
               const subtotal = calculatedCheckoutCart.reduce((sum, item) => sum + item.final_price, 0);
               const threshold = storeSettings?.delivery_charge_threshold ?? 999;
               const charge = storeSettings?.delivery_charge ?? 70;
