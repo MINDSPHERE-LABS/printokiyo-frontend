@@ -99,7 +99,16 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Product Title */}
         <h3 className="text-xs sm:text-sm font-normal text-gray-800 line-clamp-1 group-hover:text-black transition-colors">
-          {product.title}
+          <a
+            href={`/product/${product.slug || product.id || product._id}`}
+            onClick={(e) => {
+              e.preventDefault();
+              onViewDetails?.(product);
+            }}
+            className="hover:underline text-inherit"
+          >
+            {product.title}
+          </a>
         </h3>
 
         {/* Price Line: "Rs. 89.00" */}

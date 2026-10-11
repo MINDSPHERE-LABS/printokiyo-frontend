@@ -24,6 +24,7 @@ import { RefundPolicyPage } from './components/RefundPolicyPage';
 import { CancelOrderPage } from './components/CancelOrderPage';
 import { PrivacyPolicyPage } from './components/PrivacyPolicyPage';
 import { SinglePostersPage } from './components/SinglePostersPage';
+import { SEO } from './components/SEO';
 import { BrandBuffer } from './components/BrandBuffer';
 import { SidebarDrawer } from './components/SidebarDrawer';
 import { QuickAddModal } from './components/QuickAddModal';
@@ -303,9 +304,11 @@ function sanitizeForStorage(obj: any): any {
     safeSetStorage(sessionStorage, 'mwm_active_tab', activeTab);
     if (activeTab !== 'details' && isInitialUrlChecked.current) {
       const params = new URLSearchParams(window.location.search);
-      if (params.has('product') || params.has('p')) {
+      const isProductPath = window.location.pathname.startsWith('/product/');
+      if (params.has('product') || params.has('p') || isProductPath) {
         try {
-          window.history.replaceState({}, '', window.location.pathname);
+          const targetUrl = activeTab === 'single_posters_categories' ? '/?page=single-posters' : '/';
+          window.history.replaceState({}, '', targetUrl);
         } catch (e) {}
       }
     }
@@ -327,9 +330,11 @@ function sanitizeForStorage(obj: any): any {
       try { sessionStorage.removeItem('mwm_selected_product'); } catch (e) {}
       if (activeTab !== 'details' && isInitialUrlChecked.current) {
         const params = new URLSearchParams(window.location.search);
-        if (params.has('product') || params.has('p')) {
+        const isProductPath = window.location.pathname.startsWith('/product/');
+        if (params.has('product') || params.has('p') || isProductPath) {
           try {
-            window.history.replaceState({}, '', window.location.pathname);
+            const targetUrl = activeTab === 'single_posters_categories' ? '/?page=single-posters' : '/';
+            window.history.replaceState({}, '', targetUrl);
           } catch (e) {}
         }
       }
@@ -933,6 +938,11 @@ function formatDateSafe(dateStr: any): string {
         if (foundProduct && (foundProduct.id || foundProduct._id)) {
           setSelectedProduct(foundProduct);
           setActiveTab('details');
+          if (productSlug && window.location.pathname !== `/product/${targetSlug}`) {
+            try {
+              window.history.replaceState({}, '', `/product/${targetSlug}`);
+            } catch (e) {}
+          }
         } else if (isInitialUrlChecked.current) {
           setSelectedProduct(null);
           setActiveTab('home');
@@ -1447,7 +1457,7 @@ function formatDateSafe(dateStr: any): string {
     setActiveTab('details');
     if (product.slug) {
       try {
-        window.history.pushState({}, '', `/?product=${product.slug}`);
+        window.history.pushState({}, '', `/product/${product.slug}`);
       } catch (e) {}
     }
   };
@@ -1474,6 +1484,36 @@ function formatDateSafe(dateStr: any): string {
 
   return (
     <div className="min-h-screen bg-white text-gray-950 pb-28 flex flex-col font-sans">
+      {/* Dynamic SEO Meta Management & Google Rich Snippets */}
+      {activeTab === 'details' && selectedProduct ? (
+        <SEO product={selectedProduct} />
+      ) : activeTab === 'single_posters_categories' ? (
+        <SEO
+          title="Single Posters — Anime, Supercars, Cricket & Aesthetic Prints | PrintOkiyo"
+          description="Explore high-definition single posters printed on heavy 300+ GSM art cardstock with premium anti-glare matte lamination. Fast delivery across India."
+          canonicalUrl="https://printokiyo.com/?page=single-posters"
+        />
+      ) : activeTab === 'category_page' && selectedCategory ? (
+        <SEO
+          categoryName={selectedCategory}
+          canonicalUrl={`https://printokiyo.com/?category=${encodeURIComponent(selectedCategory)}`}
+        />
+      ) : activeTab === 'about' ? (
+        <SEO title="About Us | PrintOkiyo" canonicalUrl="https://printokiyo.com/?page=about" />
+      ) : activeTab === 'terms' ? (
+        <SEO title="Terms of Service | PrintOkiyo" canonicalUrl="https://printokiyo.com/?page=terms" />
+      ) : activeTab === 'shipping' ? (
+        <SEO title="Shipping Policy — Free Pan-India Delivery | PrintOkiyo" canonicalUrl="https://printokiyo.com/?page=shipping" />
+      ) : activeTab === 'refund' ? (
+        <SEO title="Refund Policy | PrintOkiyo" canonicalUrl="https://printokiyo.com/?page=refund" />
+      ) : activeTab === 'cancel_order' ? (
+        <SEO title="Cancel Order | PrintOkiyo" canonicalUrl="https://printokiyo.com/?page=cancel" />
+      ) : activeTab === 'privacy' ? (
+        <SEO title="Privacy Policy | PrintOkiyo" canonicalUrl="https://printokiyo.com/?page=privacy" />
+      ) : (
+        <SEO />
+      )}
+
       {/* Brand Initial Splash Buffer */}
       {isInitialLoading && <BrandBuffer fullScreen message="Buffering PrintOkiyo Store..." />}
 

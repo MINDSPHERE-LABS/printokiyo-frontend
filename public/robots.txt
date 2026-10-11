@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+Allow: /product/
+Allow: /?page=single-posters
+Allow: /?category=*
 
 Sitemap: https://printokiyo.com/sitemap.xml
+Sitemap: https://printokiyo-backend.onrender.com/sitemap.xml
