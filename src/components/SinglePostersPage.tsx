@@ -92,6 +92,9 @@ interface SinglePostersPageProps {
   onAddToWishlist: (product: Product) => void;
   onViewDetails: (product: Product) => void;
   onQuickAdd: (product: Product) => void;
+  onLoadMore?: () => void;
+  hasMore?: boolean;
+  loadingMore?: boolean;
   // Footer callbacks
   onAboutClick?: () => void;
   onTermsClick?: () => void;
@@ -113,6 +116,9 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
   onAddToWishlist,
   onViewDetails,
   onQuickAdd,
+  onLoadMore,
+  hasMore,
+  loadingMore,
   onAboutClick,
   onTermsClick,
   onShippingClick,
@@ -123,6 +129,12 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
   onOpenSinglePosters
 }) => {
   const [selectedSubTab, setSelectedSubTab] = useState<string>('all');
+  const [visibleCount, setVisibleCount] = useState<number>(18);
+
+  const handleSubTabChange = (newTab: string) => {
+    setSelectedSubTab(newTab);
+    setVisibleCount(18);
+  };
 
   // Match test for single poster category
   const isMatch = (p: Product, targetKey: string): boolean => {
@@ -188,6 +200,11 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
       return isMatch(p, selectedSubTab);
     });
   }, [products, selectedSubTab]);
+
+  // Sliced products for 18-items-at-a-time pagination
+  const visibleProducts = useMemo(() => {
+    return filteredProducts.slice(0, visibleCount);
+  }, [filteredProducts, visibleCount]);
 
   return (
     <div className="w-full text-left select-none pb-12">
@@ -299,7 +316,7 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
         {/* Clean Pill Sub-Tabs (border: 0px) */}
         <div className="flex items-center gap-2 overflow-x-auto pb-3 mb-6 no-scrollbar text-xs whitespace-nowrap">
           <button
-            onClick={() => setSelectedSubTab('all')}
+            onClick={() => handleSubTabChange('all')}
             className={`px-4 py-2 rounded-full font-bold transition-all cursor-pointer border-0 ${
               selectedSubTab === 'all'
                 ? 'bg-black text-white shadow-sm'
@@ -315,7 +332,7 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
             return (
               <button
                 key={cat.category}
-                onClick={() => setSelectedSubTab(cat.category)}
+                onClick={() => handleSubTabChange(cat.category)}
                 className={`px-4 py-2 rounded-full font-bold transition-all cursor-pointer border-0 ${
                   isActive
                     ? 'bg-black text-white shadow-sm'
@@ -343,7 +360,7 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
               New poster designs are added frequently! Select another category or browse all single posters above.
             </p>
             <button
-              onClick={() => setSelectedSubTab('all')}
+              onClick={() => handleSubTabChange('all')}
               className="mt-2 text-xs font-bold text-red-600 hover:underline cursor-pointer border-0"
               style={{ border: 0 }}
             >
@@ -351,23 +368,58 @@ export const SinglePostersPage: React.FC<SinglePostersPageProps> = ({
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id || product._id || product.slug}
-                product={product}
-                onAddToCart={onAddToCart}
-                onBuyNow={onBuyNow}
-                onAddToWishlist={onAddToWishlist}
-                onViewDetails={onViewDetails}
-                onQuickAdd={onQuickAdd}
-                isWishlisted={wishlist.some(
-                  (p) => (p.id || p._id) === (product.id || product._id)
-                )}
-                showQuickAdd={true}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
+              {visibleProducts.map((product) => (
+                <ProductCard
+                  key={product.id || product._id || product.slug}
+                  product={product}
+                  onAddToCart={onAddToCart}
+                  onBuyNow={onBuyNow}
+                  onAddToWishlist={onAddToWishlist}
+                  onViewDetails={onViewDetails}
+                  onQuickAdd={onQuickAdd}
+                  isWishlisted={wishlist.some(
+                    (p) => (p.id || p._id) === (product.id || product._id)
+                  )}
+                  showQuickAdd={true}
+                />
+              ))}
+            </div>
+
+            {/* Load More Button (Loads 18 products at once) */}
+            {(visibleCount < filteredProducts.length || (hasMore && onLoadMore)) && (
+              <div className="flex flex-col items-center justify-center mt-10 mb-2 gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVisibleCount((prev) => prev + 18);
+                    if (onLoadMore && hasMore) {
+                      onLoadMore();
+                    }
+                  }}
+                  disabled={loadingMore}
+                  className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-black hover:bg-zinc-800 text-white font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border-0"
+                  style={{ border: 0 }}
+                >
+                  {loadingMore ? (
+                    <div className="flex items-center gap-2">
+                      <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Loading...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <span>Load More Posters</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 group-hover:scale-125 transition-transform" />
+                    </>
+                  )}
+                </button>
+                <span className="text-[11px] text-gray-500 font-semibold tracking-wide">
+                  Showing {visibleProducts.length} of {filteredProducts.length} posters
+                </span>
+              </div>
+            )}
+          </>
         )}
       </div>
 

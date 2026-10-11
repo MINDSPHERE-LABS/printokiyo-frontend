@@ -23,6 +23,12 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
   wishlistIds
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>('all');
+  const [visibleCount, setVisibleCount] = useState<number>(18);
+
+  const handleTabChange = (tab: TabType) => {
+    setActiveTab(tab);
+    setVisibleCount(18);
+  };
 
   const tabs: { key: TabType; label: string }[] = [
     { key: 'all', label: 'All Creations' },
@@ -40,6 +46,8 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
     return true;
   });
 
+  const visibleProducts = filteredProducts.slice(0, visibleCount);
+
   return (
     <section id="shop" className="py-16 bg-[#faf9f6] dark:bg-[#0b0c10] transition-colors scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -50,7 +58,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
             {tabs.map((tab) => (
               <button
                 key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
+                onClick={() => handleTabChange(tab.key)}
                 className={`relative px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 ${
                   activeTab === tab.key
                     ? 'bg-white dark:bg-zinc-800 text-gray-900 dark:text-white shadow-sm'
@@ -74,7 +82,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
           >
             <AnimatePresence mode="popLayout">
-              {filteredProducts.map((product) => (
+              {visibleProducts.map((product) => (
                 <motion.div
                   layout
                   initial={{ opacity: 0, scale: 0.95 }}
@@ -96,6 +104,22 @@ export const ProductGrid: React.FC<ProductGridProps> = ({
               ))}
             </AnimatePresence>
           </motion.div>
+        )}
+
+        {/* Load More Button (Loads 18 products at once) */}
+        {visibleCount < filteredProducts.length && (
+          <div className="flex flex-col items-center justify-center mt-12 gap-3">
+            <button
+              onClick={() => setVisibleCount(prev => prev + 18)}
+              className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-black hover:bg-zinc-800 text-white font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 cursor-pointer"
+            >
+              <span>Load More Products</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 group-hover:scale-125 transition-transform" />
+            </button>
+            <span className="text-[11px] text-gray-500 font-semibold tracking-wide">
+              Showing {visibleProducts.length} of {filteredProducts.length} creations
+            </span>
+          </div>
         )}
 
       </div>

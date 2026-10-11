@@ -51,7 +51,7 @@ interface IntendedAction {
   payload?: any;
 }
 
-const ITEMS_PER_PAGE = 24;
+const ITEMS_PER_PAGE = 18;
 
 const HERO_SLIDES = [
   {
@@ -200,7 +200,6 @@ function App() {
   const [skip, setSkip] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-  const observerTarget = useRef<HTMLDivElement>(null);
 
   // Categories & Slidebar Drawer state
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -1012,28 +1011,16 @@ function formatDateSafe(dateStr: any): string {
     }
   };
 
-  // Setup Intersection Observer for infinite scrolling (Triggered safely without loops)
+  // Explicit load more handler (loads 18 products per batch)
+  const handleLoadMore = () => {
+    if (hasMoreRef.current && !loadingMoreRef.current) {
+      fetchPage(skipRef.current);
+    }
+  };
+
+  // Initial fetch and reset when category or search changes
   useEffect(() => {
     fetchPage(0, true);
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMoreRef.current && !loadingMoreRef.current) {
-          fetchPage(skipRef.current);
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
-    }
-
-    return () => {
-      if (observerTarget.current) {
-        observer.unobserve(observerTarget.current);
-      }
-    };
   }, [searchQuery, selectedCategory]);
 
   // Add/Remove Interactions
@@ -2271,11 +2258,33 @@ function formatDateSafe(dateStr: any): string {
               </div>
             )}
 
-            <div ref={observerTarget} className="min-h-16 flex items-center justify-center mt-6">
-              {loadingMore && productsList.length > 0 && (
-                <BrandBuffer size="sm" message="Buffering more posters..." />
-              )}
-            </div>
+            {/* Load More Button for Category View */}
+            {hasMore && (
+              <div className="flex flex-col items-center justify-center mt-10 mb-4 gap-2.5">
+                <button
+                  type="button"
+                  onClick={handleLoadMore}
+                  disabled={loadingMore}
+                  className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-black hover:bg-zinc-800 text-white font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border-0"
+                  style={{ border: 0 }}
+                >
+                  {loadingMore ? (
+                    <div className="flex items-center gap-2">
+                      <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Loading More...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <span>Load More Posters</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400 group-hover:scale-125 transition-transform" />
+                    </>
+                  )}
+                </button>
+                <span className="text-[11px] text-gray-500 font-semibold tracking-wide">
+                  Showing {categoryProducts.length} posters
+                </span>
+              </div>
+            )}
 
             {/* Brand Footer */}
             <div className="-mx-4 sm:-mx-6 lg:-mx-8 mt-12 border-t border-gray-100">
@@ -2315,6 +2324,9 @@ function formatDateSafe(dateStr: any): string {
               onAddToWishlist={handleAddToWishlist}
               onViewDetails={openProductDetails}
               onQuickAdd={setQuickAddProduct}
+              onLoadMore={handleLoadMore}
+              hasMore={hasMore}
+              loadingMore={loadingMore}
               onAboutClick={handleOpenAbout}
               onTermsClick={handleOpenTerms}
               onShippingClick={handleOpenShipping}
@@ -2564,20 +2576,50 @@ function formatDateSafe(dateStr: any): string {
                 <p className="text-xs text-gray-555 font-semibold">No results match your search term.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
-                {productsList.map((product) => (
-                  <ProductCard
-                    key={product.id || product._id || product.slug}
-                    product={product}
-                    onAddToCart={handleAddToCart}
-                    onBuyNow={handleBuyNow}
-                    onAddToWishlist={handleAddToWishlist}
-                    onViewDetails={openProductDetails}
-                    onQuickAdd={setQuickAddProduct}
-                    isWishlisted={wishlist.some((p) => (p.id || p._id) === (product.id || product._id))}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
+                  {productsList.map((product) => (
+                    <ProductCard
+                      key={product.id || product._id || product.slug}
+                      product={product}
+                      onAddToCart={handleAddToCart}
+                      onBuyNow={handleBuyNow}
+                      onAddToWishlist={handleAddToWishlist}
+                      onViewDetails={openProductDetails}
+                      onQuickAdd={setQuickAddProduct}
+                      isWishlisted={wishlist.some((p) => (p.id || p._id) === (product.id || product._id))}
+                    />
+                  ))}
+                </div>
+
+                {/* Load More Button for Search View */}
+                {hasMore && (
+                  <div className="flex flex-col items-center justify-center mt-10 mb-4 gap-2.5">
+                    <button
+                      type="button"
+                      onClick={handleLoadMore}
+                      disabled={loadingMore}
+                      className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-full bg-black hover:bg-zinc-800 text-white font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border-0"
+                      style={{ border: 0 }}
+                    >
+                      {loadingMore ? (
+                        <div className="flex items-center gap-2">
+                          <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          <span>Loading More...</span>
+                        </div>
+                      ) : (
+                        <>
+                          <span>Load More Results</span>
+                          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 group-hover:scale-125 transition-transform" />
+                        </>
+                      )}
+                    </button>
+                    <span className="text-[11px] text-gray-500 font-semibold tracking-wide">
+                      Showing {productsList.length} results
+                    </span>
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
