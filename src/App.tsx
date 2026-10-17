@@ -189,7 +189,7 @@ function App() {
   // Infinite Scroll States with instant local storage cache for 0ms loading across all browser sessions
   const [productsList, setProductsList] = useState<Product[]>(() => {
     try {
-      const saved = localStorage.getItem('mwm_cached_products_v3');
+      const saved = localStorage.getItem('mwm_cached_products_v4');
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -1003,30 +1003,32 @@ function formatDateSafe(dateStr: any): string {
     if (loadingMoreRef.current && !isReset) return;
     setLoadingMore(true);
     try {
+      const isHomeCatalog = !searchQuery && !selectedCategory;
       const data = await fetchProducts({
         search: searchQuery || undefined,
         category: selectedCategory || undefined,
-        skip: currentSkip,
-        limit: ITEMS_PER_PAGE
+        skip: isHomeCatalog ? 0 : currentSkip,
+        limit: isHomeCatalog ? 250 : ITEMS_PER_PAGE
       });
 
       const safeData = Array.isArray(data) ? data : [];
 
-      if (isReset) {
+      if (isReset || isHomeCatalog) {
         setProductsList(safeData);
-        if (safeData.length > 0 && !searchQuery && !selectedCategory) {
-          safeSetStorage(localStorage, 'mwm_cached_products_v3', safeData);
+        if (safeData.length > 0 && isHomeCatalog) {
+          safeSetStorage(localStorage, 'mwm_cached_products_v4', safeData);
         }
+        setHasMore(!isHomeCatalog && safeData.length === ITEMS_PER_PAGE);
+        setSkip(isHomeCatalog ? safeData.length : currentSkip + safeData.length);
       } else {
         setProductsList((prev) => {
           const existingIds = new Set(prev.map(p => p?.id || p?._id));
           const uniques = safeData.filter(p => p && !existingIds.has(p.id || p._id));
           return [...prev, ...uniques];
         });
+        setHasMore(safeData.length === ITEMS_PER_PAGE);
+        setSkip(currentSkip + safeData.length);
       }
-
-      setHasMore(safeData.length === ITEMS_PER_PAGE);
-      setSkip(currentSkip + safeData.length);
     } catch (err) {
       console.error("Error loading paginated products:", err);
     } finally {
