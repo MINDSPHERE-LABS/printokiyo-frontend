@@ -3153,94 +3153,96 @@ function formatDateSafe(dateStr: any): string {
         )}
       </main>
 
-      {/* 5. Floating Capsule Navigation Bar (Mobile Only - Hidden on Desktop) */}
-      <div className="fixed bottom-6 left-0 right-0 z-40 px-4 flex justify-center pointer-events-none select-none md:hidden">
-        <nav className="pointer-events-auto w-full max-w-sm bg-gray-950/95 backdrop-blur-xl border border-gray-800/80 px-6 py-2.5 rounded-full flex items-center justify-between shadow-[0_12px_40px_rgba(0,0,0,0.35)] transition-all">
-          
-          <button 
-            onClick={() => { 
-              setActiveTab('home'); 
-              setSelectedCategory(null);
-              setSelectedProduct(null); 
-              setSearchQuery('');
-            }}
-            className={`relative flex flex-col items-center justify-center p-2 rounded-full transition-all ${
-              isTabActive('home') ? 'text-white scale-110' : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            <Home size={19} strokeWidth={isTabActive('home') ? 2.5 : 2} />
-            {isTabActive('home') && (
-              <span className="absolute -bottom-1.5 w-1 h-1 rounded-full bg-white animate-in zoom-in duration-200" />
-            )}
-          </button>
+      {/* 5. Floating Capsule Navigation Bar (Mobile Only - Hidden on Desktop, Checkout & Order Confirmation) */}
+      {activeTab !== 'checkout' && activeTab !== 'confirmation' && (
+        <div className="fixed bottom-6 left-0 right-0 z-40 px-4 flex justify-center pointer-events-none select-none md:hidden">
+          <nav className="pointer-events-auto w-full max-w-sm bg-gray-950/95 backdrop-blur-xl border border-gray-800/80 px-6 py-2.5 rounded-full flex items-center justify-between shadow-[0_12px_40px_rgba(0,0,0,0.35)] transition-all">
+            
+            <button 
+              onClick={() => { 
+                setActiveTab('home'); 
+                setSelectedCategory(null);
+                setSelectedProduct(null); 
+                setSearchQuery('');
+              }}
+              className={`relative flex flex-col items-center justify-center p-2 rounded-full transition-all ${
+                isTabActive('home') ? 'text-white scale-110' : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              <Home size={19} strokeWidth={isTabActive('home') ? 2.5 : 2} />
+              {isTabActive('home') && (
+                <span className="absolute -bottom-1.5 w-1 h-1 rounded-full bg-white animate-in zoom-in duration-200" />
+              )}
+            </button>
 
-          <button 
-            onClick={() => { 
-              setActiveTab('search'); 
-              setSelectedProduct(null); 
-            }}
-            className={`relative flex flex-col items-center justify-center p-2 rounded-full transition-all ${
-              isTabActive('search') ? 'text-white scale-110' : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            <Search size={19} strokeWidth={isTabActive('search') ? 2.5 : 2} />
-            {isTabActive('search') && (
-              <span className="absolute -bottom-1.5 w-1 h-1 rounded-full bg-white animate-in zoom-in duration-200" />
-            )}
-          </button>
+            <button 
+              onClick={() => { 
+                setActiveTab('search'); 
+                setSelectedProduct(null); 
+              }}
+              className={`relative flex flex-col items-center justify-center p-2 rounded-full transition-all ${
+                isTabActive('search') ? 'text-white scale-110' : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              <Search size={19} strokeWidth={isTabActive('search') ? 2.5 : 2} />
+              {isTabActive('search') && (
+                <span className="absolute -bottom-1.5 w-1 h-1 rounded-full bg-white animate-in zoom-in duration-200" />
+              )}
+            </button>
 
-          <button 
-            onClick={() => { 
-              setActiveTab('wishlist'); 
-              setSelectedProduct(null); 
-            }}
-            className={`relative flex flex-col items-center justify-center p-2 rounded-full transition-all ${
-              isTabActive('wishlist') ? 'text-white scale-110' : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            <Heart size={19} strokeWidth={isTabActive('wishlist') ? 2.5 : 2} />
-            {wishlist.length > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full animate-pulse ring-2 ring-gray-950" />
-            )}
-            {isTabActive('wishlist') && (
-              <span className="absolute -bottom-1.5 w-1 h-1 rounded-full bg-white animate-in zoom-in duration-200" />
-            )}
-          </button>
+            <button 
+              onClick={() => { 
+                setActiveTab('wishlist'); 
+                setSelectedProduct(null); 
+              }}
+              className={`relative flex flex-col items-center justify-center p-2 rounded-full transition-all ${
+                isTabActive('wishlist') ? 'text-white scale-110' : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              <Heart size={19} strokeWidth={isTabActive('wishlist') ? 2.5 : 2} />
+              {wishlist.length > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full animate-pulse ring-2 ring-gray-950" />
+              )}
+              {isTabActive('wishlist') && (
+                <span className="absolute -bottom-1.5 w-1 h-1 rounded-full bg-white animate-in zoom-in duration-200" />
+              )}
+            </button>
 
-          <button 
-            onClick={() => { 
-              setActiveTab('cart'); 
-              setSelectedProduct(null); 
-            }}
-            className={`relative flex flex-col items-center justify-center p-2 rounded-full transition-all ${
-              isTabActive('cart') ? 'text-white scale-110' : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            <ShoppingBag size={19} strokeWidth={isTabActive('cart') ? 2.5 : 2} />
-            {cart.length > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 flex items-center justify-center bg-white text-gray-950 rounded-full text-[8px] font-black shadow-sm ring-2 ring-gray-950">
-                {cart.length}
-              </span>
-            )}
-            {isTabActive('cart') && (
-              <span className="absolute -bottom-1.5 w-1 h-1 rounded-full bg-white animate-in zoom-in duration-200" />
-            )}
-          </button>
+            <button 
+              onClick={() => { 
+                setActiveTab('cart'); 
+                setSelectedProduct(null); 
+              }}
+              className={`relative flex flex-col items-center justify-center p-2 rounded-full transition-all ${
+                isTabActive('cart') ? 'text-white scale-110' : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              <ShoppingBag size={19} strokeWidth={isTabActive('cart') ? 2.5 : 2} />
+              {cart.length > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 flex items-center justify-center bg-white text-gray-950 rounded-full text-[8px] font-black shadow-sm ring-2 ring-gray-950">
+                  {cart.length}
+                </span>
+              )}
+              {isTabActive('cart') && (
+                <span className="absolute -bottom-1.5 w-1 h-1 rounded-full bg-white animate-in zoom-in duration-200" />
+              )}
+            </button>
 
-          <button 
-            onClick={handleProfileClick}
-            className={`relative flex flex-col items-center justify-center p-2 rounded-full transition-all ${
-              isTabActive('profile') ? 'text-white scale-110' : 'text-gray-400 hover:text-gray-200'
-            }`}
-          >
-            <User size={19} strokeWidth={isTabActive('profile') ? 2.5 : 2} />
-            {isTabActive('profile') && (
-              <span className="absolute -bottom-1.5 w-1 h-1 rounded-full bg-white animate-in zoom-in duration-200" />
-            )}
-          </button>
+            <button 
+              onClick={handleProfileClick}
+              className={`relative flex flex-col items-center justify-center p-2 rounded-full transition-all ${
+                isTabActive('profile') ? 'text-white scale-110' : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              <User size={19} strokeWidth={isTabActive('profile') ? 2.5 : 2} />
+              {isTabActive('profile') && (
+                <span className="absolute -bottom-1.5 w-1 h-1 rounded-full bg-white animate-in zoom-in duration-200" />
+              )}
+            </button>
 
-        </nav>
-      </div>
+          </nav>
+        </div>
+      )}
 
       {/* Auth Modal drawer */}
       <AuthModal 
