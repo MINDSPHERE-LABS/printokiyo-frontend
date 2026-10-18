@@ -271,8 +271,56 @@ body {
   animation: color_anim 1s infinite 0.4s;
 }
 
+/* Premium Logo Flow Effect Loading Animations */
+@keyframes logo-shimmer-flow {
+  0% {
+    transform: translateX(-140%) skewX(-20deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  70% {
+    transform: translateX(200%) skewX(-20deg);
+    opacity: 0.9;
+  }
+  71%, 100% {
+    transform: translateX(200%) skewX(-20deg);
+    opacity: 0;
+  }
+}
 
+.animate-shimmer-flow {
+  animation: logo-shimmer-flow 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
 
+@keyframes liquid-track-flow {
+  0% {
+    transform: translateX(-120%);
+  }
+  50% {
+    transform: translateX(120%);
+  }
+  100% {
+    transform: translateX(-120%);
+  }
+}
 
+.animate-track-flow {
+  animation: liquid-track-flow 2.2s ease-in-out infinite;
+}
 
+@keyframes pulse-subtle-glow {
+  0%, 100% {
+    transform: scale(0.92);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.75;
+  }
+}
 
+.animate-subtle-glow {
+  animation: pulse-subtle-glow 2.8s ease-in-out infinite;
+}

@@ -9,67 +9,52 @@ interface BrandBufferProps {
 
 export const BrandBuffer: React.FC<BrandBufferProps> = ({
   fullScreen = false,
-  message = 'Buffering premium posters...',
+  message = 'Connecting securely...',
   size = 'md'
 }) => {
   const logoSizes = {
-    sm: 'h-8 sm:h-9',
-    md: 'h-10 sm:h-12',
-    lg: 'h-14 sm:h-16'
-  };
-
-  const containerSizes = {
-    sm: 'w-20 h-20',
-    md: 'w-28 h-28',
-    lg: 'w-36 h-36'
+    sm: 'h-7 sm:h-8 max-w-[140px]',
+    md: 'h-10 sm:h-12 max-w-[210px]',
+    lg: 'h-13 sm:h-15 max-w-[270px]'
   };
 
   const loaderContent = (
-    <div className="flex flex-col items-center justify-center gap-3 select-none p-4 animate-in fade-in duration-300">
-      {/* Brand logo container with dual spinning buffer rings */}
-      <div className={`relative flex items-center justify-center ${containerSizes[size]}`}>
-        {/* Outer Pulsing Ambient Glow */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-500/20 to-indigo-600/20 animate-ping opacity-25" />
-
-        {/* Primary Outer Spinner Ring */}
+    <div className="flex flex-col items-center justify-center gap-5 select-none p-6 animate-in fade-in duration-300">
+      {/* Logo container with ambient glow and sweeping flow sheen effect (No circle spinner) */}
+      <div className="relative flex items-center justify-center">
+        {/* Soft Multi-Color Ambient Fluid Aura matching PrintOkiyo brand colors */}
         <div 
-          className="absolute inset-0 rounded-full border-3 border-transparent border-t-[#041E42] border-r-[#041E42]/30 animate-spin" 
-          style={{ animationDuration: '0.85s' }} 
+          className="absolute -inset-5 rounded-3xl bg-gradient-to-r from-cyan-400/25 via-pink-500/20 to-amber-400/25 blur-2xl animate-subtle-glow pointer-events-none" 
         />
 
-        {/* Secondary Inner Counter-Spinner Ring */}
-        <div 
-          className="absolute inset-2 rounded-full border-2 border-transparent border-b-cyan-500 border-l-cyan-300 animate-spin opacity-80" 
-          style={{ animationDuration: '1.3s', animationDirection: 'reverse' }} 
-        />
-
-        {/* Centered Brand Logo */}
-        <div className="relative z-10 p-2.5 bg-white/90 backdrop-blur-xs rounded-2xl shadow-2xs flex items-center justify-center">
+        {/* Clean Logo Card with Flowing Sheen Light Effect */}
+        <div className="relative z-10 px-6 py-3.5 rounded-2xl bg-white/95 backdrop-blur-md border border-gray-100 shadow-[0_10px_35px_rgba(0,0,0,0.06)] overflow-hidden flex items-center justify-center">
+          {/* PrintOkiyo Multi-Color Brand Logo */}
           <img 
             src={logoPng} 
             alt="PrintOkiyo" 
-            className={`${logoSizes[size]} w-auto object-contain animate-pulse`} 
+            className={`${logoSizes[size]} w-auto object-contain transition-transform`} 
+          />
+
+          {/* Sweeping Radiant Flow Sheen that continuously flows across the logo */}
+          <div 
+            className="absolute inset-y-0 w-3/5 bg-gradient-to-r from-transparent via-white/85 to-transparent pointer-events-none animate-shimmer-flow" 
           />
         </div>
       </div>
 
-      {/* Styled PRINTOKIYO Buffer Title */}
-      <div className="flex flex-col items-center gap-1 text-center">
-        <div className="flex items-center gap-1">
-          <span className="text-xs sm:text-sm font-display font-black uppercase tracking-[0.25em] text-[#041E42]">
-            PRINT<span className="text-cyan-600">OKIYO</span>
-          </span>
+      {/* Modern Liquid Flow Bar & Status Text */}
+      <div className="flex flex-col items-center gap-3 text-center">
+        {/* Sleek Liquid Flow Progress Bar */}
+        <div className="relative w-44 sm:w-52 h-1 bg-gray-100 rounded-full overflow-hidden">
+          <div 
+            className="absolute inset-y-0 w-24 rounded-full bg-gradient-to-r from-cyan-500 via-pink-500 to-amber-400 animate-track-flow shadow-[0_0_10px_rgba(6,182,212,0.5)]" 
+          />
         </div>
 
-        {/* Animated Buffering Dots */}
-        <div className="flex items-center gap-1.5 my-0.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#041E42] animate-bounce" style={{ animationDelay: '0ms' }} />
-          <div className="w-1.5 h-1.5 rounded-full bg-cyan-600 animate-bounce" style={{ animationDelay: '150ms' }} />
-          <div className="w-1.5 h-1.5 rounded-full bg-[#041E42] animate-bounce" style={{ animationDelay: '300ms' }} />
-        </div>
-
+        {/* Status Message */}
         {message && (
-          <p className="text-[10px] sm:text-xs font-semibold text-gray-500 tracking-wide uppercase">
+          <p className="text-[10px] sm:text-[11px] font-extrabold text-gray-500 tracking-[0.22em] uppercase animate-pulse">
             {message}
           </p>
         )}
