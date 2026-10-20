@@ -1499,7 +1499,7 @@ function formatDateSafe(dateStr: any): string {
   };
 
   return (
-    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-white text-gray-950 pb-28 flex flex-col font-sans">
+    <div className="min-h-screen bg-white text-gray-950 pb-28 flex flex-col font-sans">
       {/* Dynamic SEO Meta Management & Google Rich Snippets */}
       {activeTab === 'details' && selectedProduct ? (
         <SEO product={selectedProduct} />
@@ -1534,7 +1534,7 @@ function formatDateSafe(dateStr: any): string {
       {isInitialLoading && <BrandBuffer fullScreen message="Buffering PrintOkiyo Store..." />}
 
       {/* 1. Modern Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all select-none w-full max-w-full overflow-hidden">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all select-none">
         {/* Main Navbar */}
         <div className="py-3 sm:py-3.5 px-4 sm:px-6 lg:px-8 border-b border-gray-100">
           <div className="max-w-7xl mx-auto w-full flex items-center justify-between relative">
