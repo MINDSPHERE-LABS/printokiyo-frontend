@@ -1536,8 +1536,8 @@ function formatDateSafe(dateStr: any): string {
       {/* 1. Modern Header */}
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all select-none">
         {/* Main Navbar */}
-        <div className="py-3 sm:py-3.5 px-4 sm:px-6 lg:px-8 border-b border-gray-100">
-          <div className="max-w-7xl mx-auto w-full flex items-center justify-between relative">
+        <div className="w-full border-b border-gray-100">
+          <div className="max-w-7xl mx-auto w-full py-3 sm:py-3.5 px-4 sm:px-6 lg:px-8 flex items-center justify-between relative">
             {/* Left categories menu & desktop navigation links */}
             <div className="flex items-center gap-2">
               {activeTab !== 'checkout' ? (
@@ -1641,85 +1641,93 @@ function formatDateSafe(dateStr: any): string {
           </div>
         </div>
 
-        {/* Flashing Infinite Scroller Offer Announcement Strip - Edge to Edge, Zero Borders, Zero Padding Gap */}
-        <div 
-          onClick={() => {
-            if (activeTab !== 'home') {
-              setActiveTab('home');
-              setSelectedCategory(null);
-              setSelectedProduct(null);
-            }
-          }}
-          className="w-full bg-[#09090b] text-white overflow-hidden py-1.5 sm:py-2 select-none cursor-pointer hover:bg-black transition-colors border-none"
-          title="PrintOkiyo Special Store Offers"
-        >
-          <div className="offer-marquee-track flex items-center">
-            {[...flashingOffers, ...flashingOffers].map((item, idx) => {
-              const IconComponent = item.icon;
-              return (
-                <div key={idx} className="inline-flex items-center gap-2 px-3 sm:px-5 whitespace-nowrap shrink-0">
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border ${item.glowBg} transition-transform`}>
-                    <IconComponent size={11} className={item.iconColor} strokeWidth={2.4} />
-                  </span>
-                  <span className={`text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-none ${item.badgeColor}`}>
-                    {item.badge}
-                  </span>
-                  <span className="text-[11px] sm:text-xs font-black tracking-wide text-amber-300 uppercase">
-                    {item.highlight}
-                  </span>
-                  <span className="text-[10px] sm:text-[11px] text-zinc-300 font-medium hidden sm:inline">
-                    — {item.text}
-                  </span>
-                  <span className="text-zinc-600 mx-2 text-[10px]">✦</span>
-                </div>
-              );
-            })}
+        {/* Flashing Infinite Scroller Offer Announcement Strip - Same size as navbar and hero banner */}
+        <div className="w-full bg-white">
+          <div className="max-w-7xl mx-auto w-full">
+            <div 
+              onClick={() => {
+                if (activeTab !== 'home') {
+                  setActiveTab('home');
+                  setSelectedCategory(null);
+                  setSelectedProduct(null);
+                }
+              }}
+              className="w-full bg-[#09090b] text-white overflow-hidden py-1.5 sm:py-2 select-none cursor-pointer hover:bg-black transition-colors border-none"
+              title="PrintOkiyo Special Store Offers"
+            >
+              <div className="offer-marquee-track flex items-center">
+                {[...flashingOffers, ...flashingOffers].map((item, idx) => {
+                  const IconComponent = item.icon;
+                  return (
+                    <div key={idx} className="inline-flex items-center gap-2 px-3 sm:px-5 whitespace-nowrap shrink-0">
+                      <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border ${item.glowBg} transition-transform`}>
+                        <IconComponent size={11} className={item.iconColor} strokeWidth={2.4} />
+                      </span>
+                      <span className={`text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-none ${item.badgeColor}`}>
+                        {item.badge}
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-black tracking-wide text-amber-300 uppercase">
+                        {item.highlight}
+                      </span>
+                      <span className="text-[10px] sm:text-[11px] text-zinc-300 font-medium hidden sm:inline">
+                        — {item.text}
+                      </span>
+                      <span className="text-zinc-600 mx-2 text-[10px]">✦</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </header>
 
-      {/* 2. Full Screen Edge-to-Edge Sliding Hero Banner (Full Viewport Width on Desktop and Mobile, Zero Side Gaps, FrameKro style) */}
+      {/* 2. Sliding Hero Banner (Same size as navbar and offer strip, perfectly aligned container) */}
       {activeTab === 'home' && (
-        <div 
-          className="relative w-full overflow-hidden mt-0 mb-3 md:mb-5 rounded-none text-white select-none group touch-pan-y"
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        >
-          {/* Sliding Track for Full WebP Images (Aspect ratio 716/1024 - 100% Full Uncropped Image) */}
-          <div className="relative w-full aspect-[716/1024] max-h-[85vh] overflow-hidden">
+        <div className="w-full bg-white">
+          <div className="max-w-7xl mx-auto w-full">
             <div 
-              className="flex w-full h-full transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateX(-${currentSlideIndex * 100}%)` }}
+              className="relative w-full overflow-hidden mt-0 mb-3 md:mb-5 rounded-none text-white select-none group touch-pan-y"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
             >
-              {HERO_SLIDES.map((slide, idx) => (
-                <div key={idx} className="w-full shrink-0 h-full relative overflow-hidden flex items-center justify-center">
-                  <img 
-                    src={slide.image} 
-                    alt={slide.line1} 
-                    loading="eager"
-                    className="w-full h-full object-cover object-center" 
-                  />
-                  
-                  {/* Gradient Overlay & Bottom-Left Creative Stacked Typography */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex items-end justify-start p-6 sm:p-10 md:p-14 lg:p-16">
-                    <div 
-                      className={`flex flex-col items-start gap-1 sm:gap-2 transition-all duration-700 delay-100 transform ${
-                        currentSlideIndex === idx 
-                          ? 'opacity-100 translate-y-0 scale-100' 
-                          : 'opacity-0 translate-y-6 scale-95 pointer-events-none'
-                      }`}
-                    >
-                      <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-black leading-none tracking-tight text-white uppercase drop-shadow-lg text-left">
-                        {slide.line1}
-                      </h1>
+              {/* Sliding Track for Full WebP Images (Aspect ratio 716/1024 - 100% Full Uncropped Image) */}
+              <div className="relative w-full aspect-[716/1024] max-h-[85vh] overflow-hidden">
+                <div 
+                  className="flex w-full h-full transition-transform duration-700 ease-in-out"
+                  style={{ transform: `translateX(-${currentSlideIndex * 100}%)` }}
+                >
+                  {HERO_SLIDES.map((slide, idx) => (
+                    <div key={idx} className="w-full shrink-0 h-full relative overflow-hidden flex items-center justify-center">
+                      <img 
+                        src={slide.image} 
+                        alt={slide.line1} 
+                        loading="eager"
+                        className="w-full h-full object-cover object-center" 
+                      />
                       
-                      <h2 className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-black leading-tight tracking-tight uppercase bg-gradient-to-r ${slide.gradient} bg-clip-text text-transparent drop-shadow-2xl text-left`}>
-                        {slide.line2}
-                      </h2>
+                      {/* Gradient Overlay & Bottom-Left Creative Stacked Typography */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex items-end justify-start p-6 sm:p-10 md:p-14 lg:p-16">
+                        <div 
+                          className={`flex flex-col items-start gap-1 sm:gap-2 transition-all duration-700 delay-100 transform ${
+                            currentSlideIndex === idx 
+                              ? 'opacity-100 translate-y-0 scale-100' 
+                              : 'opacity-0 translate-y-6 scale-95 pointer-events-none'
+                          }`}
+                        >
+                          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-black leading-none tracking-tight text-white uppercase drop-shadow-lg text-left">
+                            {slide.line1}
+                          </h1>
+                          
+                          <h2 className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-black leading-tight tracking-tight uppercase bg-gradient-to-r ${slide.gradient} bg-clip-text text-transparent drop-shadow-2xl text-left`}>
+                            {slide.line2}
+                          </h2>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>
