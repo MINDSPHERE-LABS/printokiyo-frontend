@@ -1678,7 +1678,52 @@ function formatDateSafe(dateStr: any): string {
         </div>
       </header>
 
-
+      {/* 2. Full Screen Edge-to-Edge Sliding Hero Banner (Full Viewport Width on Desktop and Mobile, Zero Side Gaps, FrameKro style) */}
+      {activeTab === 'home' && (
+        <div 
+          className="relative w-full overflow-hidden mt-0 mb-3 md:mb-5 rounded-none text-white select-none group touch-pan-y"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Sliding Track for Full WebP Images (Aspect ratio 716/1024 - 100% Full Uncropped Image) */}
+          <div className="relative w-full aspect-[716/1024] max-h-[85vh] overflow-hidden">
+            <div 
+              className="flex w-full h-full transition-transform duration-700 ease-in-out"
+              style={{ transform: `translateX(-${currentSlideIndex * 100}%)` }}
+            >
+              {HERO_SLIDES.map((slide, idx) => (
+                <div key={idx} className="w-full shrink-0 h-full relative overflow-hidden flex items-center justify-center">
+                  <img 
+                    src={slide.image} 
+                    alt={slide.line1} 
+                    loading="eager"
+                    className="w-full h-full object-cover object-center" 
+                  />
+                  
+                  {/* Gradient Overlay & Bottom-Left Creative Stacked Typography */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex items-end justify-start p-6 sm:p-10 md:p-14 lg:p-16">
+                    <div 
+                      className={`flex flex-col items-start gap-1 sm:gap-2 transition-all duration-700 delay-100 transform ${
+                        currentSlideIndex === idx 
+                          ? 'opacity-100 translate-y-0 scale-100' 
+                          : 'opacity-0 translate-y-6 scale-95 pointer-events-none'
+                      }`}
+                    >
+                      <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-black leading-none tracking-tight text-white uppercase drop-shadow-lg text-left">
+                        {slide.line1}
+                      </h1>
+                      
+                      <h2 className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-black leading-tight tracking-tight uppercase bg-gradient-to-r ${slide.gradient} bg-clip-text text-transparent drop-shadow-2xl text-left`}>
+                        {slide.line2}
+                      </h2>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 3. Slidebar Categories Drawer - hidden on checkout */}
       <SidebarDrawer
@@ -1708,7 +1753,7 @@ function formatDateSafe(dateStr: any): string {
       />
 
       {/* 4. Content main container */}
-      <main className={`flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 ${activeTab === 'home' ? 'mt-0 pt-0' : activeTab === 'details' ? 'mt-1 sm:mt-2.5' : 'mt-3 sm:mt-5'}`}>
+      <main className={`flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 ${activeTab === 'details' ? 'mt-1 sm:mt-2.5' : 'mt-2 sm:mt-4'}`}>
         
         {/* Active Product Details Inline View */}
         {activeTab === 'details' && selectedProduct && (
@@ -1744,52 +1789,6 @@ function formatDateSafe(dateStr: any): string {
         {/* Homepage View */}
         {activeTab === 'home' && (
           <div>
-            {/* Full Screen Edge-to-Edge Sliding Hero Banner (No curved borders, no side gaps, FrameKro style) */}
-            <div 
-              className="relative overflow-hidden -mx-3 sm:-mx-6 lg:-mx-8 mt-0 mb-2 rounded-none text-white select-none group touch-pan-y"
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-            >
-              
-              {/* Sliding Track for Full WebP Images (Aspect ratio 716/1024 - 100% Full Uncropped Image) */}
-              <div className="relative w-full aspect-[716/1024] max-h-[85vh] overflow-hidden">
-                <div 
-                  className="flex w-full h-full transition-transform duration-700 ease-in-out"
-                  style={{ transform: `translateX(-${currentSlideIndex * 100}%)` }}
-                >
-                  {HERO_SLIDES.map((slide, idx) => (
-                    <div key={idx} className="w-full shrink-0 h-full relative overflow-hidden flex items-center justify-center">
-                      <img 
-                        src={slide.image} 
-                        alt={slide.line1} 
-                        loading="eager"
-                        className="w-full h-full object-cover object-center" 
-                      />
-                      
-                      {/* Gradient Overlay & Bottom-Left Creative Stacked Typography */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex items-end justify-start p-6 sm:p-10 md:p-14">
-                        <div 
-                          className={`flex flex-col items-start gap-1 sm:gap-2 transition-all duration-700 delay-100 transform ${
-                            currentSlideIndex === idx 
-                              ? 'opacity-100 translate-y-0 scale-100' 
-                              : 'opacity-0 translate-y-6 scale-95 pointer-events-none'
-                          }`}
-                        >
-                          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-black leading-none tracking-tight text-white uppercase drop-shadow-lg text-left">
-                            {slide.line1}
-                          </h1>
-                          
-                          <h2 className={`text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-black leading-tight tracking-tight uppercase bg-gradient-to-r ${slide.gradient} bg-clip-text text-transparent drop-shadow-2xl text-left`}>
-                            {slide.line2}
-                          </h2>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
             {/* Infinite Smooth Circular Collage Banner Strip - WebP Format (Aligned with Site Body & Hero Banner Width) */}
             <div className="overflow-hidden relative -mx-4 sm:-mx-6 lg:-mx-8 my-3 md:my-5 bg-white py-0 flex items-center border-none outline-none select-none pointer-events-none">
               <div className="collage-marquee-track border-none outline-none">
