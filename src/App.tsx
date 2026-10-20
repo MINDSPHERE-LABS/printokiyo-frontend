@@ -1534,7 +1534,7 @@ function formatDateSafe(dateStr: any): string {
       {isInitialLoading && <BrandBuffer fullScreen message="Buffering PrintOkiyo Store..." />}
 
       {/* 1. Modern Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all select-none shadow-xs w-full max-w-full overflow-hidden">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all select-none w-full max-w-full overflow-hidden">
         {/* Main Navbar */}
         <div className="py-3 sm:py-3.5 px-4 sm:px-6 lg:px-8 border-b border-gray-100">
           <div className="max-w-7xl mx-auto w-full flex items-center justify-between relative">
@@ -1641,43 +1641,39 @@ function formatDateSafe(dateStr: any): string {
           </div>
         </div>
 
-        {/* Flashing Infinite Scroller Offer Announcement Strip - Strictly Contained within Website Navbar Container */}
-        <div className="w-full bg-white border-b border-gray-100/90">
-          <div className="max-w-7xl mx-auto w-full px-3 sm:px-6 lg:px-8 py-1.5 sm:py-2">
-            <div 
-              onClick={() => {
-                if (activeTab !== 'home') {
-                  setActiveTab('home');
-                  setSelectedCategory(null);
-                  setSelectedProduct(null);
-                }
-              }}
-              className="w-full bg-[#09090b] text-white rounded-lg sm:rounded-xl overflow-hidden py-1.5 sm:py-2 select-none border border-zinc-800/80 shadow-xs cursor-pointer hover:bg-black transition-colors"
-              title="PrintOkiyo Special Store Offers"
-            >
-              <div className="offer-marquee-track flex items-center">
-                {[...flashingOffers, ...flashingOffers].map((item, idx) => {
-                  const IconComponent = item.icon;
-                  return (
-                    <div key={idx} className="inline-flex items-center gap-2 px-3 sm:px-5 whitespace-nowrap shrink-0">
-                      <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border ${item.glowBg} transition-transform`}>
-                        <IconComponent size={11} className={item.iconColor} strokeWidth={2.4} />
-                      </span>
-                      <span className={`text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-none ${item.badgeColor}`}>
-                        {item.badge}
-                      </span>
-                      <span className="text-[11px] sm:text-xs font-black tracking-wide text-amber-300 uppercase">
-                        {item.highlight}
-                      </span>
-                      <span className="text-[10px] sm:text-[11px] text-zinc-300 font-medium hidden sm:inline">
-                        — {item.text}
-                      </span>
-                      <span className="text-zinc-600 mx-2 text-[10px]">✦</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+        {/* Flashing Infinite Scroller Offer Announcement Strip - Edge to Edge, Zero Borders, Zero Padding Gap */}
+        <div 
+          onClick={() => {
+            if (activeTab !== 'home') {
+              setActiveTab('home');
+              setSelectedCategory(null);
+              setSelectedProduct(null);
+            }
+          }}
+          className="w-full bg-[#09090b] text-white overflow-hidden py-1.5 sm:py-2 select-none cursor-pointer hover:bg-black transition-colors border-none"
+          title="PrintOkiyo Special Store Offers"
+        >
+          <div className="offer-marquee-track flex items-center">
+            {[...flashingOffers, ...flashingOffers].map((item, idx) => {
+              const IconComponent = item.icon;
+              return (
+                <div key={idx} className="inline-flex items-center gap-2 px-3 sm:px-5 whitespace-nowrap shrink-0">
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border ${item.glowBg} transition-transform`}>
+                    <IconComponent size={11} className={item.iconColor} strokeWidth={2.4} />
+                  </span>
+                  <span className={`text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-none ${item.badgeColor}`}>
+                    {item.badge}
+                  </span>
+                  <span className="text-[11px] sm:text-xs font-black tracking-wide text-amber-300 uppercase">
+                    {item.highlight}
+                  </span>
+                  <span className="text-[10px] sm:text-[11px] text-zinc-300 font-medium hidden sm:inline">
+                    — {item.text}
+                  </span>
+                  <span className="text-zinc-600 mx-2 text-[10px]">✦</span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </header>
@@ -1712,7 +1708,7 @@ function formatDateSafe(dateStr: any): string {
       />
 
       {/* 4. Content main container */}
-      <main className={`flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 ${activeTab === 'details' ? 'mt-1 sm:mt-2.5' : 'mt-3 sm:mt-5'}`}>
+      <main className={`flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 ${activeTab === 'home' ? 'mt-0 pt-0' : activeTab === 'details' ? 'mt-1 sm:mt-2.5' : 'mt-3 sm:mt-5'}`}>
         
         {/* Active Product Details Inline View */}
         {activeTab === 'details' && selectedProduct && (
@@ -1750,7 +1746,7 @@ function formatDateSafe(dateStr: any): string {
           <div>
             {/* Full Screen Edge-to-Edge Sliding Hero Banner (No curved borders, no side gaps, FrameKro style) */}
             <div 
-              className="relative overflow-hidden -mx-4 sm:-mx-6 lg:-mx-8 -mt-6 mb-2 rounded-none text-white select-none group touch-pan-y"
+              className="relative overflow-hidden -mx-3 sm:-mx-6 lg:-mx-8 mt-0 mb-2 rounded-none text-white select-none group touch-pan-y"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
             >
