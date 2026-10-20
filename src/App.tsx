@@ -1499,7 +1499,7 @@ function formatDateSafe(dateStr: any): string {
   };
 
   return (
-    <div className="min-h-screen bg-white text-gray-950 pb-28 flex flex-col font-sans">
+    <div className="min-h-screen w-full max-w-full overflow-x-hidden bg-white text-gray-950 pb-28 flex flex-col font-sans">
       {/* Dynamic SEO Meta Management & Google Rich Snippets */}
       {activeTab === 'details' && selectedProduct ? (
         <SEO product={selectedProduct} />
@@ -1534,7 +1534,7 @@ function formatDateSafe(dateStr: any): string {
       {isInitialLoading && <BrandBuffer fullScreen message="Buffering PrintOkiyo Store..." />}
 
       {/* 1. Modern Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all select-none shadow-xs">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all select-none shadow-xs w-full max-w-full overflow-hidden">
         {/* Main Navbar */}
         <div className="py-3 sm:py-3.5 px-4 sm:px-6 lg:px-8 border-b border-gray-100">
           <div className="max-w-7xl mx-auto w-full flex items-center justify-between relative">
@@ -1641,39 +1641,43 @@ function formatDateSafe(dateStr: any): string {
           </div>
         </div>
 
-        {/* Flashing Infinite Scroller Offer Announcement Strip */}
-        <div 
-          onClick={() => {
-            if (activeTab !== 'home') {
-              setActiveTab('home');
-              setSelectedCategory(null);
-              setSelectedProduct(null);
-            }
-          }}
-          className="w-full bg-[#09090b] text-white overflow-hidden py-1.5 sm:py-2 select-none border-b border-zinc-800/80 shadow-xs cursor-pointer hover:bg-black transition-colors"
-          title="PrintOkiyo Special Store Offers"
-        >
-          <div className="offer-marquee-track flex items-center">
-            {[...flashingOffers, ...flashingOffers].map((item, idx) => {
-              const IconComponent = item.icon;
-              return (
-                <div key={idx} className="inline-flex items-center gap-2 px-3 sm:px-5 whitespace-nowrap shrink-0">
-                  <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border ${item.glowBg} transition-transform`}>
-                    <IconComponent size={11} className={item.iconColor} strokeWidth={2.4} />
-                  </span>
-                  <span className={`text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-none ${item.badgeColor}`}>
-                    {item.badge}
-                  </span>
-                  <span className="text-[11px] sm:text-xs font-black tracking-wide text-amber-300 uppercase">
-                    {item.highlight}
-                  </span>
-                  <span className="text-[10px] sm:text-[11px] text-zinc-300 font-medium hidden sm:inline">
-                    — {item.text}
-                  </span>
-                  <span className="text-zinc-600 mx-2 text-[10px]">✦</span>
-                </div>
-              );
-            })}
+        {/* Flashing Infinite Scroller Offer Announcement Strip - Strictly Contained within Website Navbar Container */}
+        <div className="w-full bg-white border-b border-gray-100/90">
+          <div className="max-w-7xl mx-auto w-full px-3 sm:px-6 lg:px-8 py-1.5 sm:py-2">
+            <div 
+              onClick={() => {
+                if (activeTab !== 'home') {
+                  setActiveTab('home');
+                  setSelectedCategory(null);
+                  setSelectedProduct(null);
+                }
+              }}
+              className="w-full bg-[#09090b] text-white rounded-lg sm:rounded-xl overflow-hidden py-1.5 sm:py-2 select-none border border-zinc-800/80 shadow-xs cursor-pointer hover:bg-black transition-colors"
+              title="PrintOkiyo Special Store Offers"
+            >
+              <div className="offer-marquee-track flex items-center">
+                {[...flashingOffers, ...flashingOffers].map((item, idx) => {
+                  const IconComponent = item.icon;
+                  return (
+                    <div key={idx} className="inline-flex items-center gap-2 px-3 sm:px-5 whitespace-nowrap shrink-0">
+                      <span className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border ${item.glowBg} transition-transform`}>
+                        <IconComponent size={11} className={item.iconColor} strokeWidth={2.4} />
+                      </span>
+                      <span className={`text-[8.5px] sm:text-[9.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-none ${item.badgeColor}`}>
+                        {item.badge}
+                      </span>
+                      <span className="text-[11px] sm:text-xs font-black tracking-wide text-amber-300 uppercase">
+                        {item.highlight}
+                      </span>
+                      <span className="text-[10px] sm:text-[11px] text-zinc-300 font-medium hidden sm:inline">
+                        — {item.text}
+                      </span>
+                      <span className="text-zinc-600 mx-2 text-[10px]">✦</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </header>
