@@ -193,34 +193,38 @@ export const AboutUsPage: React.FC<AboutUsPageProps> = ({
           <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mb-4">
             Connect With Our Community
           </p>
-          <div className="flex items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
-              href="https://facebook.com"
+              href="https://www.instagram.com/printokiyo.io/"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:bg-red-600 transition-all duration-200 shadow-sm hover:scale-105 cursor-pointer"
+              aria-label="Follow PrintOkiyo on Instagram"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 hover:from-purple-700 hover:via-pink-700 hover:to-amber-600 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md hover:shadow-lg hover:scale-105 cursor-pointer"
             >
-              <Facebook size={18} fill="currentColor" />
+              <Instagram size={16} />
+              <span>Follow @printokiyo.io</span>
             </a>
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:bg-red-600 transition-all duration-200 shadow-sm hover:scale-105 cursor-pointer"
-            >
-              <Instagram size={18} />
-            </a>
-            <a
-              href="https://wa.me/919999999999?text=Hi%20PrintOkiyo%20Team!%20I%20love%20your%20posters."
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="WhatsApp"
-              className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:bg-emerald-600 transition-all duration-200 shadow-sm hover:scale-105 cursor-pointer"
-            >
-              <MessageCircle size={18} />
-            </a>
+
+            <div className="flex items-center gap-3">
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:bg-blue-600 transition-all duration-200 shadow-sm hover:scale-105 cursor-pointer"
+              >
+                <Facebook size={18} fill="currentColor" />
+              </a>
+              <a
+                href="https://wa.me/919999999999?text=Hi%20PrintOkiyo%20Team!%20I%20love%20your%20posters."
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:bg-emerald-600 transition-all duration-200 shadow-sm hover:scale-105 cursor-pointer"
+              >
+                <MessageCircle size={18} />
+              </a>
+            </div>
           </div>
         </div>
 

@@ -66,9 +66,11 @@ export const Footer: React.FC<FooterProps> = ({
                   <Facebook size={16} fill="currentColor" />
                 </a>
                 <a 
-                  href="#" 
+                  href="https://www.instagram.com/printokiyo.io/" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label="Instagram"
-                  className="w-8.5 h-8.5 rounded-full bg-white text-black flex items-center justify-center hover:bg-[#e2b04c] transition-colors shadow-xs"
+                  className="w-8.5 h-8.5 rounded-full bg-white text-black flex items-center justify-center hover:bg-[#e2b04c] transition-colors shadow-xs cursor-pointer"
                 >
                   <Instagram size={16} />
                 </a>
