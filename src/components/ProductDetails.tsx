@@ -82,6 +82,21 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [openAccordion, setOpenAccordion] = useState<number | null>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
+  const actionButtonsRef = useRef<HTMLDivElement>(null);
+  const [showMobileStickyBar, setShowMobileStickyBar] = useState(false);
+
+  // Monitor when main action buttons scroll above or out of viewport on mobile
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!actionButtonsRef.current) return;
+      const rect = actionButtonsRef.current.getBoundingClientRect();
+      // Show sticky bar once user scrolls past the main buy buttons
+      setShowMobileStickyBar(rect.bottom < 50);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Reset state when active product changes
   useEffect(() => {
@@ -675,7 +690,7 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
             </div>
 
             {/* Main Action Buttons */}
-            <div className="flex flex-col gap-3 mb-6">
+            <div ref={actionButtonsRef} className="flex flex-col gap-3 mb-6">
               {/* ADD TO CART - Price Button */}
               <button
                 type="button"
@@ -977,6 +992,48 @@ export const ProductDetails: React.FC<ProductDetailsProps> = ({
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* High-Conversion Mobile Sticky Bottom Purchase Bar */}
+      {showMobileStickyBar && (
+        <div className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-gray-200 p-2.5 sm:p-3 md:hidden shadow-2xl flex items-center justify-between gap-3 animate-in slide-in-from-bottom-5 duration-200 select-none">
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="text-base font-display font-black text-gray-950">
+                ₹{offerAdjustedPrice.toLocaleString('en-IN')}
+              </span>
+              {selectedSize && (
+                <span className="text-[9.5px] uppercase font-bold text-gray-600 bg-gray-100 px-1.5 py-0.5 rounded">
+                  {selectedSize.name}
+                </span>
+              )}
+            </div>
+            <span className="text-[9px] text-emerald-600 font-bold tracking-tight truncate">
+              {offerAdjustedPrice >= 999 ? '🎉 Free Delivery' : 'Fast Pan-India Dispatch'}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => validateAndExecute(onAddToCart)}
+              disabled={product.stock <= 0}
+              className="px-3.5 py-2.5 rounded-xl border border-gray-950 text-gray-950 font-black text-[11px] uppercase tracking-wider bg-white active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
+            >
+              <ShoppingBag size={13} />
+              <span>Add</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => validateAndExecute(onBuyNow)}
+              disabled={product.stock <= 0}
+              className="px-4 py-2.5 rounded-xl bg-[#041E42] text-white font-black text-[11px] uppercase tracking-wider active:scale-95 transition-all flex items-center gap-1.5 shadow-md cursor-pointer disabled:opacity-50"
+            >
+              <CreditCard size={13} />
+              <span>Buy Now</span>
+            </button>
+          </div>
         </div>
       )}
     </div>

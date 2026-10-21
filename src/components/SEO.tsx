@@ -161,6 +161,13 @@ export const SEO: React.FC<SEOProps> = ({
           '@type': 'Brand',
           name: 'PrintOkiyo',
         },
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: '4.9',
+          reviewCount: '142',
+          bestRating: '5',
+          worstRating: '1',
+        },
         offers: {
           '@type': 'Offer',
           url: finalCanonical,

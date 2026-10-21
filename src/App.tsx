@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, Suspense, lazy } from 'react';
 import logoPng from './assets/logo.png';
 import collageStripWebp from './assets/collage-strip.webp';
 import polaroidCategoryBannerWebp from './assets/polaroid-category-banner.webp';
@@ -13,21 +13,27 @@ import type { Product, StoreSettings } from './types';
 import { ProductCard } from './components/ProductCard';
 import { ProductDetails } from './components/ProductDetails';
 import { AuthModal } from './components/AuthModal';
-import { CheckoutForm } from './components/CheckoutForm';
-import { OrderConfirmation } from './components/OrderConfirmation';
-import { OrderSuccessModal } from './components/OrderSuccessModal';
 import { Footer } from './components/Footer';
-import { AboutUsPage } from './components/AboutUsPage';
-import { TermsOfServicePage } from './components/TermsOfServicePage';
-import { ShippingPolicyPage } from './components/ShippingPolicyPage';
-import { RefundPolicyPage } from './components/RefundPolicyPage';
-import { CancelOrderPage } from './components/CancelOrderPage';
-import { PrivacyPolicyPage } from './components/PrivacyPolicyPage';
-import { SinglePostersPage } from './components/SinglePostersPage';
 import { SEO } from './components/SEO';
 import { BrandBuffer } from './components/BrandBuffer';
 import { SidebarDrawer } from './components/SidebarDrawer';
 import { QuickAddModal } from './components/QuickAddModal';
+import { WhyChooseUs } from './components/WhyChooseUs';
+import { CustomerReviews } from './components/CustomerReviews';
+import { CartDrawer } from './components/CartDrawer';
+import { SearchModal } from './components/SearchModal';
+
+// Code-split heavy views for high-performance initial loading
+const CheckoutForm = lazy(() => import('./components/CheckoutForm').then(m => ({ default: m.CheckoutForm })));
+const OrderConfirmation = lazy(() => import('./components/OrderConfirmation').then(m => ({ default: m.OrderConfirmation })));
+const OrderSuccessModal = lazy(() => import('./components/OrderSuccessModal').then(m => ({ default: m.OrderSuccessModal })));
+const AboutUsPage = lazy(() => import('./components/AboutUsPage').then(m => ({ default: m.AboutUsPage })));
+const TermsOfServicePage = lazy(() => import('./components/TermsOfServicePage').then(m => ({ default: m.TermsOfServicePage })));
+const ShippingPolicyPage = lazy(() => import('./components/ShippingPolicyPage').then(m => ({ default: m.ShippingPolicyPage })));
+const RefundPolicyPage = lazy(() => import('./components/RefundPolicyPage').then(m => ({ default: m.RefundPolicyPage })));
+const CancelOrderPage = lazy(() => import('./components/CancelOrderPage').then(m => ({ default: m.CancelOrderPage })));
+const PrivacyPolicyPage = lazy(() => import('./components/PrivacyPolicyPage').then(m => ({ default: m.PrivacyPolicyPage })));
+const SinglePostersPage = lazy(() => import('./components/SinglePostersPage').then(m => ({ default: m.SinglePostersPage })));
 import { initVisitorTracker } from './utils/visitorTracker';
 import { 
   fetchUserCart, syncUserCart, mergeGuestCart,
@@ -72,6 +78,8 @@ function App() {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSingleCategory, setActiveSingleCategory] = useState<string>('Supercar Single Poster');
+  const [isCartDrawerOpen, setIsCartDrawerOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const touchStartXRef = useRef<number | null>(null);
   const singlePostersSliderRef = useRef<HTMLDivElement>(null);
@@ -1065,7 +1073,8 @@ function formatDateSafe(dateStr: any): string {
     }
     const newCart = [...cart, ...itemsToAdd];
     syncCartChanges(newCart);
-    showToast(`🛒 Added ${count > 1 ? `${count}x ` : ''}"${product.title}" to Cart!`);
+    setIsCartDrawerOpen(true);
+    showToast(`🛒 Added ${count > 1 ? `${count}x ` : ''}"${product.title}" to Bag!`);
   };
 
   // Quick Add multiple variants batch handler
@@ -1092,7 +1101,13 @@ function formatDateSafe(dateStr: any): string {
 
     const newCart = [...cart, ...itemsToAdd];
     syncCartChanges(newCart);
-    showToast(`🛒 Added ${itemsToAdd.length} items to Cart!`);
+    setIsCartDrawerOpen(true);
+    showToast(`🛒 Added ${itemsToAdd.length} items to Bag!`);
+  };
+
+  const handleRemoveFromCart = (idx: number) => {
+    const newCart = cart.filter((_, i) => i !== idx);
+    syncCartChanges(newCart);
   };
 
   // Protected Action: Wishlist Add/Remove
@@ -1586,10 +1601,7 @@ function formatDateSafe(dateStr: any): string {
             {/* Right Header Actions - Cart & Profile shown on ALL devices (Mobile + Desktop); Search & Wishlist shown on Desktop only */}
             <div className="flex items-center gap-1 sm:gap-2">
               <button 
-                onClick={() => { 
-                  setActiveTab('search'); 
-                  setSelectedProduct(null); 
-                }}
+                onClick={() => setIsSearchModalOpen(true)}
                 className="hidden md:flex p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
                 aria-label="Search"
               >
@@ -1613,10 +1625,7 @@ function formatDateSafe(dateStr: any): string {
               </button>
 
               <button 
-                onClick={() => { 
-                  setActiveTab('cart'); 
-                  setSelectedProduct(null); 
-                }}
+                onClick={() => setIsCartDrawerOpen(true)}
                 className="relative p-2 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-100/80 transition-all cursor-pointer"
                 aria-label="Cart"
               >
@@ -1762,6 +1771,7 @@ function formatDateSafe(dateStr: any): string {
 
       {/* 4. Content main container */}
       <main className={`flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 ${activeTab === 'details' ? 'mt-1 sm:mt-2.5' : 'mt-2 sm:mt-4'}`}>
+        <Suspense fallback={<div className="py-20"><BrandBuffer message="Loading Page..." /></div>}>
         
         {/* Active Product Details Inline View */}
         {activeTab === 'details' && selectedProduct && (
@@ -2231,6 +2241,16 @@ function formatDateSafe(dateStr: any): string {
                   );
                 })}
               </div>
+            </div>
+
+            {/* The PrintOkiyo Craftsmanship Standards & Buyer Promise */}
+            <div className="-mx-4 sm:-mx-6 lg:-mx-8">
+              <WhyChooseUs />
+            </div>
+
+            {/* Authentic Customer Reviews & Social Proof */}
+            <div className="-mx-4 sm:-mx-6 lg:-mx-8">
+              <CustomerReviews />
             </div>
 
             {/* Brand Footer */}
@@ -3158,6 +3178,7 @@ function formatDateSafe(dateStr: any): string {
             }}
           />
         )}
+        </Suspense>
       </main>
 
       {/* 5. Floating Capsule Navigation Bar (Mobile Only - Hidden on Desktop, Checkout & Order Confirmation) */}
@@ -3183,18 +3204,10 @@ function formatDateSafe(dateStr: any): string {
             </button>
 
             <button 
-              onClick={() => { 
-                setActiveTab('search'); 
-                setSelectedProduct(null); 
-              }}
-              className={`relative flex flex-col items-center justify-center p-2 rounded-full transition-all ${
-                isTabActive('search') ? 'text-white scale-110' : 'text-gray-400 hover:text-gray-200'
-              }`}
+              onClick={() => setIsSearchModalOpen(true)}
+              className="relative flex flex-col items-center justify-center p-2 rounded-full transition-all text-gray-400 hover:text-gray-200"
             >
-              <Search size={19} strokeWidth={isTabActive('search') ? 2.5 : 2} />
-              {isTabActive('search') && (
-                <span className="absolute -bottom-1.5 w-1 h-1 rounded-full bg-white animate-in zoom-in duration-200" />
-              )}
+              <Search size={19} strokeWidth={2} />
             </button>
 
             <button 
@@ -3216,22 +3229,14 @@ function formatDateSafe(dateStr: any): string {
             </button>
 
             <button 
-              onClick={() => { 
-                setActiveTab('cart'); 
-                setSelectedProduct(null); 
-              }}
-              className={`relative flex flex-col items-center justify-center p-2 rounded-full transition-all ${
-                isTabActive('cart') ? 'text-white scale-110' : 'text-gray-400 hover:text-gray-200'
-              }`}
+              onClick={() => setIsCartDrawerOpen(true)}
+              className="relative flex flex-col items-center justify-center p-2 rounded-full transition-all text-gray-400 hover:text-gray-200"
             >
-              <ShoppingBag size={19} strokeWidth={isTabActive('cart') ? 2.5 : 2} />
+              <ShoppingBag size={19} strokeWidth={2} />
               {cart.length > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 w-4 h-4 flex items-center justify-center bg-white text-gray-950 rounded-full text-[8px] font-black shadow-sm ring-2 ring-gray-950">
                   {cart.length}
                 </span>
-              )}
-              {isTabActive('cart') && (
-                <span className="absolute -bottom-1.5 w-1 h-1 rounded-full bg-white animate-in zoom-in duration-200" />
               )}
             </button>
 
@@ -3284,10 +3289,12 @@ function formatDateSafe(dateStr: any): string {
 
       {/* Order Confirmation Success Modal Popup */}
       {completedOrder && (
-        <OrderSuccessModal 
-          order={completedOrder} 
-          onClose={() => setCompletedOrder(null)} 
-        />
+        <Suspense fallback={null}>
+          <OrderSuccessModal 
+            order={completedOrder} 
+            onClose={() => setCompletedOrder(null)} 
+          />
+        </Suspense>
       )}
 
       {/* Quick Add Variant Popup Modal (FrameKro style) */}
@@ -3299,6 +3306,34 @@ function formatDateSafe(dateStr: any): string {
           onViewDetails={openProductDetails}
         />
       )}
+
+      {/* Slide-over Mini Cart Drawer with Live Offer Unlocks & Free Delivery Meter */}
+      <CartDrawer
+        isOpen={isCartDrawerOpen}
+        onClose={() => setIsCartDrawerOpen(false)}
+        cart={cart}
+        onRemoveItem={handleRemoveFromCart}
+        onIncreaseGroup={handleIncreaseGroupQuantity}
+        onDecreaseGroup={handleDecreaseGroupQuantity}
+        onRemoveGroup={handleRemoveGroup}
+        onProceedToCheckout={() => {
+          setIsCartDrawerOpen(false);
+          setActiveTab('checkout');
+          setSelectedProduct(null);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+        storeSettings={storeSettings || undefined}
+      />
+
+      {/* Live Predictive Search Overlay Modal */}
+      <SearchModal
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+        products={productsList}
+        onSelectProduct={(p) => {
+          openProductDetails(p);
+        }}
+      />
     </div>
   );
 }
