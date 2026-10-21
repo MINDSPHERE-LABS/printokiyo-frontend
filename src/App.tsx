@@ -1552,7 +1552,7 @@ function formatDateSafe(dateStr: any): string {
       <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-all select-none">
         {/* Main Navbar */}
         <div className="w-full border-b border-gray-100">
-          <div className="max-w-7xl mx-auto w-full py-3 sm:py-3.5 px-4 sm:px-6 lg:px-8 flex items-center justify-between relative">
+          <div className="max-w-7xl mx-auto w-full py-2.5 sm:py-3.5 px-0 flex items-center justify-between relative">
             {/* Left categories menu & desktop navigation links */}
             <div className="flex items-center gap-2">
               {activeTab !== 'checkout' ? (
@@ -1770,7 +1770,7 @@ function formatDateSafe(dateStr: any): string {
       />
 
       {/* 4. Content main container */}
-      <main className={`flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 ${activeTab === 'details' ? 'mt-1 sm:mt-2.5' : 'mt-2 sm:mt-4'}`}>
+      <main className={`flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 ${activeTab === 'details' ? 'mt-1 sm:mt-2.5' : 'mt-2 sm:mt-4'}`}>
         <Suspense fallback={<div className="py-20"><BrandBuffer message="Loading Page..." /></div>}>
         
         {/* Active Product Details Inline View */}
@@ -1788,7 +1788,7 @@ function formatDateSafe(dateStr: any): string {
             />
 
             {/* Brand Footer on Product Page */}
-            <div className="-mx-3 sm:-mx-6 lg:-mx-8 mt-12 border-t border-gray-100">
+            <div className="-mx-4 sm:-mx-6 lg:-mx-8 mt-12 border-t border-gray-100">
               <Footer 
                 onAboutClick={handleOpenAbout}
                 onTermsClick={handleOpenTerms}
@@ -1845,11 +1845,11 @@ function formatDateSafe(dateStr: any): string {
             </div>
 
             {/* Category Cards Section (2 by 2 Grid on Mobile, Responsive 4-Cols on Desktop - Sharp 90 Deg Edges, Motion/Video Enabled) */}
-            <div className="mb-8 select-none text-left">
+            <div className="-mx-4 sm:-mx-6 lg:-mx-8 mb-8 select-none text-left">
               <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-black text-gray-950 text-center mb-4 tracking-tight uppercase">
                 Split Poster Categories
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3 sm:gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 px-0">
                 {homepageCategoryCards.map((cat) => (
                   <div
                     key={cat.name}
@@ -1899,7 +1899,7 @@ function formatDateSafe(dateStr: any): string {
             </div>
 
             {/* Custom Polaroid Category Banner Button (No heading, sharp 90-degree edges, borderless) */}
-            <div className="mb-10 select-none">
+            <div className="-mx-4 sm:-mx-6 lg:-mx-8 mb-10 select-none">
               <button
                 type="button"
                 onClick={handleOpenPolaroid}
